@@ -27,7 +27,7 @@ kind: "package-library"
 
 打开 profile 的浏览器地址，沿链接进入 char.pub。在 char.pub 作品页选择 **Start playing**，或在编辑器选择 **Try draft**，将精确版本交给当前 Runtime 地址。按提示授权 Registry 访问，查看分级、许可、开局与限制，填写必需角色后，选择**进入故事**。手动启动 JSON 仍保留在**高级**区域。
 
-选择已保存的故事即可恢复。侧栏显示每条记录的真实创建日期与时间；切换记录会保留各自尚未发送的回复。Enter 发送，Shift + Enter 换行。**设置** → **通用设置**可调整界面语言、外观和故事字号，不会改变故事的内容语言。**模型**显示已配置的提供方和模型，并在 profile 的本机 Harness 凭据中保存或移除 API 密钥；来自启动环境的密钥显示为只读。**char.pub 访问**用于授权 Registry 读取。窄屏将两侧面板收进可用键盘操作的抽屉。
+选择已保存的故事即可恢复。侧栏显示每条记录的真实创建日期与时间；切换记录会保留各自尚未发送的回复。Enter 发送，Shift + Enter 换行。**设置** → **通用设置**可调整界面语言、外观和故事字号，不会改变故事的内容语言。**模型**列出每个可配置的提供方及其密钥状态；**编辑**会打开对应卡片，可填写 API 密钥，并在**自定义设置**中修改 API 地址和模型目录。密钥保存到 profile 的本机 Harness 凭据，地址和目录写入 profile 的 `cordis.patch.yml`；来自启动环境的密钥和由 `--patch` 叠加层占用的条目显示为只读。**内置插件**列出正在运行的插件及其模块和运行状态。**char.pub 访问**用于授权 Registry 读取。侧栏的**插件**页列出同样的插件；带可热更新字段的插件会打开自动生成的配置表单，模型适配器会打开**模型**页。窄屏将两侧面板收进可用键盘操作的抽屉。
 
 <a id="recovery-and-privacy"></a>
 ## 恢复与隐私
@@ -44,7 +44,7 @@ kind: "package-library"
 <details>
 <summary>实现内部 — 点击展开</summary>
 
-[App.tsx](src/App.tsx)协调明确操作和按记录标识保存的草稿恢复。准备与对话操作在刷新本地记录之后才释放界面操作锁，避免后台读取与主机串行操作竞争。[api.ts](src/api.ts)发送携带 nonce 的同源请求，区分结果不明确的写入与明确拒绝。[theme.css](src/theme.css)引入 `ui-theme` 的 token 表，并把其中的 alias 改绑到 char.pub 配色；组件直接引用 `ui-primitives` 的源码模块，因此打包结果不含 Markdown 与代码高亮依赖。[SettingsDialog.tsx](src/components/SettingsDialog.tsx)在不依赖 Cordis 插槽的前提下复刻 Harness 设置面板。[Runtime 浏览器 DTO](../../packages/experimental/charpub-roleplay-runtime/src/app-types.ts)限制播放器可以显示的数据。
+[App.tsx](src/App.tsx)协调明确操作和按记录标识保存的草稿恢复。准备与对话操作在刷新本地记录之后才释放界面操作锁，避免后台读取与主机串行操作竞争。[api.ts](src/api.ts)发送携带 nonce 的同源请求，区分结果不明确的写入与明确拒绝。[theme.css](src/theme.css)引入 `ui-theme` 的 token 表，并把其中的 alias 改绑到 char.pub 配色；组件直接引用 `ui-primitives` 的源码模块，因此打包结果不含 Markdown 与代码高亮依赖。[SettingsDialog.tsx](src/components/SettingsDialog.tsx)、[ModelsSection.tsx](src/components/ModelsSection.tsx) 和 [Plugins.tsx](src/components/Plugins.tsx) 在不依赖 Cordis 插槽的前提下复刻 Harness 的设置、模型和插件页面；[settings-schema.ts](src/settings-schema.ts) 还原 Host 下发的 schemastery schema，并计算每次保存发送的路径编辑。[Runtime 浏览器 DTO](../../packages/experimental/charpub-roleplay-runtime/src/app-types.ts)限制播放器可以显示的数据。
 
 [仓库构建脚本](../../scripts/build-charpub-replay.mjs)构建必需库和播放器静态资源。在仓库根目录运行 `pnpm --filter @deepseek-ai/dsh-charpub-roleplay-web run test` 可执行应用测试。这些测试覆盖 DTO 驱动的交互与 HTTP 传输行为；Runtime 包负责真实 HTTP、授权和 JSONL 恢复测试。实际浏览器审阅补充 DOM 测试无法证明的布局与对比度验证。
 

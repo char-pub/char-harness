@@ -118,7 +118,7 @@ Session 日志是唯一持久记录。投影返回的 `ReplayLog` 是临时重�
 
 恢复未完成请求时只读日志。普通发送保持禁用，直到用户明确选择结束未完成请求并发送新回复。新请求使用新的 ID 与 `recover_interrupted: true`；既有驱动将旧请求记为 interrupted，然后只派发一次新回复。旧请求 ID 不会触发另一次模型调用。停止的故事仍可读取，但不能继续生成。
 
-授权状态表示本地可用授权，不是远端有效性探测。模型状态报告已配置的提供方/模型，以及 `credential_ref` 引用是否已配置、由哪个来源层提供、能否写入。设置可通过 profile 的 `credentials` 服务保存或移除该密钥（本地提供方写入 `$DSH_HOME/.credentials.yaml`）；来自启动环境的值保持只读。已配置的密钥不保证密钥或网络可用。加载页面、检查状态和写入密钥都不会调用推理端点，任何响应都不返回凭据值。
+授权状态表示本地可用授权，不是远端有效性探测。模型状态报告已配置的提供方/模型，以及其密钥引用是否已配置、由哪个来源层提供、能否写入。[app-settings.ts](src/app-settings.ts) 使用与 DeepSeek Harness Web 设置页相同的服务提供设置页面：`llm.listConfigurableProviders()` 列出模型提供方，`credentials.set/unset` 保存密钥（本地提供方写入 `$DSH_HOME/.credentials.yaml`），`settings.describe/mutate` 读写 profile patch 中的可热更新字段，`readPluginInventory` 列出 Loader 条目。写入以读取时的 revision 防止覆盖；由命令行叠加层占用的条目报告为只读，来自启动环境的密钥同样只读。app 自身的 HTTP 限额不作为表单提供。已配置的密钥不保证密钥或网络可用。加载页面、检查状态和写入设置都不会调用推理端点，任何响应都不返回凭据值。
 
 预览导出使用独立空白的合成绑定表单和明确的摘要，不预填游玩绑定、不复制聊天记录。修改合成字段会使已显示的文件审阅失效；确认仍核对已提交 head 和候选精确摘要。文件排除 Source 正文与凭据。入口检查 Host、Origin、请求 nonce、字节和操作期限；取消会传到 Registry 读取和模型生成。取消期间已经完成的存储提交仍是事实依据。
 

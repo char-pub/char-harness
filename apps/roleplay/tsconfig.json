@@ -16,6 +16,9 @@
     },
     {
       "path": "../../packages/client/ui-primitives"
+    },
+    {
+      "path": "../../vendor/schemastery"
     }
   ]
 }

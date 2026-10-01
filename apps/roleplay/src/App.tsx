@@ -9,6 +9,7 @@ import type {
   AppStatus,
   AppTurnRequest,
   AppTurnResult,
+  AppModelsView,
 } from '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types'
 import {
   createRoleplayApi,
@@ -22,7 +23,9 @@ import { translate, type Language, type MessageKey } from './i18n.ts'
 import { Icon } from './components/Icon.tsx'
 import { Modal } from './components/Modal.tsx'
 import { BrandMark, BrandWordmark } from './components/Brand.tsx'
-import { FONT_SIZE_MAX, FONT_SIZE_MIN, SettingsDialog, type Theme } from './components/SettingsDialog.tsx'
+import { FONT_SIZE_MAX, FONT_SIZE_MIN, SettingsDialog, type SettingsSection, type Theme } from './components/SettingsDialog.tsx'
+import type { ModelsOperations } from './components/ModelsSection.tsx'
+import { PluginManagerPage, type PluginOperations } from './components/Plugins.tsx'
 import { Bindings, enteredBindings } from './components/Bindings.tsx'
 import { ReviewPanel } from './components/ReviewPanel.tsx'
 
@@ -91,6 +94,9 @@ function storedRequests(): Record<string, Pending> {
 /** First matching machine-code pattern selects the user-facing explanation. */
 const ERROR_MESSAGES: ReadonlyArray<readonly [RegExp, MessageKey]> = [
   [/credential_read_only/, 'credentialReadOnly'],
+  [/settings_conflict/, 'settingsConflict'],
+  [/settings_overridden/, 'settingsOverridden'],
+  [/settings_not_live/, 'settingsNotLive'],
   [/stale_session/, 'stale'],
   [/http_401|authorization_changed|authorization_required|unauthorized/, 'unauthorized'],
   [/http_403/, 'forbidden'],
@@ -164,7 +170,8 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
     [notice, setNotice] = useState<MessageKey | null>(null)
   const [drafts, setDrafts] = useState(storedDrafts),
     [pending, setPending] = useState(storedRequests)
-  const [settings, setSettings] = useState(false),
+  const [settings, setSettings] = useState<SettingsSection | null>(null),
+    [pluginsOpen, setPluginsOpen] = useState(false),
     [exportOpen, setExportOpen] = useState(false)
   const [recoveryRecord, setRecoveryRecord] = useState<string | null>(null)
   const navigation = useRef(0)
@@ -273,6 +280,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
     }
   }
   const acceptSnapshot = (value: AppSessionSnapshot) => {
+    setPluginsOpen(false)
     setRecoveryRecord(null)
     snapshotRef.current = value
     setSnapshot(value)
@@ -329,6 +337,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
   }, [api])
   const reviewLaunch = async (text: string) => {
     if (!api || !text.trim() || !begin('review')) return
+    setPluginsOpen(false)
     setMode('review')
     setReview(null)
     try {
@@ -524,14 +533,44 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
       if (live.current) setError(errorInfo(cause))
     }
   }
-  const writeCredential = async (operation: () => Promise<AppStatus['model']['credential']>, done: MessageKey) => {
-    try {
-      const credential = await operation()
-      if (live.current) setStatus(previous => (previous ? { ...previous, model: { ...previous.model, credential } } : previous))
-      return done
-    } catch (cause) {
-      return errorInfo(cause).message
-    }
+  const explain = (cause: unknown) => errorInfo(cause).message
+  // Status needs the Registry connection; a Models write already returns the generation provider's key state.
+  const adoptCredential = (view: AppModelsView) => {
+    setStatus((previous) => {
+      const row = previous ? view.providers.find(item => item.provider === previous.model.provider) : undefined
+      return previous && row ? { ...previous, model: { ...previous.model, credential: row.credential } } : previous
+    })
+    return view
+  }
+  const modelOperations: ModelsOperations = {
+    load: async () => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.models()
+    },
+    save: async (input) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return adoptCredential(await api.saveModel(input))
+    },
+    clearKey: async (ns) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return adoptCredential(await api.clearModelKey(ns))
+    },
+    explain,
+  }
+  const pluginOperations: PluginOperations = {
+    list: async () => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.plugins()
+    },
+    config: async (ns) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.pluginConfig(ns)
+    },
+    save: async (input) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.savePluginConfig(input)
+    },
+    explain,
   }
   const currentPending = snapshot ? pending[snapshot.record] : undefined
   const registryOrigin = status?.registry.origin ?? boot.bootstrap?.registryOrigin
@@ -593,10 +632,32 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             <Icon name="close" />
           </button>
         </div>
-        <button type="button" className="new-session" disabled={!!busy} onClick={newStory}>
+        <button
+          type="button"
+          className="new-session"
+          disabled={!!busy}
+          onClick={() => {
+            setPluginsOpen(false)
+            newStory()
+          }}
+        >
           <Icon name="newStory" />
           <span>{t('newStory')}</span>
         </button>
+        <nav className="panel-list" aria-label={t('plugins')}>
+          <button
+            type="button"
+            className={`panel-row ${pluginsOpen ? 'active' : ''}`}
+            aria-current={pluginsOpen ? 'page' : undefined}
+            onClick={() => {
+              setPluginsOpen(true)
+              setLeftOpen(false)
+            }}
+          >
+            <Icon name="plugin" />
+            <span>{t('plugins')}</span>
+          </button>
+        </nav>
         <div className="sidebar-section">
           <span>{t('sessions')}</span>
           <button
@@ -660,7 +721,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             type="button"
             className="settings-trigger"
             onClick={() => {
-              setSettings(true)
+              setSettings('general')
             }}
           >
             <Icon name="settings" />
@@ -671,7 +732,30 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           </button>
         </div>
       </aside>
-      <main className="center">
+      {pluginsOpen ? (
+        <main className="center plugin-center">
+          <header className="center-header plugin-header">
+            <button
+              type="button"
+              className="icon-button mobile-only"
+              aria-label={t('sessionPanel')}
+              onClick={() => {
+                setLeftOpen(true)
+              }}
+            >
+              <Icon name="menu" />
+            </button>
+          </header>
+          <PluginManagerPage
+            language={language}
+            operations={pluginOperations}
+            onOpenModels={() => {
+              setSettings('models')
+            }}
+          />
+        </main>
+      ) : null}
+      <main className="center" hidden={pluginsOpen}>
         <header className="center-header">
           <button
             type="button"
@@ -709,7 +793,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             className="icon-button mobile-only"
             aria-label={t('connection')}
             onClick={() => {
-              setSettings(true)
+              setSettings('general')
             }}
           >
             <Icon name="settings" />
@@ -757,10 +841,10 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                 type="button"
                 className="button outline small"
                 onClick={() => {
-                  setSettings(true)
+                  setSettings('models')
                 }}
               >
-                {t('connection')}
+                {t('settingsModel')}
               </button>
             </div>
           ) : null}
@@ -1002,7 +1086,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           </div>
         ) : null}
       </main>
-      {detailView ? (
+      {detailView && !pluginsOpen ? (
         <aside ref={rightPanel} className={`details-panel ${rightOpen ? 'is-open' : ''}`} aria-label={t('details')}>
           <div className="details-heading">
             <h2>{t('details')}</h2>
@@ -1034,21 +1118,16 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           status={status}
           registryOrigin={registryOrigin}
           busy={!!busy || !api}
+          initialSection={settings}
+          models={modelOperations}
+          plugins={pluginOperations}
           onLanguage={setLanguage}
           onTheme={setTheme}
           onFontSize={setFontSize}
           onAuthorize={() => void authorize()}
-          onRefresh={() => void refreshStatus()}
-          onSaveCredential={async (value) => {
-            if (!api) return 'unavailable'
-            return writeCredential(() => api.saveCredential(value), 'credentialSaved')
-          }}
-          onClearCredential={async () => {
-            if (!api) return 'unavailable'
-            return writeCredential(() => api.clearCredential(), 'credentialCleared')
-          }}
           onClose={() => {
-            setSettings(false)
+            setSettings(null)
+            void refreshStatus()
           }}
         />
       ) : null}

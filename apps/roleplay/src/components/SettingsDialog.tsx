@@ -1,19 +1,22 @@
-/** Settings panel in the DeepSeek Harness layout: section rail, rows with hairline separators, close in the header. */
-import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
+/** Settings panel in the DeepSeek Harness layout: section rail, titled sections, rows with hairline separators. */
+import { useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { AppStatus } from '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types'
 import { useModalLayer } from '@deepseek-ai/dsh-client-ui-primitives/src/useModalLayer.ts'
 import { translate, type Language, type MessageKey } from '../i18n.ts'
 import { Icon, type IconName } from './Icon.tsx'
+import { ModelsSection, type ModelsOperations } from './ModelsSection.tsx'
+import { PluginInventorySection, type PluginOperations } from './Plugins.tsx'
 
 /** Interface theme preference; `system` follows the operating system. */
 export type Theme = 'light' | 'dark' | 'system'
 /** Content font-size bounds shared with the DeepSeek Harness Settings range. */
 export const FONT_SIZE_MIN = 10
 export const FONT_SIZE_MAX = 22
-type Section = 'general' | 'model' | 'registry'
+/** Settings sections in rail order. */
+export type SettingsSection = 'general' | 'models' | 'plugins' | 'registry'
 
-/** Local preferences and host status shown by the panel; every host change goes through an explicit callback. */
+/** Local preferences and host state shown by the panel; every host change goes through an explicit operation. */
 export interface SettingsDialogProps {
   language: Language
   theme: Theme
@@ -21,32 +24,33 @@ export interface SettingsDialogProps {
   status: AppStatus | null
   registryOrigin: string | undefined
   busy: boolean
+  /** Section shown when the panel opens. */
+  initialSection?: SettingsSection
+  models: ModelsOperations
+  plugins: PluginOperations
   onLanguage: (value: Language) => void
   onTheme: (value: Theme) => void
   onFontSize: (value: number) => void
   onAuthorize: () => void
-  onRefresh: () => void
-  /** Store a key; resolves with an interface message describing the committed result. */
-  onSaveCredential: (value: string) => Promise<MessageKey>
-  onClearCredential: () => Promise<MessageKey>
   onClose: () => void
 }
 
 /**
  * Render the body-portaled settings panel.
- * @param props - Current preferences, host status and explicit change callbacks.
+ * @param props - Current preferences, host state and explicit change operations.
  * @returns The modal settings panel.
  */
 export function SettingsDialog(props: SettingsDialogProps) {
   const { language, onClose } = props
   const t = (key: MessageKey) => translate(language, key)
-  const [section, setSection] = useState<Section>('general')
+  const [section, setSection] = useState<SettingsSection>(props.initialSection ?? 'general')
   const panel = useRef<HTMLDivElement>(null)
   const titleId = useId()
   useModalLayer(panel, true, onClose)
-  const sections: ReadonlyArray<[Section, IconName, MessageKey]> = [
+  const sections: ReadonlyArray<[SettingsSection, IconName, MessageKey]> = [
     ['general', 'general', 'settingsGeneral'],
-    ['model', 'model', 'settingsModel'],
+    ['models', 'model', 'settingsModel'],
+    ['plugins', 'sliders', 'builtinPlugins'],
     ['registry', 'registry', 'registry'],
   ]
   return createPortal(
@@ -83,7 +87,8 @@ export function SettingsDialog(props: SettingsDialogProps) {
           </div>
           <div className="settings-options">
             {section === 'general' ? <GeneralSection {...props} /> : null}
-            {section === 'model' ? <ModelSection {...props} /> : null}
+            {section === 'models' ? <ModelsSection language={language} operations={props.models} /> : null}
+            {section === 'plugins' ? <PluginInventorySection language={language} operations={props.plugins} /> : null}
             {section === 'registry' ? <RegistrySection {...props} /> : null}
           </div>
         </div>
@@ -143,144 +148,39 @@ function GeneralSection({ language, theme, fontSize, onLanguage, onTheme, onFont
           <span className="settings-row-title">{t('fontSize')}</span>
           <span className="settings-row-desc">{t('fontSizeHint')}</span>
         </span>
-        <span className="font-stepper">
-          <button
-            type="button"
-            className="stepper-button"
-            aria-label={t('fontSizeDecrease')}
-            disabled={fontSize <= FONT_SIZE_MIN}
-            onClick={() => {
-              onFontSize(fontSize - 1)
-            }}
-          >
-            −
-          </button>
-          <output className="stepper-value" aria-live="polite">
-            {fontSize}
-          </output>
-          <button
-            type="button"
-            className="stepper-button"
-            aria-label={t('fontSizeIncrease')}
-            disabled={fontSize >= FONT_SIZE_MAX}
-            onClick={() => {
-              onFontSize(fontSize + 1)
-            }}
-          >
-            +
-          </button>
+        <span className="font-size-control">
+          <span className="font-stepper">
+            <span className="stepper-value" aria-live="polite">{fontSize}</span>
+            <span className="stepper-arrows">
+              <button
+                type="button"
+                className="stepper-arrow"
+                aria-label={t('fontSizeIncrease')}
+                disabled={fontSize >= FONT_SIZE_MAX}
+                onClick={() => {
+                  onFontSize(fontSize + 1)
+                }}
+              >
+                <Icon name="chevronUp" size={9} />
+              </button>
+              <button
+                type="button"
+                className="stepper-arrow"
+                aria-label={t('fontSizeDecrease')}
+                disabled={fontSize <= FONT_SIZE_MIN}
+                onClick={() => {
+                  onFontSize(fontSize - 1)
+                }}
+              >
+                <Icon name="chevronDown" size={9} />
+              </button>
+            </span>
+          </span>
           <span className="stepper-unit">px</span>
         </span>
       </div>
-    </section>
-  )
-}
-
-function ModelSection({ language, status, busy, onSaveCredential, onClearCredential, onRefresh }: SettingsDialogProps) {
-  const t = (key: MessageKey) => translate(language, key)
-  const [value, setValue] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState<MessageKey | null>(null)
-  const live = useRef(true)
-  useEffect(() => {
-    live.current = true
-    return () => {
-      live.current = false
-    }
-  }, [])
-  const credential = status?.model.credential
-  const writable = credential?.writable !== false
-  const run = async (operation: () => Promise<MessageKey>) => {
-    if (saving) return
-    setSaving(true)
-    setMessage(null)
-    try {
-      const result = await operation()
-      if (live.current) setMessage(result)
-    } finally {
-      if (live.current) setSaving(false)
-    }
-  }
-  const submit = (event: FormEvent) => {
-    event.preventDefault()
-    const key = value.trim()
-    if (!key || !writable) return
-    void run(async () => {
-      const result = await onSaveCredential(key)
-      if (result === 'credentialSaved' && live.current) setValue('')
-      return result
-    })
-  }
-  const source: MessageKey | null = !credential?.configured
-    ? null
-    : credential.source === 'env'
-      ? 'credentialSourceEnv'
-      : credential.source === 'file'
-        ? 'credentialSourceFile'
-        : 'credentialSourceOther'
-  return (
-    <section className="settings-section" aria-label={t('settingsModel')}>
-      <div className="settings-row">
-        <span className="settings-row-text">
-          <span className="settings-row-title">{t('modelProvider')}</span>
-          <span className="settings-row-desc">{t('modelHint')}</span>
-        </span>
-        <span className="settings-value">{status ? `${status.model.provider} · ${status.model.id}` : t('statusFailure')}</span>
-      </div>
-      <form className="settings-group" onSubmit={submit}>
-        <span className="settings-group-head">
-          <label className="settings-row-title" htmlFor="model-api-key">
-            {t('apiKey')}
-          </label>
-          <span className={`state-pill ${credential?.configured ? 'ok' : 'warn'}`}>
-            {t(credential?.configured ? 'credentialConfigured' : 'credentialMissing')}
-          </span>
-        </span>
-        {source ? <span className="settings-row-desc">{t(source)}</span> : null}
-        <span className="secret-row">
-          <input
-            id="model-api-key"
-            className="settings-input"
-            type="password"
-            autoComplete="off"
-            spellCheck={false}
-            value={value}
-            placeholder={t(credential?.configured ? 'apiKeyReplace' : 'apiKeyPlaceholder')}
-            disabled={!writable || saving || !status}
-            onChange={(e) => {
-              setValue(e.target.value)
-              setMessage(null)
-            }}
-          />
-          <button type="submit" className="button primary" disabled={!value.trim() || !writable || saving || !status}>
-            {t(saving ? 'loading' : 'apiKeySave')}
-          </button>
-          {credential?.configured && credential.source === 'file' ? (
-            <button
-              type="button"
-              className="button outline"
-              disabled={saving || busy}
-              onClick={() => void run(onClearCredential)}
-            >
-              {t('apiKeyClear')}
-            </button>
-          ) : null}
-        </span>
-        {message ? (
-          <span className={`settings-feedback ${message === 'credentialSaved' || message === 'credentialCleared' ? 'ok' : 'error'}`} role="status">
-            {t(message)}
-          </span>
-        ) : null}
-      </form>
-      <div className="settings-row">
-        <span className="settings-row-text">
-          <span className="settings-row-title">{t('onlineCheck')}</span>
-          <span className="settings-row-desc">{t('unverified')}</span>
-        </span>
-        <button type="button" className="button outline" disabled={busy} onClick={onRefresh}>
-          <Icon name="refresh" />
-          {t('refreshStatus')}
-        </button>
+      <div className="settings-row settings-version">
+        <span className="settings-row-title">{`${t('currentVersion')}${__APP_VERSION__}`}</span>
       </div>
     </section>
   )
@@ -291,13 +191,15 @@ function RegistrySection({ language, status, registryOrigin, busy, onAuthorize }
   const authorized = status?.registry.authorization === 'authorized'
   return (
     <section className="settings-section" aria-label={t('registry')}>
+      <h2 className="section-title">{t('registry')}</h2>
+      <p className="section-intro">{t('registryHint')}</p>
       <div className="settings-row">
         <span className="settings-row-text">
           <span className="settings-row-title">{t('registryAccess')}</span>
-          <span className="settings-row-desc">{t('registryHint')}</span>
+          <span className="settings-row-desc">{t(authorized ? 'authorized' : 'authorizationRequired')}</span>
         </span>
-        <span className={`state-pill ${authorized ? 'ok' : 'warn'}`}>{t(authorized ? 'authorized' : 'authorizationRequired')}</span>
-        <button type="button" className="button outline" disabled={busy || !status} onClick={onAuthorize}>
+        <span className={`state-pill ${authorized ? 'ok' : 'warn'}`}>{t(authorized ? 'authorized' : 'notAuthorized')}</span>
+        <button type="button" className="secondary-button" disabled={busy || !status} onClick={onAuthorize}>
           {t('authorize')}
         </button>
       </div>

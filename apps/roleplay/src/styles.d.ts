@@ -5,3 +5,5 @@ declare module '*.svg' {
   const url: string
   export default url
 }
+/** Package version injected by the browser build for the Settings version row. */
+declare const __APP_VERSION__: string

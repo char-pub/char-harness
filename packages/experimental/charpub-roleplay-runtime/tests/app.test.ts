@@ -11,6 +11,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL, fileURLToPath } from 'node:url'
 import { Context } from '@deepseek-ai/cordis'
+import { credentialRef } from '@deepseek-ai/dsh-credentials'
 import Loader from '@deepseek-ai/cordis-plugin-loader'
 import Include from '@deepseek-ai/cordis-plugin-include'
 import { initProfile, loadProfile, composeEntries, resolveProfileDir } from '@deepseek-ai/dsh-app-boot/src/profile.ts'
@@ -84,14 +85,16 @@ void test('named roleplay app reviews exact work, starts and generates once, exp
   const post = async (path: string, value: unknown = {}, origin = appOrigin) => fetch(`${appOrigin}/api/${path}`, { method: 'POST', headers: { origin, 'content-type': 'application/json', 'x-roleplay-client': nonce }, body: JSON.stringify(value) })
   assert.equal((await post('status')).status, 400)
   const Credential = z.strictObject({ configured: z.boolean(), source: z.string().optional(), writable: z.boolean() })
-  assert.equal((await post('credential', { value: '   ' })).status, 400)
-  const stored = await post('credential', { value: ' sk-local-test ' }); assert.equal(stored.status, 200, await stored.clone().text())
-  assert.deepEqual(Credential.parse(await stored.json()), { configured: true, source: 'file', writable: true })
-  assert.match(await readFile(join(home, '.credentials.yaml'), 'utf8'), /CHARPUB_APP_TEST_API_KEY: sk-local-test\n/)
+  // Settings stay readable while Registry discovery fails; this profile mounts no settings service or configurable provider.
+  const settingsWithoutRegistry = await post('settings/models'); assert.equal(settingsWithoutRegistry.status, 200, await settingsWithoutRegistry.clone().text())
+  assert.deepEqual(await settingsWithoutRegistry.json(), { providers: [] })
+  assert.equal((await post('settings/models/save', { ns: 'roleplay-model', ops: [] })).status, 400)
+  // A provider outside the configurable directory reports the app's own credential_ref.
+  const testKey = credentialRef('CHARPUB_APP_TEST_API_KEY')
+  await ctx.credentials.set(testKey, 'sk-local-test')
   discoveryAvailable = true
   assert.deepEqual(z.object({ model: z.object({ credential: Credential }) }).parse(await (await post('status')).json()).model.credential, { configured: true, source: 'file', writable: true })
-  const cleared = await post('credential-clear'); assert.equal(cleared.status, 200)
-  assert.deepEqual(Credential.parse(await cleared.json()), { configured: false, writable: true })
+  await ctx.credentials.unset(testKey)
   assert.equal((await post('status')).status, 200)
   const launch = { format: 'char.pub/runtime-launch', version: 1, registry_origin: registryOrigin, source: artifact.root, lock_digest: artifact.lock_digest, locale: 'ja', view: { mode: 'narrator' } }
   assert.equal((await post('review', launch, 'https://untrusted.example')).status, 403)

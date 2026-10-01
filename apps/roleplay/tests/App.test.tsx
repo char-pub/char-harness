@@ -7,6 +7,10 @@ import type {
   AppStatus,
   AppTurnResult,
   AppTurnRequest,
+  AppModelProvider,
+  AppModelsView,
+  AppPluginConfigView,
+  AppPluginsView,
 } from '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types'
 import { App } from '../src/App.tsx'
 import { RoleplayApiError, type RoleplayApi } from '../src/api.ts'
@@ -43,13 +47,51 @@ function snapshot(record = 'first', patch: Partial<AppSessionSnapshot> = {}): Ap
 const status: AppStatus = {
   registry: { origin: bootstrap.registryOrigin, authorization: 'authorized' },
   model: {
-    provider: 'configured-provider',
+    provider: 'deepseek-official',
     id: 'configured-model',
     credential: { configured: true, source: 'file', writable: true },
     online_verified: false,
   },
   operation: null,
   limitations: [],
+}
+const deepseekSchema = {
+  uid: 4,
+  refs: {
+    1: { type: 'string', meta: { volatile: true } },
+    2: { type: 'object', meta: {}, dict: { id: 3, name: 1 } },
+    3: { type: 'string', meta: { required: true } },
+    4: { type: 'object', meta: { default: {} }, dict: { baseURL: 1, models: 5, apiKeyEnv: 1 } },
+    5: { type: 'array', meta: { volatile: true, default: [{ id: 'deepseek-flash', name: 'Flash' }] }, inner: 2 },
+  },
+}
+function providers(credential: AppModelProvider['credential'] = { configured: false, writable: true }, patch: Partial<AppModelProvider> = {}): AppModelsView {
+  return {
+    providers: [{
+      provider: 'deepseek-official', display_name: 'DeepSeek', ns: 'roleplay-model', path: [], credential_ref: 'DEEPSEEK_API_KEY',
+      credential, settings_writable: true,
+      form: {
+        schema: deepseekSchema,
+        value: { apiKeyEnv: 'DEEPSEEK_API_KEY', models: [{ id: 'deepseek-flash', name: 'Flash' }] },
+        base: { apiKeyEnv: 'DEEPSEEK_API_KEY', models: [{ id: 'deepseek-flash', name: 'Flash' }] },
+        user: {}, revision: 3, writable: true,
+      },
+      ...patch,
+    }],
+  }
+}
+const pluginsView: AppPluginsView = {
+  entries: [
+    { entry_id: 'include:roleplay-runtime', ns: 'roleplay-runtime', module_name: '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime', enabled: true, phase: 'active', configurable: 'none', settings_writable: true, meta: { title: { en: 'char.pub roleplay', zh: 'char.pub 角色扮演' }, description: { en: 'Play stories.', zh: '游玩故事。' } } },
+    { entry_id: 'include:roleplay-model', ns: 'roleplay-model', module_name: '@deepseek-ai/dsh-llm-deepseek-api-key', enabled: true, phase: 'active', configurable: 'models', settings_writable: true },
+    { entry_id: 'include:pace', ns: 'pace', module_name: '@example/pace', enabled: true, phase: 'active', configurable: 'form', settings_writable: true, meta: { title: 'Pacing', description: 'Scene pacing limits.' } },
+    { entry_id: 'include:broken', ns: 'broken', module_name: '@example/broken', enabled: true, phase: 'failed', configurable: 'none', settings_writable: true },
+  ],
+}
+const paceForm: AppPluginConfigView = {
+  ns: 'pace',
+  schema: { uid: 3, refs: { 1: { type: 'number', meta: { min: 1, default: 3, description: 'Scenes per chapter', volatile: true } }, 2: { type: 'boolean', meta: { default: true, volatile: true } }, 3: { type: 'object', meta: { default: {} }, dict: { scenes: 1, recap: 2 } } } },
+  value: { scenes: 3, recap: true }, base: { scenes: 3, recap: true }, user: {}, revision: 1, writable: true,
 }
 function review(): AppLaunchReview {
   return {
@@ -101,12 +143,22 @@ function makeApi(overrides: Partial<RoleplayApi> = {}): TestApi {
     })),
     cancel: vi.fn(async () => {}),
     authorize: vi.fn(async () => ({ authorizationURL: 'https://registry.example/authorize' })),
-    saveCredential: vi.fn(async () => ({ configured: true, source: 'file', writable: true })),
-    clearCredential: vi.fn(async () => ({ configured: false, writable: true })),
+    models: vi.fn(async () => providers({ configured: true, source: 'file', writable: true })),
+    saveModel: vi.fn(async () => providers({ configured: true, source: 'file', writable: true })),
+    clearModelKey: vi.fn(async () => providers()),
+    plugins: vi.fn(async () => pluginsView),
+    pluginConfig: vi.fn(async () => paceForm),
+    savePluginConfig: vi.fn(async () => ({ ...paceForm, value: { scenes: 5, recap: true }, user: { scenes: 5 }, revision: 2 })),
     prepareExport: vi.fn(async () => ({ digest: 'review-digest', payload: { synthetic: true } })),
     exportPreview: vi.fn(async () => ({ json: '{"synthetic":true}', payload: { synthetic: true } })),
     ...overrides,
   }
+}
+/** jsdom does not toggle <details> from a summary click; open the disclosure the way a browser would. */
+function openDetails(summary: HTMLElement) {
+  const details = summary.closest('details')
+  if (!details) throw new Error('summary outside details')
+  details.open = true
 }
 function deferred<T>() {
   let resolve!: (value: T) => void
@@ -187,8 +239,9 @@ describe('story discovery and exact-version setup', () => {
     expect(await screen.findByText('Your first story is waiting')).toBeTruthy()
     fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
     const dialog = screen.getByRole('dialog', { name: 'Settings' })
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Model' }))
-    expect(within(dialog).getByText('Not verified online yet')).toBeTruthy()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Models' }))
+    expect(await within(dialog).findByText('DeepSeek')).toBeTruthy()
+    expect(within(dialog).getByRole('img', { name: 'API key configured' })).toBeTruthy()
     expect(api.review).not.toHaveBeenCalled()
     expect(api.turn).not.toHaveBeenCalled()
   })
@@ -421,42 +474,133 @@ describe('local controls and synthetic preview', () => {
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
     expect(screen.queryByRole('dialog')).toBeNull()
   })
-  it('stores and removes the model API key only through explicit settings actions', async () => {
+  it('opens the first provider as a setup card and saves its key and endpoint through one Models write', async () => {
     const api = makeApi({
       status: vi.fn(async () => ({ ...status, model: { ...status.model, credential: { configured: false, writable: true } } })),
+      models: vi.fn(async () => providers()),
     })
     mount(api)
     expect(await screen.findByText('Add a model API key in Settings before replying.')).toBeTruthy()
-    fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
-    fireEvent.click(screen.getByRole('button', { name: 'Model' }))
-    expect(screen.getByText('Not configured')).toBeTruthy()
-    fireEvent.change(screen.getByLabelText('API key'), { target: { value: '  sk-entered  ' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
-    expect(await screen.findByText('API key saved. The next reply uses it.')).toBeTruthy()
-    expect(api.saveCredential).toHaveBeenCalledWith('sk-entered')
-    expect(screen.getByText('Configured')).toBeTruthy()
-    expect(screen.getByLabelText('API key')).toHaveProperty('value', '')
-    expect(screen.queryByText('Add a model API key in Settings before replying.')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'Remove' }))
-    expect(await screen.findByText('API key removed.')).toBeTruthy()
-    expect(api.clearCredential).toHaveBeenCalledTimes(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Models' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Settings' })
+    const key = await within(dialog).findByLabelText('API key')
+    fireEvent.change(key, { target: { value: 'KEY="quoted"' } })
+    expect(within(dialog).getByText('This API key is malformed. Check it and try again.')).toBeTruthy()
+    fireEvent.change(key, { target: { value: '  sk-entered  ' } })
+    openDetails(within(dialog).getByText('Customized settings'))
+    fireEvent.change(within(dialog).getByLabelText('API endpoint'), { target: { value: 'https://gateway.example/anthropic' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }))
+    expect(await within(dialog).findByText('Saved DeepSeek.')).toBeTruthy()
+    expect(api.saveModel).toHaveBeenCalledWith({
+      ns: 'roleplay-model', revision: 3, api_key: 'sk-entered',
+      ops: [{ op: 'set', path: ['baseURL'], value: 'https://gateway.example/anthropic' }],
+    })
+    expect(within(dialog).getByRole('button', { name: 'Edit DeepSeek' })).toBeTruthy()
     expect(api.turn).not.toHaveBeenCalled()
   })
-  it('explains a launching-environment key without offering a write that it would shadow', async () => {
+  it('edits the model catalog as a whole override and removes a stored key on request', async () => {
+    const api = makeApi()
+    mount(api)
+    await screen.findByText('Your first story is waiting')
+    fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
+    fireEvent.click(screen.getByRole('button', { name: 'Models' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit DeepSeek' }))
+    expect(screen.getByLabelText('API key')).toHaveProperty('placeholder', 'Configured — enter a new value to replace')
+    openDetails(screen.getByText('Customized settings'))
+    expect(screen.getByText('Using the adapter default models')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Add model' }))
+    expect(screen.getByText('Model 2: Model ID is required.')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Save' })).toHaveProperty('disabled', true)
+    fireEvent.change(screen.getByLabelText('Model ID 2'), { target: { value: 'deepseek-v4-pro' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await waitFor(() => { expect(api.saveModel).toHaveBeenCalledTimes(1) })
+    expect(api.saveModel).toHaveBeenCalledWith({
+      ns: 'roleplay-model', revision: 3,
+      ops: [{ op: 'set', path: ['models'], value: [{ id: 'deepseek-flash', name: 'Flash' }, { id: 'deepseek-v4-pro' }] }],
+    })
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit DeepSeek' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Remove' }))
+    await waitFor(() => { expect(api.clearModelKey).toHaveBeenCalledWith('roleplay-model') })
+  })
+  it('reports a refused Models write in the card, keeps the draft and updates the reply banner from the result', async () => {
+    let attempts = 0
+    let stored = false
     const api = makeApi({
-      status: vi.fn(async () => ({ ...status, model: { ...status.model, credential: { configured: true, source: 'env', writable: false } } })),
-      saveCredential: vi.fn(async () => {
-        throw new RoleplayApiError('roleplay_app.credential_read_only')
+      // Status needs the Registry; while it is unreachable the page keeps the key state the Models write returned.
+      status: vi.fn(async () => {
+        if (stored) throw new RoleplayApiError('roleplay_app.connection_lost')
+        return { ...status, model: { ...status.model, credential: { configured: false, writable: true } } }
       }),
+      models: vi.fn(async () => providers()),
+      saveModel: vi.fn(async () => {
+        attempts++
+        if (attempts === 1) throw new RoleplayApiError('roleplay_app.settings_conflict')
+        stored = true
+        return providers({ configured: true, source: 'file', writable: true })
+      }),
+    })
+    mount(api)
+    fireEvent.click(await screen.findByRole('button', { name: 'Models' }))
+    const key = await screen.findByLabelText('API key')
+    fireEvent.change(key, { target: { value: 'sk-entered' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(await screen.findByText(/These settings changed while the card was open/)).toBeTruthy()
+    expect(screen.getByLabelText('API key')).toHaveProperty('value', 'sk-entered')
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(await screen.findByText('Saved DeepSeek.')).toBeTruthy()
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+    await waitFor(() => { expect(screen.queryByText('Add a model API key in Settings before replying.')).toBeNull() })
+  })
+  it('keeps a launching-environment key and an overlay-owned provider read-only', async () => {
+    const api = makeApi({
+      models: vi.fn(async () => providers({ configured: true, source: 'env', writable: false }, { settings_writable: false })),
     })
     mount(api)
     await screen.findByText('Your first story is waiting')
     fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
-    fireEvent.click(screen.getByRole('button', { name: 'Model' }))
-    expect(screen.getByText('Supplied by the launching environment. Change it there and restart the Runtime.')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Models' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit DeepSeek' }))
     expect(screen.getByLabelText('API key')).toHaveProperty('disabled', true)
+    expect(screen.getByLabelText('API key')).toHaveProperty('placeholder', 'Provided by the launch environment (read-only)')
     expect(screen.queryByRole('button', { name: 'Remove' })).toBeNull()
-    expect(api.saveCredential).not.toHaveBeenCalled()
+    openDetails(screen.getByText('Customized settings'))
+    expect(screen.getByText(/A --patch overlay configures this entry/)).toBeTruthy()
+    expect(screen.getByLabelText('API endpoint')).toHaveProperty('disabled', true)
+    expect(screen.getByRole('button', { name: 'Save' })).toHaveProperty('disabled', true)
+    expect(api.saveModel).not.toHaveBeenCalled()
+  })
+  it('lists running plugins in Settings and saves a generated plugin form from the sidebar page', async () => {
+    const api = makeApi()
+    mount(api)
+    await screen.findByText('Your first story is waiting')
+    fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
+    fireEvent.click(screen.getByRole('button', { name: 'Built-in plugins' }))
+    expect(await screen.findByText('char.pub roleplay')).toBeTruthy()
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Search plugins' }), { target: { value: 'broken' } })
+    expect(screen.queryByText('char.pub roleplay')).toBeNull()
+    expect(screen.getByText('Failed to start')).toBeTruthy()
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Plugins' }))
+    expect(await screen.findByRole('heading', { name: 'Plugins' })).toBeTruthy()
+    expect(screen.getAllByText('Launch configuration').length).toBe(2)
+    fireEvent.click(screen.getByRole('button', { name: 'Open Pacing' }))
+    const scenes = await screen.findByLabelText('scenes')
+    expect(screen.getByText('Scenes per chapter')).toBeTruthy()
+    fireEvent.change(scenes, { target: { value: '0' } })
+    expect(screen.getByText('Enter a value this field accepts.')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Save' })).toHaveProperty('disabled', true)
+    fireEvent.change(scenes, { target: { value: '5' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(await screen.findByText('Saved. The running plugin uses the new values.')).toBeTruthy()
+    expect(api.savePluginConfig).toHaveBeenCalledWith({ ns: 'pace', revision: 1, ops: [{ op: 'set', path: ['scenes'], value: 5 }] })
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await waitFor(() => { expect(api.savePluginConfig).toHaveBeenLastCalledWith({ ns: 'pace', revision: 2, ops: [{ op: 'unset', path: ['scenes'] }] }) })
+    fireEvent.click(screen.getByRole('button', { name: 'Back to plugin list' }))
+    fireEvent.click(await screen.findByRole('button', { name: /Open llm-deepseek-api-key/ }))
+    expect(await screen.findByRole('dialog', { name: 'Settings' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Models' })).toBeTruthy()
   })
   it('starts export with empty synthetic inputs and invalidates an old file review on edits', async () => {
     const s = snapshot('first', {

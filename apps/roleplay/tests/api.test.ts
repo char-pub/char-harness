@@ -67,19 +67,25 @@ describe('profile-bound browser transport', () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(json({ authorizationURL }))
     expect(await createRoleplayApi(bootstrap, fetcher).authorize()).toEqual({ authorizationURL })
   })
-  it('writes the model key only through the credential operations and validates their replies', async () => {
+  it('sends settings writes to their routes and rejects replies that do not match the settings views', async () => {
+    const credential = { configured: true, source: 'file', writable: true }
+    const view = { providers: [{ provider: 'deepseek-official', display_name: 'DeepSeek', ns: 'roleplay-model', path: [], credential_ref: 'DEEPSEEK_API_KEY', credential, settings_writable: true, form: { schema: {}, value: {}, base: {}, user: {}, revision: 1, writable: true } }] }
+    const plugins = { entries: [{ entry_id: 'include:a', ns: 'a', module_name: 'a', enabled: true, phase: 'active', configurable: 'form', settings_writable: true }] }
     const fetcher = vi.fn<typeof fetch>()
-      .mockResolvedValueOnce(json({ configured: true, source: 'file', writable: true }))
-      .mockResolvedValueOnce(json({ configured: false, writable: true }))
-      .mockResolvedValueOnce(json({ configured: 'yes', writable: true }))
+      .mockResolvedValueOnce(json(view))
+      .mockResolvedValueOnce(json(plugins))
+      .mockResolvedValueOnce(json({ ...view.providers[0]?.form, ns: 'a' }))
+      .mockResolvedValueOnce(json({ providers: [{ ...view.providers[0], credential: { configured: 'yes', writable: true } }] }))
     const api = createRoleplayApi(bootstrap, fetcher)
-    expect(await api.saveCredential('sk-entered')).toEqual({ configured: true, source: 'file', writable: true })
-    expect(await api.clearCredential()).toEqual({ configured: false, writable: true })
+    expect(await api.saveModel({ ns: 'roleplay-model', ops: [], api_key: 'sk-entered', revision: 1 })).toEqual(view)
+    expect(await api.plugins()).toEqual(plugins)
+    expect(await api.savePluginConfig({ ns: 'a', ops: [{ op: 'set', path: ['n'], value: 2 }] })).toMatchObject({ ns: 'a' })
     expect(fetcher.mock.calls.map(call => [call[0], call[1]?.body])).toEqual([
-      ['/api/credential', JSON.stringify({ value: 'sk-entered' })],
-      ['/api/credential-clear', '{}'],
+      ['/api/settings/models/save', JSON.stringify({ ns: 'roleplay-model', ops: [], api_key: 'sk-entered', revision: 1 })],
+      ['/api/settings/plugins', '{}'],
+      ['/api/settings/plugin/save', JSON.stringify({ ns: 'a', ops: [{ op: 'set', path: ['n'], value: 2 }] })],
     ])
-    await expect(api.saveCredential('sk-entered')).rejects.toMatchObject({ code: 'roleplay_app.invalid_response', unknownOutcome: true })
+    await expect(api.clearModelKey('roleplay-model')).rejects.toMatchObject({ code: 'roleplay_app.invalid_response', unknownOutcome: true })
   })
   it('rejects an authorization redirect outside the configured Registry', async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(json({ authorizationURL: 'https://unexpected.example/authorize' }))

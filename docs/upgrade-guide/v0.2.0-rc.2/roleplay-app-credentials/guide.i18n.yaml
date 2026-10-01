@@ -3,14 +3,14 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/upgrade-guide/v0.2.0-rc.2/roleplay-app-credentials/guide.md
 /:
-  en: 6b1c91d2d9c0bbfc
-  zh: 52185d871c1673ee
-/roleplay-app-credential-settings:
-  en: b12e6ac11edc91a4
-  zh: b282323184df79d8
-/roleplay-app-credential-settings/change:
-  en: 97096eb5777f9985
-  zh: 5f626d152b50c0a0
-/roleplay-app-credential-settings/migration:
-  en: 4a2354977d6a1312
-  zh: 6d6600abc488d394
+  en: 04338591ff2b8dda
+  zh: dbcf3539f1434514
+/roleplay-app-settings-and-credentials:
+  en: 3ed5d8b56fd81d59
+  zh: 93c7fa884564638e
+/roleplay-app-settings-and-credentials/change:
+  en: 4504d1ed2edf9e00
+  zh: 94001114ab57d580
+/roleplay-app-settings-and-credentials/migration:
+  en: 4b9b50edcf924e3d
+  zh: 815a9fe761835c85
