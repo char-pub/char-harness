@@ -1817,6 +1817,36 @@ export const SERVICE_API: readonly ServiceApiEntry[] = [
     ],
   },
   {
+    key: 'roleplayRuntime',
+    summary: 'Session-backed one-request driver; it never mounts the coding loop or its prompt assembly.',
+    description: 'Session-backed one-request driver; it never mounts the coding loop or its prompt assembly.',
+    methods: [
+      {
+        signature: 'readonly config: Config',
+        description: 'Validated deployment limits, shared by all operations on this driver.',
+        parameters: [],
+      },
+      {
+        signature: 'create(id: SessionId, input: ReplayInput, signal?: AbortSignal): Promise<RoleplayProjection>',
+        description: 'Create a durable roleplay Session with one validated opening.',
+        parameters: [{ name: 'id', description: 'Unique stored Session identity; an existing identity is never overwritten.' }, { name: 'input', description: 'Exact static artifact and opening inputs.' }, { name: 'signal', description: 'Cancels before storage creation starts; an acquired header is completed with its opening.' }],
+        returns: 'Initial reconstructed state after the durability barrier.',
+      },
+      {
+        signature: 'async inspect(id: SessionId): Promise<RoleplayProjection>',
+        description: 'Read committed Story state and any interrupted request without making a model call.',
+        parameters: [{ name: 'id', description: 'Existing roleplay Session identity.' }],
+        returns: 'Reconstructed projection; a pending request never advances committed state.',
+      },
+      {
+        signature: 'submit(id: SessionId, command: ReplayCommand, config: LlmCallConfig, signal?: AbortSignal): Promise<RoleplaySettled>',
+        description: 'Persist one exact request, send it once, then atomically record its outcome.',
+        parameters: [{ name: 'id', description: 'Existing Session; concurrent submissions fail before dispatch.' }, { name: 'command', description: 'Fixed or evidenced decisions for the prospective request.' }, { name: 'config', description: 'Explicit model route and output limit within the profile\'s reserved budget.' }, { name: 'signal', description: 'Cancels preparation or generation. Once settlement storage starts, its outcome must be reconciled.' }],
+        returns: 'Durable settlement. Exact retries return the stored outcome without another model call.',
+      },
+    ],
+  },
+  {
     key: 'sandbox',
     summary: 'Abstract process-sandbox service.',
     description: 'Abstract process-sandbox service. confine must return enforcing argv or fail closed at wrap or runner-execution time; silent unconfined passthrough is forbidden. Functional probes arbitrate multi-runner chains and may be skipped for a sole candidate, whose own refusal remains the fail-closed end.',
@@ -4746,10 +4776,6 @@ export const TYPE_API: readonly TypeApiEntry[] = [
     declaration: 'export type CommandFileReceiptResolver = (agent: Agent, receiptId: string) => FileAttachmentRef | undefined;',
   },
   {
-    name: 'CommandId',
-    declaration: 'export type CommandId = Branded<\'CommandId\'>;',
-  },
-  {
     name: 'CommandInputDescriptor',
     declaration: 'export interface CommandInputDescriptor {\n    readonly hint: string;\n    readonly attachments?: boolean;\n}',
   },
@@ -6198,8 +6224,24 @@ export const TYPE_API: readonly TypeApiEntry[] = [
     declaration: 'export interface RenderedDocumentBytes extends WorkspaceFileBytes {\n    readonly missingFonts: string[];\n    readonly generation: OfficeToPdfGeneration;\n}',
   },
   {
+    name: 'ReplayCommand',
+    declaration: 'export type ReplayCommand = z.infer<typeof CommandSchema>;',
+  },
+  {
     name: 'ReplayEnvelope',
     declaration: 'export interface ReplayEnvelope {\n    response: unknown;\n    blocks?: readonly unknown[];\n}',
+  },
+  {
+    name: 'ReplayInput',
+    declaration: 'export type ReplayInput = z.infer<typeof InputSchema>;',
+  },
+  {
+    name: 'ReplayLog',
+    declaration: 'export type ReplayLog = z.infer<typeof LogSchema>;',
+  },
+  {
+    name: 'ReplayStep',
+    declaration: 'export interface ReplayStep {\n    state: StoryState;\n    turn: TurnView;\n    prepared_turn: TurnView;\n    plan: z.infer<typeof SelectionPlanSchema>;\n    assembly: AssembleResult;\n}',
   },
   {
     name: 'RequestContext',
@@ -6212,6 +6254,10 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   {
     name: 'RequestHeaderReason',
     declaration: 'export type RequestHeaderReason = \'initial\' | \'resume\' | \'change\' | \'series\';',
+  },
+  {
+    name: 'RequestId',
+    declaration: 'export type RequestId = Branded<\'RoleplayRequestId\'>;',
   },
   {
     name: 'RequestImageAttachment',
@@ -6260,6 +6306,18 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   {
     name: 'ResumeAgentOptions',
     declaration: 'export interface ResumeAgentOptions {\n    readonly resumeSessionId: SessionId;\n    readonly parentAgent?: Agent;\n    readonly agentOptions?: AgentOptions;\n    readonly signal?: AbortSignal;\n    readonly setup?: AgentSetup;\n}',
+  },
+  {
+    name: 'RoleplayProjection',
+    declaration: 'export interface RoleplayProjection {\n    log: ReplayLog;\n    current: ReplayStep;\n    head: string;\n    pending: RoleplayRequested | null;\n    requests: Map<RequestId, RoleplayRequested>;\n    settlements: Map<RequestId, RoleplaySettled>;\n}',
+  },
+  {
+    name: 'RoleplayRequested',
+    declaration: 'export type RoleplayRequested = z.infer<typeof RoleplayRequestedSchema>;',
+  },
+  {
+    name: 'RoleplaySettled',
+    declaration: 'export type RoleplaySettled = z.infer<typeof RoleplaySettledSchema>;',
   },
   {
     name: 'RpcId',

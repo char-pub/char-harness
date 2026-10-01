@@ -1,0 +1,10 @@
+{
+  "format": 1,
+  "sdk": {
+    "directory": "snapshots/story-v1-219fd237a8efba66",
+    "manifest_sha256": "219fd237a8efba6641b7410ab3828cec24c803fd72999f5c14694f5402650080"
+  },
+  "file": "pre-exact-digest-replay.json",
+  "sha256": "69473c0cd5eb1b32ae4db05ea9609030b035fe676dc84e9895cb511ac1113029",
+  "purpose": "Genuine old-SDK synthetic raw-text Replay; not a Session generation. Reject incompatible old digests without rewriting its original bytes."
+}

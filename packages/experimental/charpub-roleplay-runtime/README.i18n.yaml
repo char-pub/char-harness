@@ -1,0 +1,64 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/charpub-roleplay-runtime/README.md
+/:
+  en: 62b41a73352c4a85
+  zh: e9ed50733ef7a41d
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime:
+  en: 2f68964791327385
+  zh: d770f0f39760049a
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/summary:
+  en: c0db5445aefe21af
+  zh: 6bf9505f2c7a6719
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/table-of-contents:
+  en: 361225668e045d54
+  zh: 97d1e694a9ffa06c
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/use-this-package:
+  en: 5dd864b722768eaa
+  zh: ed118611f5e16f3e
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/service:
+  en: e76d3177d093daf1
+  zh: abfa3c4dc4d985b5
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/registry-access:
+  en: fcd61eb985194dcc
+  zh: e6d361babc9b4b51
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/registry-access/local-ending-proposals:
+  en: 6f012c09e5cc2d53
+  zh: 389296f0a13fa57d
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/registry-access/new-sequels-from-a-reviewed-situation:
+  en: 44a31fb1b4a5274b
+  zh: cbb870098bfb3fc0
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/registry-access/synthetic-preview-export:
+  en: 81ab389787802379
+  zh: 096e7bf0362361ee
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/storage-and-recovery:
+  en: 0e81b5c904bdbcc8
+  zh: 4e5695ac7a2f0053
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/configuration-and-verification:
+  en: 2714306864dbdb54
+  zh: 791fcfd219f32c17
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/optional-local-browser-entry:
+  en: 20d386d3e690960b
+  zh: e333e9cd96071d77
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/model-experience/recorded-prepared-messages:
+  en: 1df60f83c409d6ba
+  zh: 3d7cad27b28ef594
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/model-experience/recorded-prepared-messages/what-the-model-sees:
+  en: 6a820a09bab361ec
+  zh: 18a2082f3f375fec
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/model-experience/recorded-prepared-messages/token-effect:
+  en: f0ecc0d059ce346b
+  zh: 8d441db5d27d1884
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/model-experience/recorded-prepared-messages/kv-cache-effect:
+  en: a3b6865aa8a8f79a
+  zh: fa05148dcb4944e7
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/known-limitations-and-deferred-work:
+  en: dfc503c326898747
+  zh: f48e71cf28e54fe0
+/deepseek-ai-dsh-experimental-charpub-roleplay-runtime/known-limitations-and-deferred-work/dev-note:
+  en: e67f633dc6fe7773
+  zh: 8ec3e73528ddb1a6

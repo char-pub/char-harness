@@ -1,5 +1,8 @@
 /** Experimental packages excluded from public releases and npm baselines. */
-export const PRIVATE_EXPERIMENTAL_PACKAGE_DIRECTORIES: readonly string[] = []
+export const PRIVATE_EXPERIMENTAL_PACKAGE_DIRECTORIES: readonly string[] = [
+  'packages/experimental/charpub-roleplay',
+  'packages/experimental/charpub-roleplay-runtime',
+]
 
 /**
  * Whether an experimental package publishes under the default-public policy.

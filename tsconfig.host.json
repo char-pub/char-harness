@@ -437,6 +437,8 @@
     { "path": "./packages/jobs/jobs" },
     { "path": "./packages/jobs/jobs-local" },
     { "path": "./packages/jobs/tool-jobs" },
+    { "path": "./packages/experimental/charpub-roleplay" },
+    { "path": "./packages/experimental/charpub-roleplay-runtime" },
     { "path": "./packages/experimental/agent-team" },
     { "path": "./packages/experimental/agent-team-profile" },
     { "path": "./packages/experimental/tool-agent-team" },

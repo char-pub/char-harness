@@ -9,6 +9,12 @@
 
 ```mermaid
 flowchart LR
+  pkg_experimental_charpub_roleplay_runtime["experimental-charpub-roleplay-runtime"]
+  svc_roleplayRuntime["ctx.roleplayRuntime<br/>Explicit Story requests and durable settlements"]
+  pkg_experimental_charpub_roleplay["experimental-charpub-roleplay"]
+  pkg_session["session"]
+  pkg_session_persistence_jsonl["session-persistence-jsonl"]
+  pkg_llm["llm"]
   pkg_hmr["hmr"]
   svc_hmr["ctx.hmr<br/>Serialized module and configuration reloads"]
   pkg_app_boot["app-boot"]
@@ -46,7 +52,6 @@ flowchart LR
   pkg_llm_deepseek["llm-deepseek"]
   pkg_client_file_upload["client-file-upload"]
   svc_fileUploads["ctx.fileUploads<br/>Agent-scoped staged file uploads"]
-  pkg_llm["llm"]
   svc_llm["ctx.llm<br/>LLM adapter registry"]
   pkg_llm_replay["llm-replay"]
   pkg_agent_loop["agent-loop"]
@@ -59,7 +64,6 @@ flowchart LR
   svc_tokenMeter["ctx.tokenMeter<br/>Replay token measurement"]
   pkg_compaction_tool_result_pruner["compaction-tool-result-pruner"]
   svc_toolResultPruner["ctx.toolResultPruner<br/>Model-free tool-result pruning"]
-  pkg_session["session"]
   svc_sessions["ctx.sessions<br/>In-memory session store"]
   pkg_agent["agent"]
   pkg_session_persistence["session-persistence"]
@@ -94,7 +98,6 @@ flowchart LR
   pkg_typert_loader["typert-loader"]
   svc_typertGateway["ctx.typertGateway<br/>Typert Host invocation gateway"]
   svc_sessionPersistence["ctx.sessionPersistence<br/>Durable session persistence seam"]
-  pkg_session_persistence_jsonl["session-persistence-jsonl"]
   pkg_tool_bash["tool-bash"]
   pkg_hooks_claude_code["hooks-claude-code"]
   pkg_hooks_codex["hooks-codex"]
@@ -324,6 +327,7 @@ flowchart LR
   pkg_experimental_browser_use_chrome_devtools_mcp --> svc_browserUse
   pkg_experimental_browser_use_playwright_mcp --> svc_browserUse
   pkg_experimental_browser_use_stagehand_native --> svc_browserUse
+  pkg_experimental_charpub_roleplay_runtime --> svc_roleplayRuntime
   pkg_experimental_computer_use_cua_driver_mcp --> svc_computerUse
   pkg_experimental_computer_use_cua_driver_native --> svc_computerUse
   pkg_experimental_ptc_runtime_python --> svc_ptcRuntime
@@ -575,10 +579,15 @@ flowchart LR
   svc_workspaceRegistry --> pkg_api_session_controller
   svc_workspaceRegistry --> pkg_api_workspace_controller
   svc_fs -. event gate .-> pkg_fs_observation_policy
+  svc_roleplayRuntime -. event gate .-> pkg_experimental_charpub_roleplay
+  svc_roleplayRuntime -. event gate .-> pkg_llm
+  svc_roleplayRuntime -. event gate .-> pkg_session
+  svc_roleplayRuntime -. event gate .-> pkg_session_persistence_jsonl
 ```
 
 | ctx 键 | 角色 | 所属包 | 实现 | 直接消费方 | 配套插件 | 说明 |
 | --- | --- | --- | --- | --- | --- | --- |
+| `ctx.roleplayRuntime` | `service` | [`experimental-charpub-roleplay-runtime`](../packages/experimental/charpub-roleplay-runtime) | - | - | [`experimental-charpub-roleplay`](../packages/experimental/charpub-roleplay), [`session`](../packages/core/session), [`session-persistence-jsonl`](../packages/session/session-persistence-jsonl), [`llm`](../packages/llm/llm) | 显式启用的 roleplay profile 记录准备好的消息，并通过 Session 持久化提交成功的 Story 状态。 |
 | `ctx.hmr` | `core` | [`hmr`](../packages/boot/hmr) | - | [`app-boot`](../packages/boot/app-boot) | - | 负责模块和精确配置监听；应用修改共用其队列，自动重载等待应用文件锁。 |
 | `ctx.pluginRegistryProbe` | `core` | [`client-ui-plugin-manager`](../packages/client/ui-plugin-manager) | - | [`client-ui-plugin-manager`](../packages/client/ui-plugin-manager) | - | 在 Host 上并发比较公共安装源响应；初始安装源推荐由 Client 负责。 |
 | `ctx.pluginManager` | `core` | [`plugin-manager`](../packages/boot/plugin-manager) | - | [`plugin-manager`](../packages/boot/plugin-manager), `ui-settings-plugin-inventory` | - | 与 CLI 共享 profile 包操作，并向 Web 和 Agent 调用方分别报告持久状态与运行状态。 |

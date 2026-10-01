@@ -1,0 +1,16 @@
+- insert:
+    - id: roleplay-session
+      name: '@deepseek-ai/dsh-session'
+    - id: roleplay-llm
+      name: '@deepseek-ai/dsh-llm'
+    - id: roleplay-storage
+      name: '@deepseek-ai/dsh-session-persistence-jsonl'
+      config:
+        root: !!js process.env.CHARPUB_SESSION_ROOT
+        compression: none
+    - id: roleplay-runtime
+      name: '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime'
+      config:
+        timeout_ms: !!js Number(process.env.CHARPUB_REQUEST_TIMEOUT_MS)
+        max_event_bytes: !!js Number(process.env.CHARPUB_MAX_EVENT_BYTES)
+        max_stream_bytes: !!js Number(process.env.CHARPUB_MAX_STREAM_BYTES)

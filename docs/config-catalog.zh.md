@@ -941,6 +941,27 @@ export interface StagehandModelConfig {
 ```
 <!-- END GENERATED config-catalog:@deepseek-ai/dsh-experimental-browser-use-stagehand-native -->
 
+<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-experimental-charpub-roleplay-runtime -->
+<a id="deepseek-aidsh-experimental-charpub-roleplay-runtime"></a>
+
+## `@deepseek-ai/dsh-experimental-charpub-roleplay-runtime`
+
+- `inject`: `sessions` · `sessionPersistence` · `llm`
+- `source`: [`packages/experimental/charpub-roleplay-runtime/src/index.ts:26`](../packages/experimental/charpub-roleplay-runtime/src/index.ts)
+
+```ts config-catalog
+/** Explicit operation and retained-payload limits for this driver. */
+export interface Config {
+  /** Operation deadline in milliseconds; an active storage commit finishes before close. */
+  timeout_ms: number
+  /** Maximum UTF-8 JSON bytes of one complete retained Session event. */
+  max_event_bytes: number
+  /** Maximum total UTF-8 JSON bytes of retained model stream chunks per request. */
+  max_stream_bytes: number
+}
+```
+<!-- END GENERATED config-catalog:@deepseek-ai/dsh-experimental-charpub-roleplay-runtime -->
+
 <!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-experimental-computer-use-cua-driver-mcp -->
 <a id="deepseek-aidsh-experimental-computer-use-cua-driver-mcp"></a>
 
@@ -4479,6 +4500,7 @@ export interface Config {
 | `@deepseek-ai/dsh-deque` | — | [`packages/util/deque/src/index.ts`](../packages/util/deque/src/index.ts) |
 | `@deepseek-ai/dsh-experimental-agent-team-profile` | — | [`packages/experimental/agent-team-profile/src/index.ts`](../packages/experimental/agent-team-profile/src/index.ts) |
 | `@deepseek-ai/dsh-experimental-browser-use-runtime` | — | [`packages/experimental/browser-use-runtime/src/index.ts`](../packages/experimental/browser-use-runtime/src/index.ts) |
+| `@deepseek-ai/dsh-experimental-charpub-roleplay` | — | [`packages/experimental/charpub-roleplay/src/index.ts`](../packages/experimental/charpub-roleplay/src/index.ts) |
 | `@deepseek-ai/dsh-experimental-schedule-bundle` | — | [`packages/experimental/schedule-bundle/src/index.ts`](../packages/experimental/schedule-bundle/src/index.ts) |
 | `@deepseek-ai/dsh-experimental-voice-input-bundle` | — | [`packages/experimental/voice-input-bundle/src/index.ts`](../packages/experimental/voice-input-bundle/src/index.ts) |
 | `@deepseek-ai/dsh-experimental-webworker-packer` | — | [`packages/experimental/webworker-packer/src/index.ts`](../packages/experimental/webworker-packer/src/index.ts) |

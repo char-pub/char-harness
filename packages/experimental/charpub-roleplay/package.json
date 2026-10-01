@@ -1,0 +1,39 @@
+{
+  "name": "@deepseek-ai/dsh-experimental-charpub-roleplay",
+  "version": "0.2.0-rc.2",
+  "private": true,
+  "description": "Offline fixed-decision Story replay using packed char.pub SDKs",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/types/**/*.d.ts"
+  ],
+  "dependencies": {
+    "@char-pub/assembler": "file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz",
+    "@char-pub/core": "file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz",
+    "@deepseek-ai/dsh-brand": "workspace:*",
+    "@deepseek-ai/dsh-util-values": "workspace:*",
+    "@typesafe-ai/sdk": "0.6.0",
+    "zod": "4.6.5"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "workspace:~"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "workspace:~"
+  },
+  "scripts": {
+    "test:replay": "node --import tsx/esm --test tests/replay.test.ts tests/jev.test.ts tests/sdk-refresh.test.ts"
+  }
+}

@@ -1,0 +1,524 @@
+{
+  "version": 2,
+  "input": {
+    "artifact": {
+      "version": "1-draft",
+      "capabilities": [
+        {
+          "id": "policy.1-draft"
+        },
+        {
+          "id": "sources.v1"
+        },
+        {
+          "id": "story.conditions",
+          "experimental": true
+        },
+        {
+          "id": "story.judge",
+          "experimental": true
+        },
+        {
+          "id": "story.knowing",
+          "experimental": true
+        },
+        {
+          "id": "story.v1"
+        }
+      ],
+      "root": {
+        "ref": "@fixture/inn",
+        "semantic_digest": "sha256:825e0a36f96810220d0ddeb2e2f7e2272fba56dfbcdf554bc9e4a0280a4c9af6",
+        "release": "rel_01j00000000000000000000000"
+      },
+      "lock": [
+        {
+          "ref": "@fixture/policy",
+          "release": "rel_01j00000000000000000000001",
+          "semantic_digest": "sha256:c88bbf37ce9669359cbca71b74a3b4d1d0a39d1fe4ae9cb4b9b7e0c67982cdc6",
+          "via": [
+            "default_policy"
+          ]
+        }
+      ],
+      "lock_digest": "sha256:0f9cdc345e79f5278cd88cad0e9acb574bcf461e77aaf6d2e29f8121a5581e51",
+      "meta": {
+        "default_locale": "en",
+        "available_locales": [
+          "en"
+        ],
+        "rating": "general",
+        "rating_sources": [
+          {
+            "ref": "@fixture/inn",
+            "rating": "general"
+          },
+          {
+            "ref": "@fixture/policy",
+            "rating": "general"
+          }
+        ],
+        "content_warnings": [],
+        "licenses": [
+          {
+            "ref": "@fixture/inn",
+            "license": "CC0-1.0"
+          },
+          {
+            "ref": "@fixture/policy",
+            "license": "CC0-1.0"
+          }
+        ],
+        "attribution": [
+          {
+            "ref": "@fixture/inn",
+            "authors": []
+          },
+          {
+            "ref": "@fixture/policy",
+            "authors": []
+          }
+        ],
+        "contributors": [],
+        "import_omissions": [],
+        "au": false,
+        "recommended_presets": []
+      },
+      "assets": [
+        {
+          "id": "@fixture/inn#asset/guide/default~root",
+          "role": "context",
+          "media_type": "text/plain",
+          "digest": "sha256:9b64dd91ca0ad43792dc0e00685c295aec3176ddff945df03cbc3e9408ce6913",
+          "availability": "mirrored",
+          "access": "public",
+          "rating": "general",
+          "license": "CC0-1.0",
+          "origin": {
+            "creation": "@fixture/inn",
+            "slot": "guide",
+            "variant": "default",
+            "instance_key": "root",
+            "release": "rel_01j00000000000000000000000"
+          }
+        }
+      ],
+      "kind": "content",
+      "ir": {
+        "ir_version": "1-draft",
+        "root": {
+          "ref": "@fixture/inn",
+          "semantic_digest": "sha256:825e0a36f96810220d0ddeb2e2f7e2272fba56dfbcdf554bc9e4a0280a4c9af6",
+          "release": "rel_01j00000000000000000000000"
+        },
+        "lock_digest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "resolver": {
+          "name": "@char-pub/core",
+          "version": "0.0.0"
+        },
+        "meta": {
+          "default_locale": "en",
+          "available_locales": [
+            "en"
+          ],
+          "rating": "general",
+          "rating_sources": [
+            {
+              "ref": "@fixture/inn",
+              "rating": "general"
+            }
+          ],
+          "content_warnings": [],
+          "licenses": [
+            {
+              "ref": "@fixture/inn",
+              "license": "CC0-1.0"
+            }
+          ],
+          "attribution": [
+            {
+              "ref": "@fixture/inn",
+              "authors": []
+            }
+          ],
+          "contributors": [],
+          "import_omissions": [],
+          "au": false,
+          "recommended_presets": []
+        },
+        "participants": [
+          {
+            "key": "p:51a094224ac6fffda1a9cff4a86236c5eb4b211b3facd527b57a227b9fec4f09",
+            "cast_key": "alice",
+            "cast_scope": "root",
+            "display_name": "alice",
+            "kind": "character",
+            "late": "l:51a094224ac6fffda1a9cff4a86236c5eb4b211b3facd527b57a227b9fec4f09"
+          },
+          {
+            "key": "p:82adc5c575af1f2214f015ac0ab9ad7fa57272f46398130462e8d6898158deae",
+            "cast_key": "bob",
+            "cast_scope": "root",
+            "display_name": "bob",
+            "kind": "character",
+            "late": "l:82adc5c575af1f2214f015ac0ab9ad7fa57272f46398130462e8d6898158deae"
+          },
+          {
+            "key": "user",
+            "display_name": "user",
+            "kind": "persona",
+            "role": "user",
+            "late": "user"
+          }
+        ],
+        "late_slots": [
+          {
+            "key": "l:51a094224ac6fffda1a9cff4a86236c5eb4b211b3facd527b57a227b9fec4f09",
+            "accepts": [
+              "character"
+            ],
+            "required": true,
+            "used_by": []
+          },
+          {
+            "key": "l:82adc5c575af1f2214f015ac0ab9ad7fa57272f46398130462e8d6898158deae",
+            "accepts": [
+              "character"
+            ],
+            "required": true,
+            "used_by": []
+          },
+          {
+            "key": "user",
+            "accepts": [
+              "persona"
+            ],
+            "required": true,
+            "used_by": [
+              "start/arrival/greeting"
+            ]
+          }
+        ],
+        "fragments": [
+          {
+            "id": "@fixture/inn#secret~root",
+            "kind": "knowledge",
+            "content": {
+              "type": "text",
+              "text": "ALICE_ONLY_SECRET",
+              "format": "markdown"
+            },
+            "activation": {
+              "mode": "always"
+            },
+            "visibility": {
+              "scope": "shared"
+            },
+            "importance": "normal",
+            "placement_hint": "knowledge",
+            "origin": {
+              "creation": "@fixture/inn",
+              "fragment": "secret",
+              "via": [],
+              "instance_key": "root",
+              "stable": true,
+              "release": "rel_01j00000000000000000000000"
+            },
+            "digest": "sha256:b54aec3bf564377a1ce724c9101bd988975dbefe2949b682e6259d9d5b5e5bed"
+          }
+        ],
+        "bootstrap": {
+          "greetings": []
+        },
+        "assets": [
+          {
+            "id": "@fixture/inn#asset/guide/default~root",
+            "role": "context",
+            "media_type": "text/plain",
+            "digest": "sha256:9b64dd91ca0ad43792dc0e00685c295aec3176ddff945df03cbc3e9408ce6913",
+            "availability": "mirrored",
+            "access": "public",
+            "rating": "general",
+            "license": "CC0-1.0",
+            "origin": {
+              "creation": "@fixture/inn",
+              "slot": "guide",
+              "variant": "default",
+              "instance_key": "root",
+              "release": "rel_01j00000000000000000000000"
+            }
+          }
+        ],
+        "graph": {
+          "nodes": [
+            {
+              "ref": "@fixture/inn",
+              "type": "scenario",
+              "display_name": "Rainy Inn",
+              "release": "rel_01j00000000000000000000000"
+            }
+          ],
+          "instances": [
+            {
+              "key": "root",
+              "ref": "@fixture/inn",
+              "via": []
+            }
+          ],
+          "edges": [],
+          "removed": []
+        },
+        "diagnostics": []
+      },
+      "catalog_index": {
+        "works": [
+          {
+            "id": "@fixture/inn~root",
+            "ref": "@fixture/inn",
+            "instance": "root",
+            "title": "Rainy Inn",
+            "fragments": [
+              "@fixture/inn#secret~root"
+            ],
+            "groups": [],
+            "sources": [
+              "@fixture/inn#source/guide~root"
+            ]
+          }
+        ],
+        "groups": [],
+        "sources": [
+          {
+            "id": "@fixture/inn#source/guide~root",
+            "owner": "@fixture/inn~root",
+            "local_id": "guide",
+            "title": "Inn guide",
+            "description": "Paths around the inn",
+            "asset": "@fixture/inn#asset/guide/default~root",
+            "format": "text",
+            "shared": true,
+            "sections": []
+          }
+        ]
+      },
+      "story": {
+        "version": 1,
+        "scenes": [
+          {
+            "id": "lobby",
+            "title": "Lobby"
+          },
+          {
+            "id": "garden",
+            "title": "Garden",
+            "cast": [
+              "alice"
+            ]
+          }
+        ],
+        "beats": [
+          {
+            "id": "reward",
+            "title": "Reward",
+            "description": "Gain one token",
+            "effects": [
+              {
+                "add": [
+                  "var/count",
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            "id": "refusal",
+            "title": "Refusal",
+            "description": "The guest refuses",
+            "when": {
+              "not": {
+                "judge": "Did the guest agree?"
+              }
+            },
+            "effects": [
+              {
+                "add": [
+                  "var/count",
+                  1
+                ]
+              }
+            ]
+          }
+        ],
+        "starts": [
+          {
+            "id": "arrival",
+            "scene": "lobby",
+            "greeting": {
+              "en": "Welcome, {{user}}.",
+              "ja": "ようこそ、{{user}}。"
+            }
+          }
+        ],
+        "vars": {
+          "count": {
+            "type": "int",
+            "init": 0,
+            "min": 0,
+            "max": 3,
+            "description": "Confirmed rewards"
+          }
+        },
+        "knowing": {
+          "#secret": {
+            "start": {
+              "knows": [
+                "alice"
+              ],
+              "not": [
+                "bob"
+              ]
+            }
+          }
+        }
+      },
+      "story_refs": {
+        "templates": {
+          "start/arrival/greeting": {
+            "text": "Welcome, {{late:user}}.",
+            "locales": {
+              "ja": "ようこそ、{{late:user}}。"
+            }
+          }
+        },
+        "participants": {
+          "alice": "p:51a094224ac6fffda1a9cff4a86236c5eb4b211b3facd527b57a227b9fec4f09",
+          "bob": "p:82adc5c575af1f2214f015ac0ab9ad7fa57272f46398130462e8d6898158deae"
+        },
+        "information": {
+          "#secret": "@fixture/inn#secret~root"
+        },
+        "content": {
+          "#secret": {
+            "fragment": "@fixture/inn#secret~root"
+          }
+        }
+      },
+      "default_policy": {
+        "ref": "@fixture/policy",
+        "semantic_digest": "sha256:c88bbf37ce9669359cbca71b74a3b4d1d0a39d1fe4ae9cb4b9b7e0c67982cdc6",
+        "resolver": {
+          "name": "@char-pub/core",
+          "version": "0.0.0"
+        },
+        "policy": {
+          "version": "1-draft",
+          "blocks": [],
+          "layout": [
+            "system:character",
+            "system:cast",
+            "session:bindings",
+            "system:persona",
+            "system:world",
+            "system:scenario",
+            "system:scene",
+            "system:story",
+            "system:sources",
+            "system:relationship",
+            "system:knowledge",
+            "system:style",
+            "system:instruction",
+            "system:examples",
+            "session:memory",
+            "session:state",
+            "session:variants",
+            "history"
+          ],
+          "requires": {
+            "system_role": true
+          }
+        },
+        "lock": [],
+        "lock_digest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "release": "rel_01j00000000000000000000001"
+      }
+    },
+    "profile": {
+      "runtime": {
+        "name": "offline-roleplay",
+        "version": "1"
+      },
+      "tokenizer": "estimate",
+      "context_window": 8192,
+      "reserve_for_output": 1024,
+      "mode": "narrator",
+      "capabilities": {
+        "system_role": true,
+        "multiple_system_messages": true
+      },
+      "locale": "ja"
+    },
+    "bindings": {
+      "user": {
+        "kind": "persona",
+        "display_name": "Guest"
+      },
+      "l:51a094224ac6fffda1a9cff4a86236c5eb4b211b3facd527b57a227b9fec4f09": {
+        "kind": "character",
+        "display_name": "Alice"
+      },
+      "l:82adc5c575af1f2214f015ac0ab9ad7fa57272f46398130462e8d6898158deae": {
+        "kind": "character",
+        "display_name": "Bob"
+      }
+    },
+    "support": {
+      "supported": [
+        "policy.1-draft",
+        "sources.v1",
+        "story.conditions",
+        "story.judge",
+        "story.knowing",
+        "story.v1"
+      ]
+    },
+    "source_texts": {
+      "@fixture/inn#asset/guide/default~root": "A hidden service tunnel connects the inn to the river."
+    }
+  },
+  "initial_digest": "sha256:de83b73b23c136a40e3caa3ee62087e792a9f79dcc203ac5ef8bcba70a3a4de1",
+  "head_digest": "sha256:4ecca8689347d03d3b7ee7c12509768fdaf93cb27da756a1ffe8de6d861a1046",
+  "entries": [
+    {
+      "command": {
+        "id": "raw-history",
+        "operation": {
+          "kind": "input",
+          "text": "é\r\nExact trailing spaces  "
+        },
+        "selection": []
+      },
+      "previous": "sha256:de83b73b23c136a40e3caa3ee62087e792a9f79dcc203ac5ef8bcba70a3a4de1",
+      "state_digest": "sha256:6e6ab13d4005ee1d5f22f566d470eaf3f1bdaf07dc4296b76152fbad88442c64",
+      "turn_digest": "sha256:d13d666cc461876d223c1ecaf3abb651dcdc6b61fe732c0d44dd85c9eba563d9",
+      "prepared_turn_digest": "sha256:d13d666cc461876d223c1ecaf3abb651dcdc6b61fe732c0d44dd85c9eba563d9",
+      "plan": {
+        "discovery": false,
+        "input": {
+          "artifact_digest": "sha256:e4e5fb981933c8323f088349576a2528513e00c6adf63fb93c1be98bd82a492a",
+          "lock_digest": "sha256:0f9cdc345e79f5278cd88cad0e9acb574bcf461e77aaf6d2e29f8121a5581e51",
+          "turn_digest": "sha256:d13d666cc461876d223c1ecaf3abb651dcdc6b61fe732c0d44dd85c9eba563d9",
+          "catalog_digest": "sha256:5ea72c8807c44c9a2c13c07ecb63953dd6ad6315b7bbde16a7eafbae3c260736",
+          "policy_digest": "sha256:7f2a4b3a354cb5d00c58247812869278792b7ae8d68e3b9c75fff8667844b281"
+        },
+        "selector": {
+          "name": "none",
+          "version": "1"
+        },
+        "selected": [],
+        "decisions": []
+      },
+      "messages_digest": "sha256:a4e2d286ccccbb9a9bb0d88699e1c4f9802af18cc7458e46d19223e09209c2df",
+      "digest": "sha256:4ecca8689347d03d3b7ee7c12509768fdaf93cb27da756a1ffe8de6d861a1046"
+    }
+  ]
+}

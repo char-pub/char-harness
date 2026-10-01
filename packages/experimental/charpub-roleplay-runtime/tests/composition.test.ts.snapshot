@@ -1,0 +1,52 @@
+exports[`real Session projection is the sole generation input and survives close/reopen 1`] = `
+[
+  {
+    "provider": "roleplay-test",
+    "model": "fixed",
+    "messages": [
+      {
+        "role": "system",
+        "content": [
+          {
+            "type": "text",
+            "text": "ALICE_ONLY_SECRET"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "ようこそ、Guest。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "provider": "roleplay-test",
+    "model": "fixed",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "ようこそ、Guest。"
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Alice: The innkeeper nods."
+          }
+        ]
+      }
+    ]
+  }
+]
+`;

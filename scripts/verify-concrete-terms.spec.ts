@@ -45,6 +45,16 @@ describe('concrete terminology policy', () => {
     }
   })
 
+  it('permits only external char.pub wire property tokens in the named SDK consumer', () => {
+    const file = 'packages/experimental/charpub-roleplay/tests/sdk-refresh.test.ts'
+    const wire = `const input = { ${blockedTerm}: { client_id: 'runtime' } }; input.${blockedTerm}.client_id`
+    expect(findConcreteTermViolations(file, wire)).toEqual([])
+    expect(findConcreteTermViolations('packages/experimental/charpub-roleplay/src/index.ts', wire)).toHaveLength(1)
+    expect(findConcreteTermViolations(file, `// ${blockedTerm} commentary`)).toHaveLength(1)
+    expect(findConcreteTermViolations(file, `const ${blockedTerm} = 'local identifier'`)).toHaveLength(1)
+    expect(findConcreteTermViolations(file, `const value = '${blockedTerm}'`)).toHaveLength(1)
+  })
+
   it('accepts exact replacement terms', () => {
     expect(findConcreteTermViolations(
       'packages/example/src/origin.ts',

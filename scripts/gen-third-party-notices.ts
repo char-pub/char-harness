@@ -78,6 +78,10 @@ export function isOwnerAuthorizedRuntime(name: string): boolean {
  * Each entry documents why the store cannot answer.
  */
 const OVERRIDES: Record<string, { license?: string; repo?: string }> = {
+  // Retained local char.pub SDK tarballs omit repository metadata; licenses remain read from each package.
+  '@char-pub/core': { repo: 'https://github.com/char-pub/char' },
+  '@char-pub/assembler': { repo: 'https://github.com/char-pub/char' },
+  '@char-pub/contracts': { repo: 'https://github.com/char-pub/char' },
   // Rust workspaces publishing npm bins without `license` in package.json.
   'oxlint': { license: 'MIT', repo: 'https://github.com/oxc-project/oxc' },
   'oxlint-tsgolint': { license: 'MIT', repo: 'https://github.com/oxc-project/tsgolint' },

@@ -1,0 +1,7532 @@
+{
+  "formatVersion": 2,
+  "roots": [
+    {
+      "key": "event:roleplay/opened",
+      "kind": "event",
+      "event": "roleplay/opened",
+      "surface": false,
+      "digest": "c5ad4768406d57113cb822813dc4192171c95e7bec94588b2d3d1a664a90a535",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 45,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 377,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "head",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "input",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 337,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "artifact",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "bindings",
+                "type": 366,
+                "optional": false
+              },
+              {
+                "name": "for_participant",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "judgments",
+                "type": 368,
+                "optional": true
+              },
+              {
+                "name": "locale",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "profile",
+                "type": 49,
+                "optional": false
+              },
+              {
+                "name": "source_texts",
+                "type": 95,
+                "optional": false
+              },
+              {
+                "name": "start",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "support",
+                "type": 374,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              5,
+              351,
+              359
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "assembly",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "assets",
+                "type": 54,
+                "optional": false
+              },
+              {
+                "name": "capabilities",
+                "type": 83,
+                "optional": false
+              },
+              {
+                "name": "catalog_index",
+                "type": 85,
+                "optional": false
+              },
+              {
+                "name": "default_policy",
+                "type": 8,
+                "optional": true
+              },
+              {
+                "name": "ir",
+                "type": 105,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 243,
+                "optional": false
+              },
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "meta",
+                "type": 219,
+                "optional": false
+              },
+              {
+                "name": "root",
+                "type": 240,
+                "optional": false
+              },
+              {
+                "name": "story",
+                "type": 244,
+                "optional": true
+              },
+              {
+                "name": "story_refs",
+                "type": 338,
+                "optional": true
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "assembler",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "preset",
+                "type": 8,
+                "optional": false
+              },
+              {
+                "name": "profile",
+                "type": 49,
+                "optional": false
+              },
+              {
+                "name": "tokenizer",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "name",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "policy",
+                "type": 12,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "resolver",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 10
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "via",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 2
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blocks",
+                "type": 13,
+                "optional": false
+              },
+              {
+                "name": "layout",
+                "type": 21,
+                "optional": false
+              },
+              {
+                "name": "region_budgets",
+                "type": 41,
+                "optional": true
+              },
+              {
+                "name": "render",
+                "type": 43,
+                "optional": true
+              },
+              {
+                "name": "requires",
+                "type": 44,
+                "optional": false
+              },
+              {
+                "name": "selection",
+                "type": 46,
+                "optional": true
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 14
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "enabled",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 16,
+                "optional": true
+              },
+              {
+                "name": "placement",
+                "type": 17,
+                "optional": true
+              },
+              {
+                "name": "position",
+                "type": 18,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "boolean"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "block",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "via",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "as",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "at",
+                "type": 18,
+                "optional": false
+              },
+              {
+                "name": "block",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              19,
+              20
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "after-history"
+          },
+          {
+            "kind": "literal",
+            "value": "main"
+          },
+          {
+            "kind": "array",
+            "element": 22
+          },
+          {
+            "kind": "union",
+            "types": [
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "session:bindings"
+          },
+          {
+            "kind": "literal",
+            "value": "session:memory"
+          },
+          {
+            "kind": "literal",
+            "value": "session:state"
+          },
+          {
+            "kind": "literal",
+            "value": "session:variants"
+          },
+          {
+            "kind": "literal",
+            "value": "system:cast"
+          },
+          {
+            "kind": "literal",
+            "value": "system:character"
+          },
+          {
+            "kind": "literal",
+            "value": "system:examples"
+          },
+          {
+            "kind": "literal",
+            "value": "system:instruction"
+          },
+          {
+            "kind": "literal",
+            "value": "system:knowledge"
+          },
+          {
+            "kind": "literal",
+            "value": "system:persona"
+          },
+          {
+            "kind": "literal",
+            "value": "system:relationship"
+          },
+          {
+            "kind": "literal",
+            "value": "system:scenario"
+          },
+          {
+            "kind": "literal",
+            "value": "system:scene"
+          },
+          {
+            "kind": "literal",
+            "value": "system:sources"
+          },
+          {
+            "kind": "literal",
+            "value": "system:story"
+          },
+          {
+            "kind": "literal",
+            "value": "system:style"
+          },
+          {
+            "kind": "literal",
+            "value": "system:world"
+          },
+          {
+            "kind": "literal",
+            "value": "history"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "system:cast",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:character",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:examples",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:instruction",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:knowledge",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:persona",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:relationship",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:scenario",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:scene",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:sources",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:story",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:style",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "system:world",
+                "type": 42,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "knowing.narrator",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "perspective.belief",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "perspective.claim",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "perspective.rumor",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "sources.notice",
+                "type": 2,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "multiple_system_messages",
+                "type": 45,
+                "optional": true
+              },
+              {
+                "name": "system_role",
+                "type": 45,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "catalog_budget",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "max_depth",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "on_unavailable",
+                "type": 47,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "skip"
+          },
+          {
+            "kind": "literal",
+            "value": "1-draft"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "capabilities",
+                "type": 50,
+                "optional": false
+              },
+              {
+                "name": "context_window",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "locale",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "mode",
+                "type": 51,
+                "optional": false
+              },
+              {
+                "name": "model",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "reserve_for_output",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "runtime",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "tokenizer",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "images",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "multiple_system_messages",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "system_role",
+                "type": 15,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              52,
+              53
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "narrator"
+          },
+          {
+            "kind": "literal",
+            "value": "per-agent"
+          },
+          {
+            "kind": "array",
+            "element": 55
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "access",
+                "type": 56,
+                "optional": false
+              },
+              {
+                "name": "alt",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "availability",
+                "type": 59,
+                "optional": false
+              },
+              {
+                "name": "digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "license",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "locator",
+                "type": 62,
+                "optional": true
+              },
+              {
+                "name": "media_type",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 67,
+                "optional": false
+              },
+              {
+                "name": "rating",
+                "type": 75,
+                "optional": false
+              },
+              {
+                "name": "role",
+                "type": 80,
+                "optional": false
+              },
+              {
+                "name": "url",
+                "type": 2,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              57,
+              58
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "private"
+          },
+          {
+            "kind": "literal",
+            "value": "public"
+          },
+          {
+            "kind": "union",
+            "types": [
+              60,
+              61
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "linked"
+          },
+          {
+            "kind": "literal",
+            "value": "mirrored"
+          },
+          {
+            "kind": "union",
+            "types": [
+              63,
+              65
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "provider",
+                "type": 64,
+                "optional": false
+              },
+              {
+                "name": "url",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "http"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "commit",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "path",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 66,
+                "optional": false
+              },
+              {
+                "name": "repository_id",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "github"
+          },
+          {
+            "kind": "union",
+            "types": [
+              68,
+              74
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "creation",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "instance_key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 69,
+                "optional": false
+              },
+              {
+                "name": "slot",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "variant",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              70,
+              72
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "build_id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "expires_at",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 71,
+                "optional": false
+              },
+              {
+                "name": "revision",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "draft-build"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "input_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 73,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "local-build"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "creation",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "instance_key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "slot",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "variant",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              76,
+              77,
+              78,
+              79
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "teen"
+          },
+          {
+            "kind": "literal",
+            "value": "explicit"
+          },
+          {
+            "kind": "literal",
+            "value": "general"
+          },
+          {
+            "kind": "literal",
+            "value": "mature"
+          },
+          {
+            "kind": "union",
+            "types": [
+              81,
+              82
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "context"
+          },
+          {
+            "kind": "literal",
+            "value": "presentation"
+          },
+          {
+            "kind": "array",
+            "element": 84
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "experimental",
+                "type": 45,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "about",
+                "type": 86,
+                "optional": true
+              },
+              {
+                "name": "groups",
+                "type": 92,
+                "optional": false
+              },
+              {
+                "name": "sources",
+                "type": 96,
+                "optional": false
+              },
+              {
+                "name": "works",
+                "type": 103,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 87
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "from",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 88,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              89,
+              90,
+              91
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "fragment",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "work",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "participant",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 93
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "entries",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "groups",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "local_id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "owner",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              95
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 2
+              }
+            ]
+          },
+          {
+            "kind": "array",
+            "element": 97
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "asset",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "format",
+                "type": 98,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "local_id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "owner",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "sections",
+                "type": 101,
+                "optional": false
+              },
+              {
+                "name": "shared",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              99,
+              100
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "text"
+          },
+          {
+            "kind": "literal",
+            "value": "markdown"
+          },
+          {
+            "kind": "array",
+            "element": 102
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "anchor",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 104
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "fragments",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "groups",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "instance",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "sources",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "assets",
+                "type": 54,
+                "optional": false
+              },
+              {
+                "name": "bootstrap",
+                "type": 106,
+                "optional": false
+              },
+              {
+                "name": "diagnostics",
+                "type": 109,
+                "optional": false
+              },
+              {
+                "name": "fragments",
+                "type": 114,
+                "optional": false
+              },
+              {
+                "name": "graph",
+                "type": 189,
+                "optional": false
+              },
+              {
+                "name": "ir_version",
+                "type": 48,
+                "optional": false
+              },
+              {
+                "name": "late_slots",
+                "type": 215,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "meta",
+                "type": 219,
+                "optional": false
+              },
+              {
+                "name": "participants",
+                "type": 234,
+                "optional": false
+              },
+              {
+                "name": "resolver",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "root",
+                "type": 240,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "greetings",
+                "type": 107,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 108
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "locales",
+                "type": 95,
+                "optional": true
+              },
+              {
+                "name": "scenario_hint",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "speaker",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 110
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "code",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "detail",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "severity",
+                "type": 111,
+                "optional": false
+              },
+              {
+                "name": "subject",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              112,
+              113
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "warning"
+          },
+          {
+            "kind": "literal",
+            "value": "info"
+          },
+          {
+            "kind": "array",
+            "element": 115
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "about",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "activation",
+                "type": 116,
+                "optional": false
+              },
+              {
+                "name": "asset_refs",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "content",
+                "type": 128,
+                "optional": false
+              },
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "importance",
+                "type": 144,
+                "optional": false
+              },
+              {
+                "name": "instance",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "kind",
+                "type": 148,
+                "optional": false
+              },
+              {
+                "name": "locales",
+                "type": 158,
+                "optional": true
+              },
+              {
+                "name": "origin",
+                "type": 159,
+                "optional": false
+              },
+              {
+                "name": "outward",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "perspective",
+                "type": 168,
+                "optional": true
+              },
+              {
+                "name": "placement_hint",
+                "type": 148,
+                "optional": false
+              },
+              {
+                "name": "selectable",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "source",
+                "type": 173,
+                "optional": true
+              },
+              {
+                "name": "style_scope",
+                "type": 174,
+                "optional": true
+              },
+              {
+                "name": "style_use",
+                "type": 177,
+                "optional": true
+              },
+              {
+                "name": "subject",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "visibility",
+                "type": 181,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              117,
+              122,
+              124,
+              126
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "case_sensitive",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "keys",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "logic",
+                "type": 118,
+                "optional": true
+              },
+              {
+                "name": "mode",
+                "type": 121,
+                "optional": false
+              },
+              {
+                "name": "scan_depth",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "secondary",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "whole_word",
+                "type": 15,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              119,
+              120
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "all"
+          },
+          {
+            "kind": "literal",
+            "value": "any"
+          },
+          {
+            "kind": "literal",
+            "value": "keyword"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "hint",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "mode",
+                "type": 123,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "semantic"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "mode",
+                "type": 125,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "always"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "mode",
+                "type": 127,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "manual"
+          },
+          {
+            "kind": "union",
+            "types": [
+              129,
+              131,
+              137,
+              140
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "asset",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "caption",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 130,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "media"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 132,
+                "optional": false
+              },
+              {
+                "name": "schema",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 136,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              15,
+              42,
+              133,
+              134,
+              135
+            ]
+          },
+          {
+            "kind": "array",
+            "element": 132
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 132
+              }
+            ]
+          },
+          {
+            "kind": "primitive",
+            "type": "null"
+          },
+          {
+            "kind": "literal",
+            "value": "structured"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "format",
+                "type": 138,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 99,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              100,
+              139
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "plain"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "turns",
+                "type": 141,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 143,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 142
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "speaker",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "dialogue"
+          },
+          {
+            "kind": "union",
+            "types": [
+              145,
+              146,
+              147
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "normal"
+          },
+          {
+            "kind": "literal",
+            "value": "opportunistic"
+          },
+          {
+            "kind": "literal",
+            "value": "pinned"
+          },
+          {
+            "kind": "union",
+            "types": [
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "scenario"
+          },
+          {
+            "kind": "literal",
+            "value": "style"
+          },
+          {
+            "kind": "literal",
+            "value": "world"
+          },
+          {
+            "kind": "literal",
+            "value": "character"
+          },
+          {
+            "kind": "literal",
+            "value": "examples"
+          },
+          {
+            "kind": "literal",
+            "value": "instruction"
+          },
+          {
+            "kind": "literal",
+            "value": "knowledge"
+          },
+          {
+            "kind": "literal",
+            "value": "persona"
+          },
+          {
+            "kind": "literal",
+            "value": "relationship"
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 128
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              160,
+              167
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "creation",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "fragment",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "instance_key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 69,
+                "optional": false
+              },
+              {
+                "name": "overridden_by",
+                "type": 161,
+                "optional": true
+              },
+              {
+                "name": "stable",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "via",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 162
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cast",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "creation",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "edge",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "op",
+                "type": 163,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              164,
+              165,
+              166
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "add"
+          },
+          {
+            "kind": "literal",
+            "value": "patch"
+          },
+          {
+            "kind": "literal",
+            "value": "replace"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "creation",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "fragment",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "instance_key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "overridden_by",
+                "type": 161,
+                "optional": true
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "stable",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "via",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              169,
+              170,
+              171,
+              172
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "rumor"
+          },
+          {
+            "kind": "literal",
+            "value": "canon"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "claim",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "belief",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "use",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              91,
+              175,
+              176
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "owner",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "scene",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "narration"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "combine",
+                "type": 178,
+                "optional": false
+              },
+              {
+                "name": "order",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "owner",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "path",
+                "type": 179,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              164,
+              166
+            ]
+          },
+          {
+            "kind": "array",
+            "element": 180
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "combine",
+                "type": 178,
+                "optional": false
+              },
+              {
+                "name": "order",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "owner",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              182,
+              184,
+              186,
+              187
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "scene",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "scope",
+                "type": 183,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "scene"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "scene",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "scope",
+                "type": 185,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "story-scene"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "scope",
+                "type": 57,
+                "optional": false
+              },
+              {
+                "name": "to",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "scope",
+                "type": 188,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "shared"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cast_edges",
+                "type": 190,
+                "optional": true
+              },
+              {
+                "name": "edges",
+                "type": 192,
+                "optional": false
+              },
+              {
+                "name": "instances",
+                "type": 197,
+                "optional": false
+              },
+              {
+                "name": "nodes",
+                "type": 201,
+                "optional": false
+              },
+              {
+                "name": "removed",
+                "type": 209,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 191
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cast",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "from_instance",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "to_instance",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 193
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "from_instance",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "mode",
+                "type": 194,
+                "optional": false
+              },
+              {
+                "name": "rel",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "to_instance",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              195,
+              196
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "default"
+          },
+          {
+            "kind": "literal",
+            "value": "intrinsic"
+          },
+          {
+            "kind": "array",
+            "element": 198
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cast",
+                "type": 199,
+                "optional": true
+              },
+              {
+                "name": "key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "via",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "introduced_by",
+                "type": 200,
+                "optional": true
+              },
+              {
+                "name": "key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "scope",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "edge",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "instance",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 202
+          },
+          {
+            "kind": "union",
+            "types": [
+              203,
+              208
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "display_name",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 69,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 204,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              149,
+              150,
+              151,
+              152,
+              156,
+              157,
+              205,
+              206,
+              207
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "lorebook"
+          },
+          {
+            "kind": "literal",
+            "value": "preset"
+          },
+          {
+            "kind": "literal",
+            "value": "prompt-module"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "display_name",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 204,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 210
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "by",
+                "type": 211,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cast",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "creation",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "edge",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "reason",
+                "type": 212,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              213,
+              214
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "select"
+          },
+          {
+            "kind": "literal",
+            "value": "override"
+          },
+          {
+            "kind": "array",
+            "element": 216
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "accepts",
+                "type": 217,
+                "optional": false
+              },
+              {
+                "name": "hint",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "required",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "used_by",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 218
+          },
+          {
+            "kind": "union",
+            "types": [
+              152,
+              156
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attribution",
+                "type": 220,
+                "optional": false
+              },
+              {
+                "name": "au",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "available_locales",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "content_warnings",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "contributors",
+                "type": 224,
+                "optional": false
+              },
+              {
+                "name": "default_locale",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "import_omissions",
+                "type": 228,
+                "optional": false
+              },
+              {
+                "name": "licenses",
+                "type": 230,
+                "optional": false
+              },
+              {
+                "name": "rating",
+                "type": 75,
+                "optional": false
+              },
+              {
+                "name": "rating_sources",
+                "type": 232,
+                "optional": false
+              },
+              {
+                "name": "recommended_presets",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 221
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "authors",
+                "type": 222,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 223
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "contribution",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "guest_id",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "name",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "user",
+                "type": 2,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 225
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "author",
+                "type": 226,
+                "optional": false
+              },
+              {
+                "name": "contribution",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              227
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "display_name",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "guest_id",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 229
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "fields",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 231
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "asset",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "license",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 233
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "asset",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "rating",
+                "type": 75,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 235
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "avatar",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "cast_key",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "cast_scope",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "display_name",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "goal",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "key",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 218,
+                "optional": false
+              },
+              {
+                "name": "late",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "part",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "role",
+                "type": 236,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              237,
+              238,
+              239
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "support"
+          },
+          {
+            "kind": "literal",
+            "value": "user"
+          },
+          {
+            "kind": "literal",
+            "value": "lead"
+          },
+          {
+            "kind": "union",
+            "types": [
+              241,
+              242
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "origin",
+                "type": 69,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "content"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "beats",
+                "type": 245,
+                "optional": true
+              },
+              {
+                "name": "choices",
+                "type": 291,
+                "optional": true
+              },
+              {
+                "name": "endings",
+                "type": 293,
+                "optional": true
+              },
+              {
+                "name": "events",
+                "type": 298,
+                "optional": true
+              },
+              {
+                "name": "items",
+                "type": 303,
+                "optional": true
+              },
+              {
+                "name": "knowing",
+                "type": 306,
+                "optional": true
+              },
+              {
+                "name": "plotlines",
+                "type": 313,
+                "optional": true
+              },
+              {
+                "name": "scenes",
+                "type": 315,
+                "optional": false
+              },
+              {
+                "name": "starts",
+                "type": 318,
+                "optional": true
+              },
+              {
+                "name": "timelines",
+                "type": 322,
+                "optional": true
+              },
+              {
+                "name": "vars",
+                "type": 326,
+                "optional": true
+              },
+              {
+                "name": "version",
+                "type": 337,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 246
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "effects",
+                "type": 247,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "reveal",
+                "type": 259,
+                "optional": true
+              },
+              {
+                "name": "strength",
+                "type": 263,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "when",
+                "type": 267,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 248
+          },
+          {
+            "kind": "union",
+            "types": [
+              249,
+              251,
+              253,
+              254,
+              257
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "put",
+                "type": 250,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "type": 2,
+                "optional": false,
+                "rest": false
+              },
+              {
+                "type": 2,
+                "optional": false,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "add",
+                "type": 252,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "type": 2,
+                "optional": false,
+                "rest": false
+              },
+              {
+                "type": 42,
+                "optional": false,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "drop",
+                "type": 250,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "set",
+                "type": 255,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "type": 2,
+                "optional": false,
+                "rest": false
+              },
+              {
+                "type": 256,
+                "optional": false,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              11,
+              15,
+              42
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "learn",
+                "type": 258,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "info",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "who",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              260,
+              261,
+              262
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "hidden"
+          },
+          {
+            "kind": "literal",
+            "value": "listed"
+          },
+          {
+            "kind": "literal",
+            "value": "on-reach"
+          },
+          {
+            "kind": "union",
+            "types": [
+              264,
+              265,
+              266
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "suggested"
+          },
+          {
+            "kind": "literal",
+            "value": "possible"
+          },
+          {
+            "kind": "literal",
+            "value": "required"
+          },
+          {
+            "kind": "union",
+            "types": [
+              268,
+              269,
+              270,
+              272,
+              273,
+              274,
+              275,
+              276,
+              277,
+              286,
+              287,
+              288,
+              289,
+              290
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "reached",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "not",
+                "type": 267,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "all",
+                "type": 271,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 267
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "any",
+                "type": 271,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "ended",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "eq",
+                "type": 250,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "happened",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "has",
+                "type": 250,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cmp",
+                "type": 278,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "type": 2,
+                "optional": false,
+                "rest": false
+              },
+              {
+                "type": 279,
+                "optional": false,
+                "rest": false
+              },
+              {
+                "type": 42,
+                "optional": false,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              280,
+              281,
+              282,
+              283,
+              284,
+              285
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": ">="
+          },
+          {
+            "kind": "literal",
+            "value": "!="
+          },
+          {
+            "kind": "literal",
+            "value": "<"
+          },
+          {
+            "kind": "literal",
+            "value": "<="
+          },
+          {
+            "kind": "literal",
+            "value": "="
+          },
+          {
+            "kind": "literal",
+            "value": ">"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "in",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "is",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "judge",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "knows",
+                "type": 258,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "visited",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 292
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "intent",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "label",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "when",
+                "type": 267,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 294
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "after",
+                "type": 295,
+                "optional": true
+              },
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "effects",
+                "type": 247,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "priority",
+                "type": 42,
+                "optional": true
+              },
+              {
+                "name": "reveal",
+                "type": 259,
+                "optional": true
+              },
+              {
+                "name": "strength",
+                "type": 263,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "when",
+                "type": 267,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              296,
+              297
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "stop"
+          },
+          {
+            "kind": "literal",
+            "value": "continue"
+          },
+          {
+            "kind": "array",
+            "element": 299
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cast",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "effects",
+                "type": 247,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 300,
+                "optional": false
+              },
+              {
+                "name": "lore",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "place",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "truth",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "when",
+                "type": 267,
+                "optional": true
+              },
+              {
+                "name": "when_text",
+                "type": 94,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              301,
+              302
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "background"
+          },
+          {
+            "kind": "literal",
+            "value": "planned"
+          },
+          {
+            "kind": "array",
+            "element": 304
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "lore",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "reveal",
+                "type": 305,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              260,
+              262
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 307
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "enter",
+                "type": 308,
+                "optional": true
+              },
+              {
+                "name": "start",
+                "type": 312,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 309
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "knows",
+                "type": 310,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              11,
+              311
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "*"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "knows",
+                "type": 310,
+                "optional": true
+              },
+              {
+                "name": "not",
+                "type": 310,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 314
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "beats",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "scenes",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 316
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "beats",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "cast",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "choices",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "events",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "goals",
+                "type": 317,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "items",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "lore",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "opening",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "place",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "time",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "when",
+                "type": 267,
+                "optional": true
+              },
+              {
+                "name": "where",
+                "type": 94,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 94
+              }
+            ]
+          },
+          {
+            "kind": "array",
+            "element": 319
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "greeting",
+                "type": 320,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "reached",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "scene",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "set",
+                "type": 247,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              95,
+              321
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 323
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "order",
+                "type": 324,
+                "optional": false
+              },
+              {
+                "name": "title",
+                "type": 94,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 325
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              11
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 327
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              328,
+              330,
+              333,
+              335
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "init",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "max",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "min",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 329,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "int"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "init",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "of",
+                "type": 331,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 332,
+                "optional": false
+              },
+              {
+                "name": "values",
+                "type": 11,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "item"
+          },
+          {
+            "kind": "literal",
+            "value": "set"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "init",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 334,
+                "optional": false
+              },
+              {
+                "name": "values",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "enum"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 94,
+                "optional": false
+              },
+              {
+                "name": "init",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 336,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "bool"
+          },
+          {
+            "kind": "literal",
+            "value": 1
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "content",
+                "type": 339,
+                "optional": false
+              },
+              {
+                "name": "information",
+                "type": 95,
+                "optional": false
+              },
+              {
+                "name": "participants",
+                "type": 95,
+                "optional": false
+              },
+              {
+                "name": "templates",
+                "type": 349,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 340
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              89,
+              90,
+              341,
+              342,
+              343
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "section",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "source",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "group",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "story",
+                "type": 344,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              183,
+              345,
+              346,
+              347,
+              348
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "beat"
+          },
+          {
+            "kind": "literal",
+            "value": "ending"
+          },
+          {
+            "kind": "literal",
+            "value": "goal"
+          },
+          {
+            "kind": "literal",
+            "value": "part"
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 350
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "locales",
+                "type": 95,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "assets",
+                "type": 54,
+                "optional": false
+              },
+              {
+                "name": "capabilities",
+                "type": 83,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 207,
+                "optional": false
+              },
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "meta",
+                "type": 219,
+                "optional": false
+              },
+              {
+                "name": "module",
+                "type": 352,
+                "optional": false
+              },
+              {
+                "name": "root",
+                "type": 240,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              353,
+              358
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blocks",
+                "type": 354,
+                "optional": false
+              },
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 69,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "resolver",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 355
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "default_at",
+                "type": 18,
+                "optional": false
+              },
+              {
+                "name": "enabled",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 356,
+                "optional": true
+              },
+              {
+                "name": "purpose",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              16,
+              357
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "block",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 69,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "via",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blocks",
+                "type": 354,
+                "optional": false
+              },
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "resolver",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "assets",
+                "type": 54,
+                "optional": false
+              },
+              {
+                "name": "capabilities",
+                "type": 83,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 206,
+                "optional": false
+              },
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "meta",
+                "type": 219,
+                "optional": false
+              },
+              {
+                "name": "preset",
+                "type": 360,
+                "optional": false
+              },
+              {
+                "name": "root",
+                "type": 240,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              361,
+              365
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "origin",
+                "type": 69,
+                "optional": false
+              },
+              {
+                "name": "policy",
+                "type": 362,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "resolver",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blocks",
+                "type": 363,
+                "optional": false
+              },
+              {
+                "name": "layout",
+                "type": 21,
+                "optional": false
+              },
+              {
+                "name": "region_budgets",
+                "type": 41,
+                "optional": true
+              },
+              {
+                "name": "render",
+                "type": 43,
+                "optional": true
+              },
+              {
+                "name": "requires",
+                "type": 44,
+                "optional": false
+              },
+              {
+                "name": "selection",
+                "type": 46,
+                "optional": true
+              },
+              {
+                "name": "version",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 364
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "enabled",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "origin",
+                "type": 356,
+                "optional": true
+              },
+              {
+                "name": "placement",
+                "type": 17,
+                "optional": true
+              },
+              {
+                "name": "position",
+                "type": 18,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "lock",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "lock_digest",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "policy",
+                "type": 362,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "release",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "resolver",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "semantic_digest",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 2,
+                "value": 367
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 2,
+                "optional": true
+              },
+              {
+                "name": "display_name",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 218,
+                "optional": false
+              },
+              {
+                "name": "outward_description",
+                "type": 2,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 369
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "path",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "result",
+                "type": 370,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              371,
+              372,
+              373
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "true"
+          },
+          {
+            "kind": "literal",
+            "value": "undetermined"
+          },
+          {
+            "kind": "literal",
+            "value": "false"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "degraded",
+                "type": 375,
+                "optional": true
+              },
+              {
+                "name": "supported",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 376
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "reason",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/opened"
+          }
+        ]
+      }
+    },
+    {
+      "key": "event:roleplay/requested",
+      "kind": "event",
+      "event": "roleplay/requested",
+      "surface": false,
+      "digest": "9323ce58defdcb51a7e6e54e647763c7cc3ab7c8cef41d783dda9491fabcf416",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 74,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 20,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 20,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 75,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "command",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 67,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "messages",
+                "type": 68,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "plan_digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "proposed_config",
+                "type": 67,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "state_digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "turn_digest",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "evidence",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "for_participant",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "judgments",
+                "type": 7,
+                "optional": true
+              },
+              {
+                "name": "operation",
+                "type": 26,
+                "optional": false
+              },
+              {
+                "name": "plan",
+                "type": 40,
+                "optional": true
+              },
+              {
+                "name": "selection",
+                "type": 66,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 4
+          },
+          {
+            "kind": "union",
+            "types": [
+              5,
+              23
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "binding",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "input",
+                "type": 21,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 10,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 22,
+                "optional": false
+              },
+              {
+                "name": "request",
+                "type": 16,
+                "optional": false
+              },
+              {
+                "name": "response",
+                "type": 16,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "judgments",
+                "type": 7,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 8
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "path",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 10,
+                "optional": false
+              },
+              {
+                "name": "result",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "name",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              12,
+              13,
+              14
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "true"
+          },
+          {
+            "kind": "literal",
+            "value": "undetermined"
+          },
+          {
+            "kind": "literal",
+            "value": "false"
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 9,
+                "value": 16
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              9,
+              15,
+              17,
+              18,
+              19,
+              20
+            ]
+          },
+          {
+            "kind": "array",
+            "element": 16
+          },
+          {
+            "kind": "primitive",
+            "type": "boolean"
+          },
+          {
+            "kind": "primitive",
+            "type": "null"
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "artifact_digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "catalog_digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "policy_digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "turn_digest",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "judge"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "binding",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "digest",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "input",
+                "type": 21,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 10,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 25,
+                "optional": false
+              },
+              {
+                "name": "request",
+                "type": 16,
+                "optional": false
+              },
+              {
+                "name": "response",
+                "type": 16,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "plan_digest",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "selector"
+          },
+          {
+            "kind": "union",
+            "types": [
+              27,
+              30,
+              32,
+              34,
+              36,
+              38
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 28,
+                "optional": false
+              },
+              {
+                "name": "present",
+                "type": 29,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "set-present"
+          },
+          {
+            "kind": "array",
+            "element": 9
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 31,
+                "optional": false
+              },
+              {
+                "name": "scene",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "enter-scene"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 33,
+                "optional": false
+              },
+              {
+                "name": "speaker",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "response"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 35,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "confirm"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 37,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "input"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 39,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "prepare"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "decisions",
+                "type": 41,
+                "optional": false
+              },
+              {
+                "name": "discovery",
+                "type": 18,
+                "optional": false
+              },
+              {
+                "name": "fallback",
+                "type": 59,
+                "optional": true
+              },
+              {
+                "name": "input",
+                "type": 21,
+                "optional": false
+              },
+              {
+                "name": "selected",
+                "type": 60,
+                "optional": false
+              },
+              {
+                "name": "selector",
+                "type": 65,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 42
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "action",
+                "type": 43,
+                "optional": false
+              },
+              {
+                "name": "confidence",
+                "type": 20,
+                "optional": true
+              },
+              {
+                "name": "note",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "ref",
+                "type": 47,
+                "optional": false
+              },
+              {
+                "name": "score",
+                "type": 20,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              44,
+              45,
+              46
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "reject"
+          },
+          {
+            "kind": "literal",
+            "value": "expand"
+          },
+          {
+            "kind": "literal",
+            "value": "select"
+          },
+          {
+            "kind": "union",
+            "types": [
+              48,
+              49,
+              50,
+              57,
+              58
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "fragment",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "group",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "story",
+                "type": 51,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              52,
+              53,
+              54,
+              55,
+              56
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "ending"
+          },
+          {
+            "kind": "literal",
+            "value": "scene"
+          },
+          {
+            "kind": "literal",
+            "value": "goal"
+          },
+          {
+            "kind": "literal",
+            "value": "part"
+          },
+          {
+            "kind": "literal",
+            "value": "beat"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "section",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "source",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "work",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "skip"
+          },
+          {
+            "kind": "array",
+            "element": 61
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "form",
+                "type": 62,
+                "optional": false
+              },
+              {
+                "name": "rank",
+                "type": 20,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 47,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              63,
+              64
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "body"
+          },
+          {
+            "kind": "literal",
+            "value": "section"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "config_digest",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "name",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 9,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 47
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "maxTokens",
+                "type": 20,
+                "optional": true
+              },
+              {
+                "name": "model",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "reasoningEffort",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "stop",
+                "type": 29,
+                "optional": true
+              },
+              {
+                "name": "temperature",
+                "type": 20,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 69
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "content",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "role",
+                "type": 70,
+                "optional": false
+              },
+              {
+                "name": "source",
+                "type": 29,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              71,
+              72,
+              73
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "system"
+          },
+          {
+            "kind": "literal",
+            "value": "user"
+          },
+          {
+            "kind": "literal",
+            "value": "assistant"
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/requested"
+          }
+        ]
+      }
+    },
+    {
+      "key": "event:roleplay/settled",
+      "kind": "event",
+      "event": "roleplay/settled",
+      "surface": false,
+      "digest": "3aaa77ff2f8c9328943a9090210c47a82accab8cfd2c8559fcb33bf602ccf8a2",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 35,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 107,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              103,
+              105
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "assistant",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "head",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "state",
+                "type": 8,
+                "optional": false
+              },
+              {
+                "name": "status",
+                "type": 13,
+                "optional": false
+              },
+              {
+                "name": "stream",
+                "type": 14,
+                "optional": false
+              },
+              {
+                "name": "turn",
+                "type": 82,
+                "optional": false
+              },
+              {
+                "name": "usage",
+                "type": 76,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "speaker",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "maxTokens",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "model",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "reasoningEffort",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "stop",
+                "type": 7,
+                "optional": true
+              },
+              {
+                "name": "temperature",
+                "type": 6,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "array",
+            "element": 4
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "ended",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "happened",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "knowing",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "present",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "reached",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "scene",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "start",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "stopped",
+                "type": 10,
+                "optional": false
+              },
+              {
+                "name": "vars",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "visited",
+                "type": 7,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 4,
+                "value": 7
+              }
+            ]
+          },
+          {
+            "kind": "primitive",
+            "type": "boolean"
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 4,
+                "value": 12
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              4,
+              6,
+              7,
+              10
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "success"
+          },
+          {
+            "kind": "array",
+            "element": 15
+          },
+          {
+            "kind": "union",
+            "types": [
+              16,
+              19,
+              78,
+              80
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "args",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "dt",
+                "type": 17,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "time0",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 18,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 6
+          },
+          {
+            "kind": "literal",
+            "value": "tool-call-chunks"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "chunk",
+                "type": 20,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 77,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              21,
+              23,
+              50,
+              53,
+              55,
+              57,
+              74
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "argumentsDelta",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 22,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-call-delta"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "block",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 49,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              25,
+              27,
+              37,
+              40,
+              42,
+              44,
+              47
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "arguments",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 26,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-call"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachment",
+                "type": 28,
+                "optional": false
+              },
+              {
+                "name": "offloaded",
+                "type": 35,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 36,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachmentId",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "bytes",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "height",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "mediaType",
+                "type": 29,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "originalDimensions",
+                "type": 34,
+                "optional": true
+              },
+              {
+                "name": "width",
+                "type": 6,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              30,
+              31,
+              32,
+              33
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "image/gif"
+          },
+          {
+            "kind": "literal",
+            "value": "image/jpeg"
+          },
+          {
+            "kind": "literal",
+            "value": "image/png"
+          },
+          {
+            "kind": "literal",
+            "value": "image/webp"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "height",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "width",
+                "type": 6,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "literal",
+            "value": "image"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachment",
+                "type": 38,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 39,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachmentId",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "bytes",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "file"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 41,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "reasoning"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 43,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "text"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "tool",
+                "type": 45,
+                "optional": true
+              },
+              {
+                "name": "toolName",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 46,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "never"
+          },
+          {
+            "kind": "literal",
+            "value": "tool-addition"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "toolName",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 48,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-removal"
+          },
+          {
+            "kind": "literal",
+            "value": "block-end"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blockType",
+                "type": 51,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 52,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              26,
+              36,
+              39,
+              41,
+              43,
+              46,
+              48
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "block-start"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 54,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "reasoning-delta"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 56,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "text-delta"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "reason",
+                "type": 58,
+                "optional": false
+              },
+              {
+                "name": "replayState",
+                "type": 70,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 73,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              59,
+              62,
+              64,
+              66,
+              68
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "failure",
+                "type": 60,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 61,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "code",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "message",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "offloadImages",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "providerRetryAfterMs",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "requestId",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "status",
+                "type": 6,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "aborted"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "failure",
+                "type": 60,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 63,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "error"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 65,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "max-tokens"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 67,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "stop"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 69,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-calls"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blocks",
+                "type": 71,
+                "optional": true
+              },
+              {
+                "name": "response",
+                "type": 72,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 72
+          },
+          {
+            "kind": "opaque",
+            "reason": "unknown"
+          },
+          {
+            "kind": "literal",
+            "value": "finish"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "type",
+                "type": 75,
+                "optional": false
+              },
+              {
+                "name": "usage",
+                "type": 76,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "usage"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cacheReadTokens",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "cacheWriteTokens",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "inputTokens",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "outputTokens",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "reasoningTokens",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "totalTokens",
+                "type": 6,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "chunk"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "dt",
+                "type": 17,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "texts",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "time0",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 79,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "reasoning-chunks"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "dt",
+                "type": 17,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "texts",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "time0",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 81,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "text-chunks"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "bindings",
+                "type": 83,
+                "optional": false
+              },
+              {
+                "name": "focus",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "for_participant",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "history",
+                "type": 88,
+                "optional": false
+              },
+              {
+                "name": "judgments",
+                "type": 93,
+                "optional": true
+              },
+              {
+                "name": "locale",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "manual_enabled",
+                "type": 7,
+                "optional": true
+              },
+              {
+                "name": "overlay",
+                "type": 100,
+                "optional": true
+              },
+              {
+                "name": "present",
+                "type": 7,
+                "optional": true
+              },
+              {
+                "name": "scene",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "story",
+                "type": 102,
+                "optional": true
+              },
+              {
+                "name": "story_guidance",
+                "type": 10,
+                "optional": true
+              },
+              {
+                "name": "visible_overlay",
+                "type": 100,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 4,
+                "value": 84
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "display_name",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 85,
+                "optional": false
+              },
+              {
+                "name": "outward_description",
+                "type": 4,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              86,
+              87
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "persona"
+          },
+          {
+            "kind": "literal",
+            "value": "character"
+          },
+          {
+            "kind": "array",
+            "element": 89
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "role",
+                "type": 90,
+                "optional": false
+              },
+              {
+                "name": "speaker",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              91,
+              92
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "assistant"
+          },
+          {
+            "kind": "literal",
+            "value": "user"
+          },
+          {
+            "kind": "array",
+            "element": 94
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "path",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 95,
+                "optional": false
+              },
+              {
+                "name": "result",
+                "type": 96,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "name",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              97,
+              98,
+              99
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "true"
+          },
+          {
+            "kind": "literal",
+            "value": "undetermined"
+          },
+          {
+            "kind": "literal",
+            "value": "false"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "active_variants",
+                "type": 101,
+                "optional": true
+              },
+              {
+                "name": "memory",
+                "type": 7,
+                "optional": true
+              },
+              {
+                "name": "state",
+                "type": 101,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 4,
+                "value": 4
+              }
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "ended",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "happened",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "knowing",
+                "type": 9,
+                "optional": false
+              },
+              {
+                "name": "reached",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "start",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "stopped",
+                "type": 10,
+                "optional": false
+              },
+              {
+                "name": "vars",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "visited",
+                "type": 7,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "config",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "reason",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "status",
+                "type": 104,
+                "optional": false
+              },
+              {
+                "name": "stream",
+                "type": 14,
+                "optional": false
+              },
+              {
+                "name": "usage",
+                "type": 76,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "cancelled"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "config",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "reason",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "status",
+                "type": 106,
+                "optional": false
+              },
+              {
+                "name": "stream",
+                "type": 14,
+                "optional": false
+              },
+              {
+                "name": "usage",
+                "type": 76,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "failed"
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/settled"
+          }
+        ]
+      }
+    }
+  ],
+  "types": []
+}

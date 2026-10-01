@@ -15,6 +15,10 @@ packages:
   - python/sdk-runtime
 
 overrides:
+  # Exact local SDK snapshot; transitive assembler/core must share these bytes.
+  '@char-pub/core': 'file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz'
+  '@char-pub/assembler': 'file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz'
+  '@char-pub/contracts': 'file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz'
   'extract-zip>yauzl': '3.4.0'
   '@deepseek-ai/cosmokit': 'link:vendor/cosmokit'
   '@deepseek-ai/schemastery': 'link:vendor/schemastery'

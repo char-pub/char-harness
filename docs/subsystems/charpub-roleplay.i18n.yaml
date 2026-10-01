@@ -1,0 +1,19 @@
+# Bilingual-pair consistency record for charpub-roleplay.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/subsystems/charpub-roleplay.md
+/char-pub-roleplay:
+  en: 1f2957d395cf3fec
+  zh: 1e690115c5b4e31b
+/char-pub-roleplay/summary:
+  en: 383a424e2bdaf9ed
+  zh: f9c44a936eb0a229
+/char-pub-roleplay/table-of-contents:
+  en: 244cd8f37637fa5d
+  zh: 45d4d183cf93d258
+/char-pub-roleplay/types-and-ownership:
+  en: 60272cb23d0ccacd
+  zh: 8fbc78aafdcf6fe2
+/char-pub-roleplay/durable-requests:
+  en: 5a254731dcbefc51
+  zh: 7c164685940715ae

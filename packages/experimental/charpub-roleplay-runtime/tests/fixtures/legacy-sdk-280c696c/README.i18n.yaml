@@ -1,0 +1,28 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/charpub-roleplay-runtime/tests/fixtures/legacy-sdk-280c696c/README.md
+/:
+  en: 40e0af5538d612f0
+  zh: 6d7fd6efc32f5104
+/old-sdk-read-compatibility-fixture:
+  en: b710c60a8b984db5
+  zh: 3d8e845ff5465763
+/old-sdk-read-compatibility-fixture/summary:
+  en: ef8c8cd39bec14f9
+  zh: 649076f1b0c149c4
+/old-sdk-read-compatibility-fixture/table-of-contents:
+  en: 8656ff92fc535acb
+  zh: 4a9cb6ed2c188a85
+/old-sdk-read-compatibility-fixture/stored-evidence:
+  en: 5435fb9eb9600094
+  zh: 41a12cb2e85ac1cb
+/old-sdk-read-compatibility-fixture/capture-method:
+  en: 693ca3847e754faa
+  zh: b2881c55e6b249ca
+/old-sdk-read-compatibility-fixture/verification:
+  en: ad3fd53b00d73d3f
+  zh: 0e9f4d4e34ae0a4d
+/old-sdk-read-compatibility-fixture/dev-note:
+  en: 5de1d6304e00c58f
+  zh: e58fc8dda0bea8d5

@@ -1,0 +1,49 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/charpub-roleplay/README.md
+/:
+  en: c5c8bee6db839e5a
+  zh: 6458f9b5b5aceab8
+/deepseek-ai-dsh-experimental-charpub-roleplay:
+  en: 13c8c79fbba29070
+  zh: fa84ad5a0accfc8b
+/deepseek-ai-dsh-experimental-charpub-roleplay/summary:
+  en: 6c5ecb6773140ddf
+  zh: b37f52dc7188607e
+/deepseek-ai-dsh-experimental-charpub-roleplay/table-of-contents:
+  en: 7aaf92c566e69dbb
+  zh: b87370526c048733
+/deepseek-ai-dsh-experimental-charpub-roleplay/use-this-package:
+  en: b65a35467f39457b
+  zh: 5b64118468ca0f10
+/deepseek-ai-dsh-experimental-charpub-roleplay/decision-records-and-providers:
+  en: dcd41bb57e1a08bc
+  zh: 659884d8a07d99bb
+/deepseek-ai-dsh-experimental-charpub-roleplay/verification:
+  en: dad5a80995d95e9a
+  zh: 71cea525a8508c9f
+/deepseek-ai-dsh-experimental-charpub-roleplay/understand-the-implementation:
+  en: e96926098bbcccea
+  zh: 73f8460b2cca9776
+/deepseek-ai-dsh-experimental-charpub-roleplay/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-experimental-charpub-roleplay/model-experience/prepared-message-output:
+  en: a9215a94ace57068
+  zh: 727d501faac84f98
+/deepseek-ai-dsh-experimental-charpub-roleplay/model-experience/prepared-message-output/what-the-model-sees:
+  en: a6c5e406d0c1625c
+  zh: 260f80bbc6c5076d
+/deepseek-ai-dsh-experimental-charpub-roleplay/model-experience/prepared-message-output/token-effect:
+  en: f16dfff5cfc6cc23
+  zh: e4a9b9f018c46342
+/deepseek-ai-dsh-experimental-charpub-roleplay/model-experience/prepared-message-output/kv-cache-effect:
+  en: 25674af6d36be79f
+  zh: 8590be89f5f9b7a9
+/deepseek-ai-dsh-experimental-charpub-roleplay/known-limitations-and-deferred-work:
+  en: 5370f59b6d952a73
+  zh: 8c813d96e1aadd86
+/deepseek-ai-dsh-experimental-charpub-roleplay/known-limitations-and-deferred-work/dev-note:
+  en: e67f633dc6fe7773
+  zh: 8ec3e73528ddb1a6

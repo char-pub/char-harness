@@ -146,8 +146,11 @@ describe('experimental workspace constraints', () => {
     ])
   })
 
-  it('keeps the current experimental publication set unrestricted', () => {
-    expect(PRIVATE_EXPERIMENTAL_PACKAGE_DIRECTORIES).toEqual([])
+  it('retains only the declared private char.pub experimental consumers', () => {
+    expect(PRIVATE_EXPERIMENTAL_PACKAGE_DIRECTORIES).toEqual([
+      'packages/experimental/charpub-roleplay',
+      'packages/experimental/charpub-roleplay-runtime',
+    ])
   })
 
   it('limits the public default to experimental package directories', () => {
@@ -311,6 +314,14 @@ describe('package payload constraints', () => {
     const exports = { ...manifest.exports }
     delete exports['./locale/*.json']
     expect(checkWorkspaceManifest({ dir, manifest: { ...manifest, exports } }))
+      .toEqual([expect.stringContaining('package.json files must be')])
+  })
+
+  it('ships the private roleplay app row and shared chunk without an executable or broad JS wildcard', () => {
+    const dir = 'packages/experimental/charpub-roleplay-runtime'
+    const manifest = JSON.parse(readFileSync(new URL(`../${dir}/package.json`, import.meta.url), 'utf8')) as WorkspaceManifest['manifest']
+    expect(checkWorkspaceManifest({ dir, manifest })).toEqual([])
+    expect(checkWorkspaceManifest({ dir, manifest: { ...manifest, files: ['lib/*.js'] } }))
       .toEqual([expect.stringContaining('package.json files must be')])
   })
 

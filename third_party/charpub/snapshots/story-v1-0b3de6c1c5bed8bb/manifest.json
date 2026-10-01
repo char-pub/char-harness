@@ -1,0 +1,32 @@
+{
+  "format": 1,
+  "source_revision": "edab49ff3137fd57cc54012db7e2e1d616630901",
+  "source_dirty": true,
+  "package_manager": "12.5.1",
+  "packages": [
+    {
+      "name": "@char-pub/core",
+      "version": "0.0.0",
+      "file": "char-pub-core-0.0.0.tgz",
+      "sha256": "72e5508587d7c24aee54d97220147ef43a177d1c804739736b8f7913a7673873",
+      "bytes": 281045,
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "@char-pub/assembler",
+      "version": "0.0.0",
+      "file": "char-pub-assembler-0.0.0.tgz",
+      "sha256": "26acf564397e70869c6fdc6479ef44e0e8d90165db90cec3a85a9913ebe0fe12",
+      "bytes": 56813,
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "@char-pub/contracts",
+      "version": "0.0.0",
+      "file": "char-pub-contracts-0.0.0.tgz",
+      "sha256": "20839a816c9e828e104a563e742dc9d43c26229126a0eea2fcf9bbc2d9934678",
+      "bytes": 28164,
+      "license": "Apache-2.0"
+    }
+  ]
+}

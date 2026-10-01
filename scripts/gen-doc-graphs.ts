@@ -108,6 +108,14 @@ const GROUP_ORDER = [
 
 const SERVICE_ROLES: ServiceRole[] = [
   {
+    key: 'roleplayRuntime',
+    pkg: 'experimental-charpub-roleplay-runtime',
+    title: 'Explicit Story requests and durable settlements',
+    mode: 'service',
+    companions: ['experimental-charpub-roleplay', 'session', 'session-persistence-jsonl', 'llm'],
+    note: 'An opt-in roleplay profile records prepared messages and commits successful Story state through Session persistence.',
+  },
+  {
     key: 'hmr',
     pkg: 'hmr',
     title: 'Serialized module and configuration reloads',

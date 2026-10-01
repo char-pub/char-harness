@@ -3,6 +3,7 @@
 import { execFileSync } from 'node:child_process'
 import { lstatSync, readFileSync, readlinkSync } from 'node:fs'
 import { resolve } from 'node:path'
+import ts from 'typescript'
 import { pathToFileURL } from 'node:url'
 import { historicalSchemaRegion } from './historical-schema-region.ts'
 
@@ -26,6 +27,26 @@ function isExcluded(file: string): boolean {
     || /^docs\/persistence-changes\/historical-formats\/v(?:0|[1-9]\d*)\.(?:schema\.json|i18n\.yaml)$/u.test(file)
 }
 
+/** The char.pub wire field is externally owned; permit only its actual property tokens in its consumer test. */
+function sourceForTermScan(file: string, source: string): string {
+  if (file !== 'packages/experimental/charpub-roleplay/tests/sdk-refresh.test.ts') return source
+  const parsed = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true)
+  const spans: { start: number; end: number }[] = []
+  function visit(node: ts.Node) {
+    if ((ts.isPropertyAssignment(node) || ts.isPropertyAccessExpression(node))
+      && ts.isIdentifier(node.name) && node.name.text === blockedTerm) {
+      spans.push({ start: node.name.getStart(parsed), end: node.name.getEnd() })
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(parsed)
+  let scanned = source
+  for (const span of spans.sort((a, b) => b.start - a.start)) {
+    scanned = scanned.slice(0, span.start) + '_'.repeat(span.end - span.start) + scanned.slice(span.end)
+  }
+  return scanned
+}
+
 function containsBlockedTerm(value: string): boolean {
   return value.normalize('NFKC').toLowerCase().includes(blockedTerm)
 }
@@ -40,7 +61,7 @@ export function findConcreteTermViolations(file: string, source: string): Concre
   if (isExcluded(file)) return []
   const violations: ConcreteTermViolation[] = []
   if (containsBlockedTerm(file)) violations.push({ file, line: null })
-  const lines = source.split(/\r?\n/u)
+  const lines = sourceForTermScan(file, source).split(/\r?\n/u)
   const schemaRegion = historicalSchemaRegion(file, source)
   for (const [index, line] of lines.entries()) {
     if (schemaRegion !== undefined && index >= schemaRegion[0] && index < schemaRegion[1]) continue

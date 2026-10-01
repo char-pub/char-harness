@@ -50,6 +50,7 @@ export { REGION_BEGIN, REGION_END }
  * errors, so the partition can never silently drift from the service API.
  */
 export const SERVICE_PAGE: Record<string, string> = {
+  roleplayRuntime: 'charpub-roleplay.md',
   speechToText: 'voice-input.md',
   speechController: 'voice-input.md',
   otel: 'otel.md',
@@ -276,6 +277,10 @@ export const EVENT_WALK_EXEMPTIONS: Record<string, string> = {
  * appear on more than one page.
  */
 export const LINK_MAP: Readonly<Record<string, string>> = {
+  ReplayInput: 'charpub-roleplay.md',
+  ReplayCommand: 'charpub-roleplay.md',
+  RoleplayProjection: 'charpub-roleplay.md',
+  RoleplaySettled: 'charpub-roleplay.md',
   EventLogOptions: 'otel.md',
   EventLogReporter: 'otel.md',
   SessionLogOptions: 'otel.md',

@@ -232,6 +232,11 @@ const packageFileExtras: Readonly<Record<string, readonly string[]>> = {
   // The headless entry and its startup row share the JSON projection code
   // through a hashed tsdown chunk; both import it by relative path.
   '@deepseek-ai/dsh-headless': ['lib/json-stream-*.js'],
+  // The opt-in roleplay app is a Loader row, not a bin. It shares the preview/export
+  // implementation with the runtime entry and ships its explicit user-selected overlay.
+  '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime': [
+    'lib/app.js', 'app.patch.yml', 'lib/preview-export-*.js',
+  ],
 }
 
 function sameStringList(actual: readonly string[] | undefined, expected: readonly string[]): boolean {

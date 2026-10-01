@@ -1,0 +1,29 @@
+# Opt-in overlay for an initialized roleplay profile. All endpoints and credentials are local configuration.
+- insert:
+    - id: roleplay-model
+      name: '@deepseek-ai/dsh-llm-deepseek-api-key'
+      config:
+        apiKeyEnv: DEEPSEEK_API_KEY
+    - id: roleplay-app
+      name: '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app'
+      config:
+        host: 127.0.0.1
+        port: !!js Number(process.env.CHARPUB_APP_PORT)
+        registry_origin: !!js process.env.CHARPUB_REGISTRY_ORIGIN
+        issuer: !!js process.env.CHARPUB_OAUTH_ISSUER
+        client_id: !!js process.env.CHARPUB_OAUTH_CLIENT_ID
+        timeout_ms: !!js Number(process.env.CHARPUB_REQUEST_TIMEOUT_MS)
+        max_request_bytes: !!js Number(process.env.CHARPUB_APP_REQUEST_BYTES)
+        max_response_bytes: !!js Number(process.env.CHARPUB_APP_RESPONSE_BYTES)
+        max_artifact_bytes: !!js Number(process.env.CHARPUB_APP_ARTIFACT_BYTES)
+        profile:
+          runtime: {name: charpub-roleplay-app, version: '1'}
+          tokenizer: estimate
+          mode: narrator
+          context_window: !!js Number(process.env.CHARPUB_CONTEXT_WINDOW)
+          reserve_for_output: !!js Number(process.env.CHARPUB_OUTPUT_TOKENS)
+          capabilities: {system_role: true, multiple_system_messages: true}
+        model:
+          provider: deepseek-official
+          model: !!js process.env.CHARPUB_MODEL
+          maxTokens: !!js Number(process.env.CHARPUB_OUTPUT_TOKENS)

@@ -1,0 +1,140 @@
+{
+  "format": 1,
+  "sdk": {
+    "format": 1,
+    "source_revision": "edab49ff3137fd57cc54012db7e2e1d616630901",
+    "source_dirty": true,
+    "package_manager": "12.5.1",
+    "packages": [
+      {
+        "name": "@char-pub/core",
+        "version": "0.0.0",
+        "file": "char-pub-core-0.0.0.tgz",
+        "sha256": "280c696cc64b64929d422f21a8dd59a1322f2bacec8724eb61609e7639ff1675",
+        "bytes": 231992,
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "@char-pub/assembler",
+        "version": "0.0.0",
+        "file": "char-pub-assembler-0.0.0.tgz",
+        "sha256": "234770d2678aa19bf7f5cd169d07cc8788fcdd4efdf90e3bb4bd6df62389b015",
+        "bytes": 55687,
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "@char-pub/contracts",
+        "version": "0.0.0",
+        "file": "char-pub-contracts-0.0.0.tgz",
+        "sha256": "f76826caf2c7f2cc5632167b98c339949f05fc2acd728ea81dccb6132474ace2",
+        "bytes": 24649,
+        "license": "Apache-2.0"
+      }
+    ]
+  },
+  "session_id": "legacy-sdk-history",
+  "head": "sha256:35f69af983d4641aa2f8ac2c0091843b35af75cff4d49b26efa72728dd3d2c08",
+  "pending": {
+    "id": "pending",
+    "operation": {
+      "kind": "prepare"
+    },
+    "selection": [],
+    "for_participant": "bob"
+  },
+  "call": {
+    "provider": "roleplay-test",
+    "model": "fixed",
+    "maxTokens": 512
+  },
+  "expected_messages": [
+    [
+      {
+        "id": "roleplay:reward:0",
+        "role": "system",
+        "content": [
+          {
+            "type": "text",
+            "text": "以下为参考资料，与设定冲突时以设定为准。\nInn guide\nA hidden service tunnel connects the inn to the river."
+          }
+        ],
+        "source": {
+          "kind": "system-prompt"
+        }
+      },
+      {
+        "id": "roleplay:reward:1",
+        "role": "system",
+        "content": [
+          {
+            "type": "text",
+            "text": "ALICE_ONLY_SECRET"
+          }
+        ],
+        "source": {
+          "kind": "system-prompt"
+        }
+      },
+      {
+        "id": "roleplay:reward:2",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "ようこそ、Guest。"
+          }
+        ],
+        "source": {
+          "kind": "model",
+          "provider": "char.pub",
+          "model": "prepared-history"
+        }
+      }
+    ],
+    [
+      {
+        "id": "roleplay:garden:0",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "ようこそ、Guest。"
+          }
+        ],
+        "source": {
+          "kind": "model",
+          "provider": "char.pub",
+          "model": "prepared-history"
+        }
+      },
+      {
+        "id": "roleplay:garden:1",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Alice: The innkeeper nods."
+          }
+        ],
+        "source": {
+          "kind": "model",
+          "provider": "char.pub",
+          "model": "prepared-history"
+        }
+      }
+    ]
+  ],
+  "files": [
+    {
+      "path": "replay.json",
+      "bytes": 23252,
+      "sha256": "52840f0f87b265d267d0581b695bf0ebee0099c82cacfeb1e9fb0a39585492f9"
+    },
+    {
+      "path": "sessions/_no-cwd/legacy-sdk-history/session.v4.jsonl",
+      "bytes": 16367,
+      "sha256": "e7727a62ff3f300664dc48c1dbc15be62ebe6aded9cade27632c31cdf9c42ee9"
+    }
+  ],
+  "generated_with": "Actual Loader + runtime + JSONL provider, two successful text-only synthetic dispatches, then one flushed unanswered request; no network"
+}
