@@ -106,7 +106,7 @@ The independent Registry browser test uses a test-only IPC bridge, not an applic
 <a id="optional-local-browser-entry"></a>
 ## Optional local browser entry
 
-The [roleplay profile guide](PROFILE.md) describes the opt-in `./app` plugin and `app.patch.yml`. Launch it through `dsh --profile roleplay`; the base bundle alone still has no frontend. The loopback page reviews an exact Registry launch, authorizes independently, then creates a new durable Session after the user selects an opening, viewpoint and runtime character bindings. Registry, OAuth redirect and model routes come only from local profile configuration. A launch cannot replace them or carry credentials or dialogue.
+The [roleplay profile guide](PROFILE.md) describes the opt-in `./app` plugin and `app.patch.yml`. Launch it through `dsh --profile roleplay`; the base bundle alone still has no frontend. The loopback welcome page links to the configured Registry to choose a work; its manual JSON entrance is advanced. The page reviews an exact Registry launch, authorizes independently, then creates a new durable Session after the user selects an opening, viewpoint and runtime character bindings. Registry, OAuth redirect and model routes come only from local profile configuration. A launch cannot replace them or carry credentials or dialogue.
 
 The page supports Story content and the estimate tokenizer. It uses the configured generation adapter, required/direct context and `noneSelection`; it does not run Jev/Laya, infer Story actions or decide opening judgments. New builds require a new-session confirmation. Old tabs retain an opaque local handle and cannot send into a subsequently created Session. Private and public outward character descriptions are separate fields.
 

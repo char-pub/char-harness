@@ -69,7 +69,7 @@ export async function apply(ctx: Context, raw: z.input<typeof Config>) {
     try {
       if (lifecycle.signal.aborted || req.headers.host !== new URL(origin).host) { respond(res, 403, { error: 'roleplay_app.host_forbidden' }); return }
       const url = new URL(req.url ?? '/', origin)
-      if (req.method === 'GET' && url.pathname === '/') { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }); res.end(appHTML(nonce)); return }
+      if (req.method === 'GET' && url.pathname === '/') { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }); res.end(appHTML(nonce, config.registry_origin)); return }
       if (req.method === 'GET' && url.pathname === '/oauth/callback') { await (await registry).completeAuthorization(url.href); res.writeHead(303, { location: '/' }); res.end(); return }
       if (req.method !== 'POST' || req.headers.origin !== origin || req.headers['x-roleplay-client'] !== nonce || req.headers['content-type']?.split(';')[0] !== 'application/json') { respond(res, 403, { error: 'roleplay_app.origin_forbidden' }); return }
       const input = await body(req)

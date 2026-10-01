@@ -174,3 +174,11 @@ The current VISION requires the independent minimal consumer, fixed-decision rep
 - 使用已有131项相关终态证据，不因提交重复全仓测试。范围manifest与secret扫描、提交结果保存在本轮临时交付报告；不推送、不重打包、不改历史确认或Session存储代。
 
 - 首次提交前检查发现测试fixture末尾多空行，仅规范换行后继续。正常pre-commit的配对15组、lint、whitespace、vendor guard通过，但NOTICE生成因三个本地SDK包缺repository元数据失败；未跳过hook。根据主仓真实Git来源，在生成器既有OVERRIDES只补三个精确仓库映射，许可证仍从实际包读取。生成差异仅新增三SDK、Jev官方SDK和oauth4webapi五项许可声明；生成器37项定向测试通过。
+
+## 2026-10-01 — 可操作欢迎页与深色宿主可读性
+
+- 本次仅修改独立 app 的欢迎入口、页面颜色和对应测试/说明。空启动页提供指向本地配置 Registry 的可点击入口（本机为 `http://localhost:5173/`），显示当前 Runtime 地址，并说明作品页 Start playing、草稿 Try draft 与版本审阅步骤。未选择作品时明确提示且禁用 Review；手动 Launch JSON 保留在默认折叠的高级区域。传入 launch 与 OAuth 返回继续原来的 nonce/授权/精确版本审阅流程，不自动创建 Session 或调用模型。
+- 主代理实际操作发现：Superset 深色宿主中页面和根元素背景透明、前景为黑色，DOM 文本和 JSDOM 流程通过仍不能证明文字可读。原截图 `/tmp/story-local-session-ready.png` 与真实 computed styles 证实黑底黑字。现 html/body 明确采用 `#f8fafc` 背景、`#172033` 前景与 light color-scheme；表单、fieldset、状态、pre、链接和焦点均有显式可读颜色。launch 状态句只显示一次。
+- 本地源码验证：实际 HTML 的 JSDOM 交互/owner-local snapshot 3 项，以及真实命名 profile、loopback HTTP、JSONL 的既有 app 回归 3 项，合计 6/6 通过，日志 `/tmp/harness-contrast-tests.log`。覆盖空入口链接/步骤/高级折叠、传入 launch/OAuth 返回、清除 launch 后旧候选失效、显式页面/控件颜色和状态句不重复；既有 Host/Origin/nonce、精确身份、取消和旧 Session 拒绝回归保持。产品 noEmit types `/tmp/harness-welcome-types.log`、范围 lint `/tmp/harness-contrast-lint.log`、Markdown wrap `/tmp/harness-welcome-doc-wrap.log` 与 diff check 通过。
+- 主代理随后运行现有 `node scripts/build-charpub-replay.mjs` 并以原完整 profile 重启本地 app（执行会话 62110）。实际浏览器 body 背景为 rgb(248,250,252)、前景为 rgb(23,32,51)，截图 `/tmp/story-local-session-readable.png` 已实际查看，标题、标签、开场与回复输入可读。同一 launch 重新完成 OAuth 读取、角色绑定和明确创建新 Session，真实开场白显示；旧 JSONL 保留，未发模型请求。这是实际浏览器可操作性和可读性证据，不是在线模型质量验收。
+- 提交范围为 app-ui/app、既有 app 测试、新 UI 测试与其快照、PROFILE、README 中英及配对记录、此执行记录。没有修改 SDK/锁文件、模型 provider/key、实际 Session 数据或主仓代码；没有增加回退模型、跨仓源码别名或伪回复。按授权创建本地提交，正常 hooks 保留，不推送；配对记录验证日志 `/tmp/harness-welcome-pair.log`。

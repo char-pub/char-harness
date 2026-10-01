@@ -1,0 +1,23 @@
+exports[`welcome page offers a real Registry link and steps, with manual launch kept advanced 1`] = `
+{
+  "heading": "Choose a story to play",
+  "browse": {
+    "text": "Open char.pub",
+    "href": "http://localhost:5173/",
+    "target": "_blank",
+    "rel": "noopener noreferrer"
+  },
+  "steps": [
+    "Choose a story on char.pub and select Start playing. For your own draft, open its editor and select Try draft.",
+    "Choose this Runtime address: http://127.0.0.1:19389/. char.pub will open it with the exact work to review.",
+    "Authorize Registry access if needed, review the version and character bindings, then start a new session."
+  ],
+  "status": "No work selected. Open char.pub to choose a story or a draft.",
+  "advanced": {
+    "label": "Advanced: paste launch JSON",
+    "open": false
+  },
+  "reviewDisabled": true,
+  "gameHidden": true
+}
+`;

@@ -106,7 +106,7 @@ Session 日志是唯一持久记录。投影返回的 `ReplayLog` 是临时重�
 <a id="optional-local-browser-entry"></a>
 ## 可选本地浏览器入口
 
-[roleplay profile 指南](PROFILE.md) 说明显式启用的 `./app` 插件与 `app.patch.yml`。通过 `dsh --profile roleplay` 启动；基础 bundle 本身仍没有前端。本地回环页面审阅 Registry 精确启动请求、独立授权，再由用户选择开局、视角和运行时角色绑定后创建持久 Session。Registry、OAuth 回调与模型路由仅来自本地 profile 配置，启动请求不能替换它们，也不能携带凭据或对话。
+[roleplay profile 指南](PROFILE.md) 说明显式启用的 `./app` 插件与 `app.patch.yml`。通过 `dsh --profile roleplay` 启动；基础 bundle 本身仍没有前端。本地回环欢迎页链接到已配置的 Registry 供用户选择作品；手动 JSON 入口位于高级区域。页面审阅 Registry 精确启动请求、独立授权，再由用户选择开局、视角和运行时角色绑定后创建持久 Session。Registry、OAuth 回调与模型路由仅来自本地 profile 配置，启动请求不能替换它们，也不能携带凭据或对话。
 
 页面支持带 Story 的内容与 estimate tokenizer。它使用配置的生成适配器、required/direct 上下文和 `noneSelection`；不运行 Jev/Laya、不推断 Story 动作，也不判定开局 judge。新构建需要确认新建会话。旧标签页保留本地不透明句柄，不能把回复发入后来创建的 Session。角色的私密描述与公开 outward 描述分别填写。
 

@@ -73,6 +73,8 @@ void test('named roleplay app reviews exact work, starts and generates once, exp
   const html = await page.text(); const nonce = html.match(/script nonce="([^"]+)"/)?.[1]; assert.ok(nonce)
   const generatedScript = html.match(/<script nonce="[^"]+">([\s\S]*)<\/script>/)?.[1]
   assert.ok(generatedScript)
+  assert.ok(html.includes(`id="registry-link" href="${registryOrigin}/"`))
+  assert.match(html, /<details id="manual-launch"><summary>Advanced: paste launch JSON<\/summary>/)
   assert.doesNotThrow(() => new Script(generatedScript))
   const post = async (path: string, value: unknown, origin = appOrigin) => fetch(`${appOrigin}/api/${path}`, { method: 'POST', headers: { origin, 'content-type': 'application/json', 'x-roleplay-client': nonce }, body: JSON.stringify(value) })
   const launch = { format: 'char.pub/runtime-launch', version: 1, registry_origin: registryOrigin, source: artifact.root, lock_digest: artifact.lock_digest, locale: 'ja', view: { mode: 'narrator' } }
