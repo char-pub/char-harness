@@ -1,0 +1,34 @@
+---
+description: "PTC typed程序执行 (ptc)：PTC JS/Python谁运行；host binding怎么授权；结果如何序列化；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/ptc-runtime/ptc-runtime/src/types.ts"
+    - "packages/ptc-runtime/ptc-runtime-node/src/channel.ts"
+    - "packages/ptc-runtime/ptc-runtime-node/src/launch.ts"
+    - "packages/ptc-runtime/ptc-runtime-node/src/output-ledger.ts"
+    - "packages/experimental/ptc-runtime-python/src/index.ts"
+    - "packages/core/tools/src/ptc.ts"
+    - "docs/subsystems/ptc-runtime.md"
+    - "packages/experimental/ptc-runtime-python/README.md"
+relations:
+  requires:
+    - "model/tools.mdx"
+    - "execution/processes-terminals.mdx"
+  related:
+    - "automation/workflows.mdx"
+    - "execution/sandbox.mdx"
+---
+
+# PTC typed程序执行
+
+PTC 将 typed 程序交给明确的 runtime Provider；resolve 与 run 分离，工具绑定及结果序列化遵循公开契约。Node 子进程或 Python 运行时实现隔离执行，不允许把同一程序改为任意 Host eval。
+
+Host binding 仍受原工具授权约束，程序内调用不能绕过审批。输出账本、大小限制、取消和 channel 关闭需一起处理，否则程序结束可能留下未结算副作用或被误读的部分结果。
+
+修改 runtime 时检查类型输入、跨进程协议、完整输出与异常/取消路径；使用它的 Workflow 和工具也需审查。支持语言与具体绑定签名从源码恢复，不在知识层复制目录。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/ptc-runtime.md" />
+<CodeRef path="packages/experimental/ptc-runtime-python/README.md" />

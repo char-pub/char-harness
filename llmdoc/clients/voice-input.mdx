@@ -1,0 +1,31 @@
+---
+description: "语音输入与瞬时音频 (voice-input)：麦克风发到哪里；provider失效能fallback吗；迟到转写不能覆盖谁；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/speech-to-text/src/types.ts"
+    - "packages/experimental/speech-to-text-sensevoice/src/inference.ts"
+    - "packages/experimental/speech-to-text-sensevoice/src/worker.ts"
+    - "packages/experimental/api-speech-to-text/src/index.ts"
+    - "packages/experimental/client-ui-voice-input/src/index.ts"
+    - "docs/subsystems/voice-input.md"
+    - "packages/experimental/voice-input-bundle/README.md"
+relations:
+  requires:
+    - "security/credentials-accounts.mdx"
+  related:
+    - "clients/conversation-ui.mdx"
+---
+
+# 语音输入与瞬时音频
+
+语音输入分离 capture、speech Provider 与转写插入目标。音频是瞬时输入还是持久附件应由明确流程决定，不能因支持上传就默认保留麦克风内容。
+
+Provider resolve 后应维持该选择；失败不暗换另一服务。转写结果必须绑定发起时的会话/草稿，晚到内容不能覆盖用户切换后正在编辑的文字。
+
+修改语音时检查停止录制、取消、worker处置、权限失败和草稿归属。固定音频或mock协议验证只证明控制流，实际麦克风与宿主授权需另有验收。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/voice-input.md" />
+<CodeRef path="packages/experimental/voice-input-bundle/README.md" />

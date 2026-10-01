@@ -1,0 +1,32 @@
+---
+description: "文件读写与观测新鲜度 (filesystem)：看过文件才能改吗；原子替换如何检查；找不到文件和旧版本；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/fs/fs/src/types.ts"
+    - "packages/fs/fs-local/src/fsio.ts"
+    - "packages/fs/fs-observation-policy/src/index.ts"
+    - "packages/fs/fs-sandbox/src/index.ts"
+    - "packages/fs/tool-fs/src/index.ts"
+    - "packages/fs/tool-str-replace-editor/src/index.ts"
+    - "packages/fs/tool-fs-search/src/index.ts"
+    - "docs/subsystems/filesystem.md"
+    - "packages/fs/fs-observation-policy/README.md"
+relations:
+  related:
+    - "execution/sandbox.mdx"
+    - "execution/ssh-world.mdx"
+---
+
+# 文件读写与观测新鲜度
+
+FileSystem seam 提供执行世界中的文件能力；local provider 负责 IO；观测新鲜度与 sandbox 是独立策略层。裸 FileSystem 不能被描述成隐式具备“先读后写”或文件边界保护。
+
+编辑时的观测版本、原子替换和实际路径解析要在执行处核对，搜索结果或旧页面内容不能代替当前授权与文件身份。远端路径必须交给远端世界解释，不拿 Host cwd 补全。
+
+改文件工具时检查不存在、过期观测、并发变化和被策略拒绝的路径。测试应使用真实配置的策略组合；只直接调用 provider 无法证明产品工具层的检查存在。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/filesystem.md" />
+<CodeRef path="packages/fs/fs-observation-policy/README.md" />

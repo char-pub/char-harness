@@ -1,0 +1,34 @@
+---
+description: "char.pub纯回放与SDK字节来源 (replay-sdk)：Context Engine在哪；能否从主仓源码import；Replay记录摘要如何核；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/charpub-roleplay/src/index.ts"
+    - "packages/experimental/charpub-roleplay/src/decision-record.ts"
+    - "third_party/charpub/current.json"
+    - "scripts/verify-charpub-sdk.mjs"
+    - "packages/experimental/charpub-roleplay/tests/sdk-refresh.test.ts"
+    - "packages/experimental/charpub-roleplay/README.md"
+    - "third_party/charpub/README.md"
+    - "docs/subsystems/charpub-roleplay.md"
+relations:
+  requires:
+    - "engineering/upstream-dependencies.mdx"
+  related:
+    - "roleplay/selectors.mdx"
+    - "engineering/verification.mdx"
+---
+
+# char.pub纯回放与SDK字节来源
+
+char.pub Context Engine 由不可变 tarball SDK 提供，Harness 使用真实已安装 public entry。Current pointer、manifest hashes、依赖声明和解析到的 dist 必须一致；跨仓源码 alias 会绕过这一消费证明。
+
+Replay 保存精确输入、决策记录与输出身份；消息/运行态原字符串需要按其精确摘要契约处理，不能借 prose 规范化改变 CRLF、Unicode 或尾空白。Plan、receipt、artifact digest 各证明不同绑定，不代替授权。
+
+刷新 SDK 保留旧快照与历史 fixture 原字节；先核实际解析的新 dist，再分别验证新行为和旧日志恢复。几个历史样本通过不承诺全部历史兼容。当前版本、hash及包文件清单只从manifest/verifier恢复。
+
+## 权威入口
+
+<CodeRef path="packages/experimental/charpub-roleplay/README.md" />
+<CodeRef path="third_party/charpub/README.md" />
+<CodeRef path="docs/subsystems/charpub-roleplay.md" />

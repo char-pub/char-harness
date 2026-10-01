@@ -1,0 +1,37 @@
+---
+description: "LLM协议、provider与重试 (provider-requests)：模型路由怎么选；stream失败可否重试；图片file id归谁；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/llm/llm/src/types.ts"
+    - "packages/llm/llm-deepseek/src/transport.ts"
+    - "packages/llm/llm/src/assembler.ts"
+    - "packages/llm/llm-deepseek/src/serialize.ts"
+    - "packages/llm/llm-deepseek/src/request-files.ts"
+    - "packages/llm/llm-deepseek-api-key/src/index.ts"
+    - "packages/llm/llm-deepseek-account/src/index.ts"
+    - "packages/llm/llm-pi-ai/src/index.ts"
+    - "packages/llm/llm-retry/src/index.ts"
+    - "packages/llm/token-meter/src/index.ts"
+    - "packages/core/agent-default-model/src/index.ts"
+    - "packages/llm/deepseek-llm-api-extensions/src/index.ts"
+    - "docs/subsystems/llm-streaming.md"
+    - "packages/llm/README.md"
+relations:
+  related:
+    - "security/credentials-accounts.mdx"
+    - "operations/observability.mdx"
+---
+
+# LLM协议、provider与重试
+
+LLM seam 定义消息、流和调用配置；具体 Provider 承担协议序列化、上传与响应解释。默认模型路由、账号/API key 来源和 token 计量各有明确 owner，不能把它们混入消息正文来传递执行配置。
+
+请求中的有序消息和附件身份必须对应真实发送内容。重试会产生新的尝试，不能把两个流拼成一条成功响应，也不能把上传 file id 当跨 provider 的稳定资产身份。请求配置与其有效执行值都要可解释。
+
+新增或替换 Provider 时检查流终止、取消、序列化损失和重试时点；固定响应测试证明协议与控制流，不证明在线模型质量。provider 的当前参数和支持模态由类型与包文档恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/llm-streaming.md" />
+<CodeRef path="packages/llm/README.md" />

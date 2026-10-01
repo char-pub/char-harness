@@ -1,0 +1,32 @@
+---
+description: "Workspace、设置和匿名身份 (workspace-settings)：工作区实体是否等于目录；默认设置何时影响新Session；匿名ID哪里来；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/workspace/workspace/src/types.ts"
+    - "packages/settings/settings/src/index.ts"
+    - "packages/api/workspace-controller/src/index.ts"
+    - "packages/api/settings-controller/src/index.ts"
+    - "packages/identity/anonymous-user-id/src/index.ts"
+    - "packages/client/ui-workspace/src/index.ts"
+    - "docs/subsystems/workspace.md"
+    - "docs/subsystems/settings.md"
+    - "packages/identity/README.md"
+relations:
+  related:
+    - "clients/workspace-surfaces.mdx"
+---
+
+# Workspace、设置和匿名身份
+
+Workspace 是领域实体，不只是一个目录字符串；文件路径、Session 归属与用户设置各有独立身份。默认设置何时影响新 Session 和已经存在的 Session 必须区分，不能由页面重新渲染隐式改写运行配置。
+
+匿名身份用于其声明的用途，不是访问 workspace 或凭据的授权令牌。切换 workspace、账号或设置时，客户端晚到的结果不能被重新认领为当前对象的数据。
+
+修改 workspace/settings 时检查 Host 保存事实、API 投影和 Client 编辑草稿之间的边界。浏览器能选到目录只证明用户输入已产生，最终资源访问仍由 Host 能力与授权决定。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/workspace.md" />
+<CodeRef path="docs/subsystems/settings.md" />
+<CodeRef path="packages/identity/README.md" />

@@ -1,0 +1,32 @@
+---
+description: "浏览器Worker预览执行 (worker-preview)：无Node的preview如何运行；VFS image谁生成；这是另一应用launcher吗；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/webworker-runtime/src/worker-host.ts"
+    - "packages/experimental/webworker-runtime/src/module-system/module-loader.ts"
+    - "packages/experimental/webworker-runtime/src/storage/image-gzip.ts"
+    - "packages/experimental/webworker-runtime/src/shell/interpret.ts"
+    - "packages/experimental/webworker-packer/src/index.ts"
+    - "apps/web/src/preview.ts"
+    - "packages/experimental/webworker-runtime/README.md"
+    - "packages/experimental/webworker-packer/README.md"
+relations:
+  requires:
+    - "clients/web-composition.mdx"
+  related:
+    - "engineering/build-release.mdx"
+---
+
+# 浏览器Worker预览执行
+
+浏览器 Worker preview 使用打包的 VFS image 与明确 shim 模拟受支持能力。它是受限预览环境，不等于完整 Node Host，也不是绕过 dsh profile 的新增产品 launcher。
+
+Packer、image 版本和 Worker module loader 必须一致，storage/shell shim 的限制要可见。文件名能解析不代表真实系统调用可用，不能遇到不支持行为就退到浏览器之外的隐式执行。
+
+修改预览时检查 image 装载、模块解析、缓存和 worker生命周期。成功运行示例不意味着所有 native/provider 功能可用；支持范围由当前实现及包说明恢复。
+
+## 权威入口
+
+<CodeRef path="packages/experimental/webworker-runtime/README.md" />
+<CodeRef path="packages/experimental/webworker-packer/README.md" />

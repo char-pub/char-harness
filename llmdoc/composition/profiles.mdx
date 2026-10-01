@@ -1,0 +1,36 @@
+---
+description: "Profile与唯一应用启动 (profiles)：dsh怎么启动；profile层如何覆盖；为何不能直接运行package bin；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "apps/cli/src/profile-boot.ts"
+    - "packages/boot/app-boot/src/profile-resolution/resolver.ts"
+    - "apps/cli/src/bin.ts"
+    - "packages/boot/app-boot/src/profile.ts"
+    - "packages/bundle/base/cordis.patch.yml"
+    - "packages/bundle/sdk-minimal/cordis.patch.yml"
+    - "packages/boot/app-boot/README.md"
+    - "apps/cli/README.md"
+    - "docs/architecture.md"
+relations:
+  requires:
+    - "execution-model.mdx"
+  related:
+    - "composition/plugin-lifecycle.mdx"
+    - "composition/presets-extensions.mdx"
+    - "engineering/build-release.mdx"
+---
+
+# Profile与唯一应用启动
+
+受支持的 Node 应用通过命名 dsh profile 启动。Profile 声明有序 bundle，随后依次应用 profile、home 和显式 overlay；patch 替换目标行的整份 config，不能把它理解为任意深层字段合并。运行态 tree 由真实解析结果决定。
+
+安装依赖、选中 bundle、配置行进入组合及服务实际 ready 是不同阶段。启动失败不能暗换默认应用或绕过兼容检查。SDK 和 Desktop 复用受支持的 profile 入口；测试直接挂载插件并不是另一种产品 launcher。
+
+修改启动时要分别检查路径解析、层覆盖、Loader ready 和失败处置。源码入口可执行不代表分发产物可启动；安装后的 public entry 与 profile 必须另验。当前可用 profile 和参数从 CLI/package 权威恢复。
+
+## 权威入口
+
+<CodeRef path="packages/boot/app-boot/README.md" />
+<CodeRef path="apps/cli/README.md" />
+<CodeRef path="docs/architecture.md" />

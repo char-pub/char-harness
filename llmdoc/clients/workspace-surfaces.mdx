@@ -1,0 +1,38 @@
+---
+description: "工作区文件/终端/浏览器侧栏与目录选择 (workspace-surfaces)：选目录是在Host还是浏览器；workspace切换迟到响应；终端侧栏资源归谁；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/host/directory-picker/src/types.ts"
+    - "packages/host/directory-picker-auto/src/index.ts"
+    - "packages/host/directory-picker-native/src/index.ts"
+    - "packages/host/directory-picker-browse/src/index.ts"
+    - "packages/api/workspace-files/src/index.ts"
+    - "packages/client/ui-sidebar-files/src/index.ts"
+    - "packages/client/ui-sidebar-terminal/src/index.ts"
+    - "packages/client/ui-sidebar-browser/src/index.ts"
+    - "packages/client/ui-sidebar-documentpreview/src/index.ts"
+    - "packages/host/directory-picker/README.md"
+    - "docs/subsystems/sidebar-right.md"
+    - "docs/subsystems/workspace.md"
+relations:
+  requires:
+    - "state/workspace-settings.mdx"
+    - "clients/web-composition.mdx"
+  related:
+    - "clients/conversation-ui.mdx"
+---
+
+# 工作区文件/终端/浏览器侧栏与目录选择
+
+目录选择、文件侧栏、终端和浏览器侧栏是Host资源的用户入口，不把浏览器路径或当前选中行提升为资源权限。Native选择、browse fallback与headless测试各有不同执行环境。
+
+Workspace/账号切换后，迟到列表、上传或选择结果不能作用于新对象；终端和浏览器资源仍跟其原owner释放。文档预览不应暗中把文件变成模型输入或上传到外部服务。
+
+修改这些入口时同时检查Host边界、Client草稿/焦点与取消恢复，真实GUI路径另作宿主验证。组件存在和API返回并不能证明系统选择器、工作区导航或资源清理已经完成。
+
+## 权威入口
+
+<CodeRef path="packages/host/directory-picker/README.md" />
+<CodeRef path="docs/subsystems/sidebar-right.md" />
+<CodeRef path="docs/subsystems/workspace.md" />

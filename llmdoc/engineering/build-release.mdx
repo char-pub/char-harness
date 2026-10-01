@@ -1,0 +1,44 @@
+---
+description: "构建图、安装分发与发布产物 (build-release)：源码测试为何不等于npm可运行；CLI/Desktop/Python版本怎样同步；主权、失败与变更约束"
+kind: guide
+code:
+  paths:
+    - "package.json"
+    - "scripts/release/families.ts"
+    - "scripts/release/verify-packed-install.ts"
+    - "tsconfig.base.json"
+    - "scripts/build-exe-for-python-sdk.ts"
+    - "scripts/release/publish.ts"
+    - "python/sdk-runtime/hatch_build.py"
+    - "native/system/scripts/build.ts"
+    - ".github/workflows/release-publish.yml"
+    - ".github/workflows/python-release.yml"
+    - ".github/workflows/node-addon-system-release.yml"
+    - "docs/development.md"
+    - "docs/rescope.md"
+    - "python/sdk-runtime/README.md"
+    - "native/system/docs/release.md"
+    - "scripts/build-charpub-replay.mjs"
+    - "apps/roleplay/package.json"
+    - "apps/roleplay/vite.config.ts"
+relations:
+  requires:
+    - "composition/profiles.mdx"
+  related:
+    - "engineering/upstream-dependencies.mdx"
+    - "engineering/verification.mdx"
+---
+
+# 构建图、安装分发与发布产物
+
+Source plane 的类型/单测与 artifact plane 的安装/运行是不同证据。TS 编译、tsdown/Vite 打包、native资源和 npm/Desktop/Python 发布家族共同决定最终产物，源码别名通过不能代替已发布入口。
+
+构建依赖图、Host/Client分离及platform资源应由正式脚本管理；不能为单个consumer临时复制一套实现。打包后的 manifest/exports、资源定位与真实安装 smoke 需要与生成物一致。
+
+修改分发时确认受影响发布家族及目标平台，再运行对应产物验证。源码测试不覆盖签名/安装/更新恢复；发布操作与本地构建也应分别记录，不把生成文件存在当成已上传。
+
+## 权威入口
+
+<CodeRef path="docs/development.md" />
+<CodeRef path="docs/rescope.md" />
+<CodeRef path="python/sdk-runtime/README.md" />

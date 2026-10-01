@@ -1,0 +1,36 @@
+---
+description: "文档权威、双语与llmdoc路由 (documentation)：规范/代码/生成catalog谁说了算；改README中文怎么办；llmdoc该记什么；主权、失败与变更约束"
+kind: guide
+code:
+  paths:
+    - "scripts/verify-translation-pairing.ts"
+    - "scripts/gen-cordis-catalog.ts"
+    - "scripts/verify-export-jsdoc.ts"
+    - "scripts/run-gates.ts"
+    - "website/package.json"
+    - "docs/AGENTS.md"
+    - "docs/i18n/README.md"
+    - ".agents/skills/dsh-doc/SKILL.md"
+    - "docs/development.md"
+    - "scripts/verify-repository-references.ts"
+    - "scripts/verify-repository-references.spec.ts"
+relations:
+  requires:
+    - "execution-model.mdx"
+  related:
+    - "engineering/verification.mdx"
+---
+
+# 文档权威、双语与llmdoc路由
+
+原docs/README、JSDoc、schema与生成catalog保持各自权威；llmdoc仅记录跨域决定、非显然失败语义及可检索owner，不再复制类型表、全包清单、CLI参数或生成图。
+
+llmdoc使用V3工具规定的MDX/frontmatter和CLI-owned metadata；它不属于现有Markdown双语发现scope，不给它伪造README头或重复语言页面。现有人类文档仍按原双语/pair规则更新，不能以新知识层替代其维护。
+
+仓库禁止人工正文引用Git commit；精确llmdoc/meta.json的规范机器revision字段由受限checker识别，除此之外仍检查全部维护文件。源码必须先冻结/提交再由CLI建ledger、validate、验证概念与文件路由并提交；schema有效不等于Context Floor已覆盖。
+
+## 权威入口
+
+<CodeRef path="docs/AGENTS.md" />
+<CodeRef path="docs/i18n/README.md" />
+<CodeRef path=".agents/skills/dsh-doc/SKILL.md" />

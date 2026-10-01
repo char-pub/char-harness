@@ -1,0 +1,49 @@
+---
+description: "测试面、生成类型与回归证据 (verification)：该跑哪层测试；真实Loader与手工plugin差别；expected放哪里；主权、失败与变更约束"
+kind: guide
+code:
+  paths:
+    - "package.json"
+    - "packages/test-support/session-snapshot/src/index.ts"
+    - "packages/test-support/loader-smoke/src/index.ts"
+    - "packages/test-support/llm-replay/src/index.ts"
+    - "packages/test-support/remote-mock/src/index.ts"
+    - "vitest.snapshot.config.ts"
+    - "vitest.expected.config.ts"
+    - "scripts/verify-application-entrypoints.ts"
+    - ".github/workflows/ci.yml"
+    - "docs/testing.md"
+    - "AGENTS.md"
+    - "packages/AGENTS.md"
+    - "docs/cookbook/reviewing-persistence-type-changes.md"
+    - ".github/workflows/char-harness.yml"
+    - ".github/workflows/e2e.yml"
+    - ".github/workflows/build-preview-cloudflare.yml"
+    - ".github/workflows/issue-lifecycle.yml"
+    - ".github/workflows/issue-policy.yml"
+    - ".github/workflows/weighted-approval.yml"
+    - ".github/workflows/build-exe-for-python-sdk.yml"
+    - "scripts/ci-workflow.spec.ts"
+    - ".github/issue-management/policy.test.mjs"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+  related:
+    - "engineering/build-release.mdx"
+    - "engineering/documentation.mdx"
+---
+
+# 测试面、生成类型与回归证据
+
+测试结论要绑定被执行的层：纯函数、协议mock、真实 Loader/JSONL、编译入口、打包安装、真实宿主GUI及在线模型质量互不替代。命令退出成功也不能把 skipped、todo 或未人工接受的 expected 计为已验证需求。
+
+Session 原始记录和owner局部UI expected有不同归属，生成catalog必须从源重建并检查freshness。旧fixture应保留字节，只有明确授权的审阅流程才接受新预期，不能从当前输出回填再称独立真值。
+
+并行测试各自拥有端口、临时目录和子进程；健康端点成功不能替代真实用户动作，视觉可读性必须实际查看。失败先定位具体层，按真实协议修fixture或产品，不放宽门禁来消除失败。
+本fork的keyless lane验证公开SDK、回放、持久Runtime、静态React客户端和llmdoc结构，不消费在线模型凭据。继承的live模型调用、Cloudflare部署与评论、原组织App/审批写入限定原仓；发布仍是独立手动动作。原核心/多平台检查保留，未运行或被guard的上游检查不能计成本fork通过。
+
+## 权威入口
+
+<CodeRef path="docs/testing.md" />
+<CodeRef path="AGENTS.md" />
+<CodeRef path="packages/AGENTS.md" />

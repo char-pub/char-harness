@@ -1,0 +1,28 @@
+---
+description: "MCP外部工具资源 (mcp)：MCP断线会留下工具吗；工具schema转换；resource到上下文；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/mcp/mcp-client/src/index.ts"
+    - "packages/mcp/mcp-resources/src/index.ts"
+    - "docs/subsystems/mcp.md"
+    - "packages/mcp/mcp-client/README.md"
+relations:
+  requires:
+    - "model/tools.mdx"
+  related:
+    - "security/credentials-accounts.mdx"
+---
+
+# MCP外部工具资源
+
+MCP client 将外部工具和资源接入 Harness；协议转换不是信任提升。远端提供的 schema、文本或 resource 不能代替本地执行授权，原生工具管线仍负责消费边界。
+
+连接生命周期必须与注册内容一致。断线、重连或 scope 处置后，旧工具与 resource 不能继续看起来像可用的当前实例；重连也不能把旧调用的迟到结果结算到新身份。
+
+修改适配时检查工具定义转换、返回值、资源如何进入上下文，以及连接失败后的清理。仅列出远端工具不足以证明可执行；具体传输与服务器配置在 MCP 包权威维护。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/mcp.md" />
+<CodeRef path="packages/mcp/mcp-client/README.md" />

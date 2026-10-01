@@ -1,0 +1,31 @@
+---
+description: "Session事件、surface与fork (event-log)：模型历史从哪来；哪些事件模型看不到；fork是否改父会话；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/core/session/src/types.ts"
+    - "packages/core/session/src/surface.ts"
+    - "packages/core/session/src/fork.ts"
+    - "packages/core/session/src/repair.ts"
+    - "packages/core/session/src/preparation.ts"
+    - "docs/subsystems/session.md"
+    - "packages/core/session/README.md"
+relations:
+  related:
+    - "sessions/durability-migrations.mdx"
+    - "sessions/derived-views.mdx"
+    - "engineering/verification.mdx"
+---
+
+# Session事件、surface与fork
+
+Session 的 append-only event log 是持久事实；模型消息、聊天气泡和轨迹都是按消费者需求得到的 surface。新增模型可见输入必须能由已记录事实解释，不能另存一份无来源的 shadow history 再称它为同一次请求。
+
+哪些事件属于模型 surface 是语义决定，不由事件是否存在或 UI 是否展示推断。Fork 必须明确继承的历史和新身份，不能回写父 Session。Repair 同样需遵循日志与代际规则，不能通过覆盖旧字节消除失败证据。
+
+改事件时先确认是否真的需要 durable fact、谁追加、谁投影和旧 reader 如何拒绝未知必需事件。持久格式迁移由 durability owner 审查；纯显示变化不应顺手改变事实记录。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/session.md" />
+<CodeRef path="packages/core/session/README.md" />

@@ -1,0 +1,41 @@
+---
+description: "搜索抓取与浏览器/桌面控制 (web-and-device-use)：web search和browser use差别；为何只能一个desktop provider；资源跟Session走吗；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/web/web/src/types.ts"
+    - "packages/experimental/browser-use-runtime/src/index.ts"
+    - "packages/web/web-fetch-http/src/index.ts"
+    - "packages/web/web-search-deepseek/src/index.ts"
+    - "packages/web/web-search-exa/src/index.ts"
+    - "packages/web/web-search-perplexity/src/index.ts"
+    - "packages/browser-use/browser-use/src/index.ts"
+    - "packages/computer-use/computer-use/src/index.ts"
+    - "packages/experimental/browser-use-playwright-mcp/src/index.ts"
+    - "packages/experimental/browser-use-chrome-devtools-mcp/src/index.ts"
+    - "packages/experimental/browser-use-stagehand-native/src/index.ts"
+    - "packages/experimental/computer-use-cua-driver-mcp/src/index.ts"
+    - "packages/experimental/computer-use-cua-driver-native/src/index.ts"
+    - "docs/subsystems/web.md"
+    - "docs/subsystems/browser-use.md"
+    - "docs/subsystems/computer-use.md"
+relations:
+  related:
+    - "tools/mcp.mdx"
+    - "security/credentials-accounts.mdx"
+    - "clients/workspace-surfaces.mdx"
+---
+
+# 搜索抓取与浏览器/桌面控制
+
+Web search/fetch 提供信息；browser/computer use 控制有状态设备。信息 provider 的组合不能被误解为允许任意切换桌面控制 provider；设备 registry 的排他性与 Session 资源所有权需单独维护。
+
+浏览器或原生设备的控制资源要随实际 session/scope 清理。远端搜索结果不授予本机执行权，MCP/native 适配的支持范围和失败语义也不可混为一种通用能力。
+
+修改设备适配时检查唯一 provider、目标归属、取消和 dispose；修改搜索抓取时检查传输和内容边界。真实 GUI 成功与协议替身成功是不同证据，涉及用户可见动作时需要真实宿主验收。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/web.md" />
+<CodeRef path="docs/subsystems/browser-use.md" />
+<CodeRef path="docs/subsystems/computer-use.md" />

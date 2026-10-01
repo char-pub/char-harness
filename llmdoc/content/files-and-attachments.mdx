@@ -1,0 +1,38 @@
+---
+description: "附件、spill与交付 (files-and-attachments)：图片临时URL能保存吗；工具大输出放哪；如何交付文件；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/attachment/attachment/src/types.ts"
+    - "packages/attachment/attachment-local/src/file-store.ts"
+    - "packages/client/file-upload/src/index.ts"
+    - "packages/spill/spill/src/types.ts"
+    - "packages/spill/spill-local/src/index.ts"
+    - "packages/spill/spill-policy/src/index.ts"
+    - "packages/deliverables/tool-present/src/index.ts"
+    - "packages/deliverables/workspace-changes/src/index.ts"
+    - "packages/document/office-to-pdf/src/index.ts"
+    - "docs/subsystems/attachment.md"
+    - "docs/subsystems/spill.md"
+    - "docs/subsystems/deliverables.md"
+    - "docs/subsystems/office-to-pdf.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+  related:
+    - "execution/filesystem.mdx"
+---
+
+# 附件、spill与交付
+
+附件、spill 和交付共同处理内容生命周期，但身份与用途不同。附件引用需要对应可持久读取的字节；spill 保存调用方的大输出；present/交付表达用户可以取走的产物。临时 URL 不是可永久回放的内容身份。
+
+应先满足字节持久性再记录依赖它的事件，否则日志可能引用从未保存成功的文件。Spill 的原文归调用方，不应被后续展示组件静默重写；格式转换也要说明生成物与原始资料的关系。
+
+修改内容路径时检查取消、丢失、清理和重启后的读取，并分别验证模型、UI 与交付消费者。文件名、具体格式清单和转换参数留在当前实现，避免另一份过期目录。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/attachment.md" />
+<CodeRef path="docs/subsystems/spill.md" />
+<CodeRef path="docs/subsystems/deliverables.md" />

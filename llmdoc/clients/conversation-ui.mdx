@@ -1,0 +1,38 @@
+---
+description: "Conversation、Slots与可见交互 (conversation-ui)：聊天和轨迹共享什么；feature能直接import另一feature组件吗；主题文字为何不可读；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/client/ui-conversation/src/client/contract/views.ts"
+    - "packages/client/ui-conversation/src/client/service.ts"
+    - "packages/client/ui-slots/src/index.ts"
+    - "packages/client/ui-renderer/src/index.ts"
+    - "packages/client/ui-chat/src/index.ts"
+    - "packages/client/ui-trajectory/src/index.ts"
+    - "packages/client/locale/src/index.ts"
+    - "packages/client/ui-theme/src/index.ts"
+    - "packages/client/ui-primitives/src/index.ts"
+    - "docs/subsystems/conversation.md"
+    - "docs/subsystems/slots.md"
+    - "docs/subsystems/web-client.md"
+relations:
+  requires:
+    - "clients/remote-api.mdx"
+    - "sessions/derived-views.mdx"
+  related:
+    - "clients/workspace-surfaces.mdx"
+---
+
+# Conversation、Slots与可见交互
+
+Host 投影持有会话事实，Client models 和 target-neutral conversation 层负责呈现，chat/trajectory 通过 typed slots 组合。Feature 之间不直接借用对方内部组件充当契约，否则生命周期和状态所有权会随 UI 拆分漂移。
+
+用户正在编辑的输入是本地草稿，不是已提交 Session event。异步结果必须绑定原对象，切换会话或账号后不得覆盖新草稿；取消和失败应保留可恢复输入。
+
+主题、locale 和视觉 primitive 不能仅凭 DOM 存在验收。真实宿主可能使用不同背景或窗口承载方式，关键操作、正文对比度与错误恢复需实际截图/点击验证；这是与协议测试独立的证据。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/conversation.md" />
+<CodeRef path="docs/subsystems/slots.md" />
+<CodeRef path="docs/subsystems/web-client.md" />

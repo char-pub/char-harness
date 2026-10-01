@@ -1,0 +1,35 @@
+---
+description: "Desktop应用主权与更新恢复 (desktop-lifecycle)：Electron是否另开agent loop；哪窗能带凭据；安装更新如何停Host；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "apps/desktop/src/main.ts"
+    - "apps/desktop/src/update-journal.ts"
+    - "apps/desktop/src/host-process.ts"
+    - "apps/desktop/src/web-document.ts"
+    - "apps/desktop/src/owned-directory.ts"
+    - "apps/desktop/src/update-coordinator.ts"
+    - "apps/desktop/src/fatal-recovery.ts"
+    - "apps/desktop/package.json"
+    - "apps/desktop/README.md"
+    - "docs/architecture.md"
+relations:
+  requires:
+    - "composition/profiles.mdx"
+    - "clients/web-composition.mdx"
+  related:
+    - "engineering/build-release.mdx"
+---
+
+# Desktop应用主权与更新恢复
+
+Electron 是桌面应用载体，Host 仍通过受支持的 profile 启动完整 Web 应用，不另造 AgentLoop。窗口、preload、文档协议与 boot IPC 各有信任边界；Web RPC/stream 持有业务通信。
+
+Desktop 与普通 CLI 可以共享产品数据，但运行时包、激活和 lock 归各自安装所有权。更新必须协调 Host 退出、journal 与可恢复安装，不能把文件下载完成当作安全切换完成。
+
+修改 Desktop 时检查窗口来源、凭据承载、Host 崩溃和安装失败恢复。源码浏览器测试不能代替实际 packaged runtime；平台签名和发布产物验证由 build-release owner 接续。
+
+## 权威入口
+
+<CodeRef path="apps/desktop/README.md" />
+<CodeRef path="docs/architecture.md" />

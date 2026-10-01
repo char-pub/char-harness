@@ -1,0 +1,31 @@
+---
+description: "SSH远程执行世界 (ssh-world)：远端cwd在哪解析；host文件能否传远端进程；三provider怎样配套；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/ssh/ssh/src/index.ts"
+    - "packages/ssh/fs-ssh/src/index.ts"
+    - "packages/ssh/subprocess-ssh/src/index.ts"
+    - "packages/ssh/sandbox-ssh/src/index.ts"
+    - "docs/subsystems/ssh.md"
+    - "packages/ssh/README.md"
+relations:
+  requires:
+    - "execution/filesystem.mdx"
+    - "execution/processes-terminals.mdx"
+  related:
+    - "execution/ptc.mdx"
+---
+
+# SSH远程执行世界
+
+SSH 执行世界由配套的 filesystem、subprocess 和 sandbox Provider 组成；路径、cwd 与可执行文件都由目标世界解释。模型和 Session 可以留在 Host，这不把 Host 的绝对路径变成远端可访问资源。
+
+跨世界传递的是明确协议数据，不是任意共享本地文件句柄。只替换 shell 而保留本地 filesystem 会形成不一致执行世界，容易让读与写针对不同对象。
+
+改远端执行时同时检查三个 provider 的组合、取消与连接释放，以及错误来自连接还是目标程序。不要通过本地 fallback 隐藏远端失败；具体连接参数从当前配置恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/ssh.md" />
+<CodeRef path="packages/ssh/README.md" />

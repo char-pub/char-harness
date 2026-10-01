@@ -1,0 +1,32 @@
+---
+description: "压缩、裁剪与上下文替换 (compaction)：压缩后还能回放吗；清图片是否丢历史；手动compact；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/compaction/compaction/src/types.ts"
+    - "packages/compaction/compaction-basic/src/index.ts"
+    - "packages/compaction/compaction-image-offload/src/index.ts"
+    - "packages/compaction/compaction-tool-result-pruner/src/index.ts"
+    - "packages/compaction/command-compact/src/index.ts"
+    - "docs/subsystems/compaction.md"
+    - "packages/compaction/README.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+    - "model/context-inputs.mdx"
+  related:
+    - "model/provider-requests.mdx"
+---
+
+# 压缩、裁剪与上下文替换
+
+Compaction 改变后续模型的上下文呈现，不改写已经发生的请求和旧日志。摘要、图片卸载、工具结果裁剪各由明确 provider 负责；采用哪一种由组合决定，不能遇到长度压力就隐式任选替代算法。
+
+压缩之后仍要能解释它基于哪些事实、替换了什么以及失败时继续采用何种输入。将旧事件删去以让新请求看起来更短，会破坏恢复与调试的依据。
+
+修改压缩时检查完整历史与压缩后 surface 两者、手动触发和自动触发的边界、失败及取消。样本 token 减少不等于语义保真；实际算法和阈值由 provider 源码与配置恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/compaction.md" />
+<CodeRef path="packages/compaction/README.md" />

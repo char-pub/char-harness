@@ -1,0 +1,35 @@
+---
+description: "上下文和Prompt贡献 (context-inputs)：AGENTS文件何时进入上下文；prompt排序；引用内容是否记录；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/core/system-prompt/src/index.ts"
+    - "packages/context/agent-instructions/src/files.ts"
+    - "packages/context/agent-instructions/src/state.ts"
+    - "packages/context/file-reference/src/index.ts"
+    - "packages/context/file-reference-local/src/index.ts"
+    - "packages/context/session-reference/src/index.ts"
+    - "packages/context/time-context/src/index.ts"
+    - "packages/context/tmux-context/src/index.ts"
+    - "docs/subsystems/system-prompt.md"
+    - "packages/context/README.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+  related:
+    - "model/compaction.mdx"
+    - "tools/skills.mdx"
+---
+
+# 上下文和Prompt贡献
+
+System prompt 由有作用域的 contributor 组成；工作区指令、文件引用、Session 引用和时间上下文是分别负责的输入来源。目录信息与真正加载的正文不同，某项可以被发现不表示它已进入模型请求。
+
+Prompt 贡献是上下文，不是领域事实或执行授权。模型实际新增的输入需要有日志来源，不能只在当前页面或内存临时拼接而让恢复后的请求不同。贡献排序及作用域变化需检查实际消息，而非只比较注册数量。
+
+Context 变更与 compaction 的交界尤其重要：压缩后的呈现不能抹去原始输入证据。字段和 contributor 清单留在源码与生成 catalog，此文仅持有来源、作用域和恢复边界。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/system-prompt.md" />
+<CodeRef path="packages/context/README.md" />

@@ -1,0 +1,37 @@
+---
+description: "日志投影与语义查询 (derived-views)：客户端为什么不fold事件；搜索结果落后怎么重建；live和disk谁优先；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/session/session-projection/src/types.ts"
+    - "packages/session-query/session-query-sqlite/src/query.ts"
+    - "packages/session/session-projection/src/index.ts"
+    - "packages/session/session-projection-cache/src/index.ts"
+    - "packages/session-query/session-query/src/types.ts"
+    - "packages/api/session-controller/src/index.ts"
+    - "packages/session-query/tool-session-query/src/index.ts"
+    - "packages/session-query/session-log-export/src/index.ts"
+    - "packages/session/session-title/src/index.ts"
+    - "packages/session/session-title-all-prompts-llm/src/index.ts"
+    - "packages/session/session-stats/src/index.ts"
+    - "docs/subsystems/session-projection.md"
+    - "docs/subsystems/session-query.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+  related:
+    - "clients/remote-api.mdx"
+---
+
+# 日志投影与语义查询
+
+Projection 和查询索引都是从 Session 事实重建的派生状态。Host 持有投影解释，Client 消费整值结果；把折叠逻辑复制到 UI 会制造两个事实解释者。缓存失效或索引落后应重建，不能反写日志来匹配页面。
+
+Live Session 与磁盘读取有明确优先级和读取界限，搜索、标题、统计和导出也不能各自发明消息历史。查询命中是派生读取结果，不等于一条新的模型可见事件或执行许可。
+
+修改事件时检查受影响投影及索引重建路径；修改查询时检查部分结果、失效和边界读取，而不是只验证一个最新内存 Session。当前索引结构及字段列表从 provider 和 schema 恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/session-projection.md" />
+<CodeRef path="docs/subsystems/session-query.md" />

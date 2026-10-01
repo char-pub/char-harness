@@ -1,0 +1,36 @@
+---
+description: "进程隔离与平台后端 (sandbox)：read-only真的禁止什么；Linux/macOS/Windows沙箱差异；提升权限；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/sandbox/sandbox/src/index.ts"
+    - "packages/sandbox/sandbox-windows-acl/src/path-boundary.ts"
+    - "packages/sandbox/sandbox-policy/src/index.ts"
+    - "packages/sandbox/sandbox-local/src/profiles.ts"
+    - "packages/sandbox/sandbox-windows-acl/src/runner.ts"
+    - "packages/shell/bash-sandbox/src/index.ts"
+    - "packages/shell/pwsh-sandbox/src/index.ts"
+    - "native/system/packages/entry/src/index.ts"
+    - "docs/subsystems/sandbox.md"
+    - "docs/defensive-patterns.md"
+    - "native/system/docs/support-matrix.md"
+relations:
+  requires:
+    - "execution-model.mdx"
+  related:
+    - "security/human-control.mdx"
+---
+
+# 进程隔离与平台后端
+
+Sandbox 策略描述所需文件效果限制，Provider 负责在具体平台实施。Linux、macOS、Windows 的机制和可报告的 partial enforcement 不相同，不能用一套名称宣称等价隔离强度。
+
+文件限制、网络能力、人类审批和提权是独立边界。一次批准不扩大 sandbox，一项 sandbox 配置也不代替操作授权。Consumer 必须实际调用所配置的 provider，不能只在配置页显示策略。
+
+修改隔离时从目标平台支持矩阵检查真实约束，特别是路径边界、子进程继承和失败回退。无法实施应明确报告，不得静默退回无隔离执行并称作成功。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/sandbox.md" />
+<CodeRef path="docs/defensive-patterns.md" />
+<CodeRef path="native/system/docs/support-matrix.md" />

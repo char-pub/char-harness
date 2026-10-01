@@ -1,0 +1,40 @@
+---
+description: "委派与Team协作 (delegation-teams)：spawn和fork差别；子代理来源权限；Team task/mailbox如何持久化；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/subagent/subagent/src/types.ts"
+    - "packages/experimental/agent-team/src/mailbox.ts"
+    - "packages/subagent/subagent-spawn-in-process/src/index.ts"
+    - "packages/subagent/subagent-fork-in-process/src/index.ts"
+    - "packages/subagent/subagent-acp/src/index.ts"
+    - "packages/subagent/subagent-dsh-sdk/src/index.ts"
+    - "packages/subagent/subagent-codex/src/index.ts"
+    - "packages/subagent/subagent-claude-code/src/index.ts"
+    - "packages/subagent/tool-subagent-control/src/index.ts"
+    - "packages/experimental/agent-team/src/lifecycle.ts"
+    - "packages/experimental/tool-agent-team/src/index.ts"
+    - "packages/experimental/client-ui-agent-team/src/index.ts"
+    - "docs/subsystems/subagent.md"
+    - "docs/subsystems/agent-team.md"
+relations:
+  requires:
+    - "execution-model.mdx"
+    - "sessions/event-log.mdx"
+  related:
+    - "automation/schedules-jobs.mdx"
+    - "automation/workflows.mdx"
+---
+
+# 委派与Team协作
+
+委派由 subagent seam 和不同 Provider 实现，父子 scope、来源和共享工作区约束必须显式携带。Spawn、fork、外部 SDK/ACP/Codex/Claude provider 不天然提供相同历史或取消保证。
+
+Team task/mailbox 是独立持久协作模型，不等于多个 subagent 同时运行。共享文件系统也不授予改动别人工作或发送消息的权限，资源释放与结果归属仍跟具体父子实例。
+
+改委派时检查创建失败、取消、父作用域退出与结果回传，避免把外部进程仍运行当作已经结算。改 Team 时检查任务/邮箱事实，而非仅以 agent 数量证明协作正确。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/subagent.md" />
+<CodeRef path="docs/subsystems/agent-team.md" />

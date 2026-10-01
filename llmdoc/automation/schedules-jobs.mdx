@@ -1,0 +1,34 @@
+---
+description: "定时任务与后台工作 (schedules-jobs)：schedule重启会重复投递吗；job归哪个Session；cancel后何时结算；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/schedule/schedule/src/types.ts"
+    - "packages/schedule/schedule/src/delivery-history.ts"
+    - "packages/schedule/schedule/src/storage.ts"
+    - "packages/jobs/jobs/src/types.ts"
+    - "packages/jobs/jobs-local/src/index.ts"
+    - "packages/jobs/tool-jobs/src/index.ts"
+    - "packages/api/job-controller/src/index.ts"
+    - "packages/client/ui-schedule/src/index.ts"
+    - "docs/subsystems/schedule.md"
+    - "docs/subsystems/jobs.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+  related:
+    - "execution/processes-terminals.mdx"
+---
+
+# 定时任务与后台工作
+
+Schedule 负责按时投递，Job 负责已启动工作的运行与结算；两者都可关联 Session，但不应共用一份模糊的“后台任务已完成”状态。重启恢复记录也不能被当成用户再次授权外部副作用。
+
+定时投递要检查 delivery 历史与恢复，Job 取消要检查实际进程/资源何时退出。UI 显示取消中不代表工作已经停下；失去响应也不代表可以安全重新启动同一工作。
+
+修改后台执行时明确任务身份、归属、取消和回收边界。只测试定时器触发不足以证明重启不重复或运行中资源已清理；具体存储字段和队列状态由类型与 provider 恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/schedule.md" />
+<CodeRef path="docs/subsystems/jobs.md" />

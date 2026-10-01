@@ -1,0 +1,30 @@
+---
+description: "外部Webhook触发 (webhooks)：GitHub webhook如何认证；delivery是否去重；规则能触发什么；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/webhook/webhook/src/types.ts"
+    - "packages/webhook/webhook-github/src/index.ts"
+    - "packages/webhook/webhook/src/index.ts"
+    - "docs/subsystems/webhook.md"
+    - "packages/webhook/webhook/README.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+    - "state/workspace-settings.mdx"
+  related:
+    - "security/credentials-accounts.mdx"
+---
+
+# 外部Webhook触发
+
+Webhook 先由 Provider 认证外部交付，再按可信规则路由到 Workspace/Session。外部 payload 是输入，不直接取得工具执行权或覆盖本地规则；认证身份和实际行为授权需分开。
+
+不能把成功接收 HTTP 请求扩大为业务完成，也不能在没有持久实现时宣称 delivery 恰好一次或自动去重。规则与 Session 创建发生在哪个阶段，决定失败后可重试的范围。
+
+增加 Provider 时检查签名、重复/迟到输入、错误归因和规则作用域。事件字段及支持来源保留在类型与 Provider 文档，知识只记录认证→规则→领域写入的信任方向。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/webhook.md" />
+<CodeRef path="packages/webhook/webhook/README.md" />

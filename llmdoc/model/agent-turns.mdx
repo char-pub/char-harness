@@ -1,0 +1,34 @@
+---
+description: "Agent回合、inbox和取消 (agent-turns)：新用户消息如何打断；取消时哪些结果已提交；下一轮何时开始；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/core/agent/src/index.ts"
+    - "packages/core/agent-loop/src/inbox.ts"
+    - "packages/core/agent-loop/src/agent.ts"
+    - "packages/core/agent-loop/src/assistant-stream.ts"
+    - "packages/core/agent-loop/src/tool-calls.ts"
+    - "docs/subsystems/core.md"
+    - "packages/core/agent-loop/README.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+    - "model/provider-requests.mdx"
+    - "model/tools.mdx"
+  related:
+    - "automation/recorded-intent.mdx"
+    - "tools/hooks.mdx"
+---
+
+# Agent回合、inbox和取消
+
+Agent driver 从 inbox 领取工作，组合模型请求并执行其工具调用；turn 可以包含多个 step，也可以在产生请求前结束。新消息和取消如何介入由 driver 的提交点决定，不应由 UI 自行推进回合状态。
+
+异步准备被取消不等于已经 durable 的结果可撤回。请求前准备、模型流、工具结算与下一轮调度都需要区分尚未提交和已经提交的事实。Agent 初始化失败也需要清理资源，不能留下半登记的活跃实例。
+
+Optional 能力通过事件或 seam 接入；为一个工具、Goal 或 workflow 改造主循环会扩散其失败模型。改驱动时检查中断、排队、空请求、初始化与卸载，而不只验证一次正常答复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/core.md" />
+<CodeRef path="packages/core/agent-loop/README.md" />

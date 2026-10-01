@@ -1,0 +1,29 @@
+---
+description: "Jev/Laya决策适配 (selectors)：Jev或Laya怎样选择资料；低置信度怎么办；模型路由与目录预算；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/charpub-roleplay/src/jev.ts"
+    - "packages/experimental/charpub-roleplay/src/laya.ts"
+    - "packages/experimental/charpub-roleplay/src/noul.ts"
+    - "packages/experimental/charpub-roleplay/tests/jev.test.ts.snapshot"
+    - "packages/experimental/charpub-roleplay/tests/laya.test.ts.snapshot"
+    - "packages/experimental/charpub-roleplay/README.md"
+relations:
+  requires:
+    - "roleplay/replay-sdk.mdx"
+  related:
+    - "model/provider-requests.mdx"
+---
+
+# Jev/Laya决策适配
+
+Jev 和 Laya 适配可替换的判断/选择服务，生成模型路由是另一项配置。请求只携带已获准的 View/目录信息，渐进展开受目录深度、预算与全请求限额约束，不能偷偷发送完整 Source 或 trusted index。
+
+拒绝、unknown、低置信度与传输失败必须按明确 skip/undetermined 语义结算；不得补造一次肯定判断以推进 Story。取消后的迟到响应不能提交状态。
+
+Decision record 绑定前后态和真实 Plan，重放须核精确摘要及请求身份。Mock协议和固定概率测试证明输入/失败边界，不证明模型判定质量；真实endpoint/model配置在适配器权威维护。
+
+## 权威入口
+
+<CodeRef path="packages/experimental/charpub-roleplay/README.md" />

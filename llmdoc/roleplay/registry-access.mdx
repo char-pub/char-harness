@@ -1,0 +1,29 @@
+---
+description: "Registry OAuth、精确读取与授权 (registry-access)：草稿产物如何访问；token refresh可否复活旧授权；Source按哪个版本抓；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/charpub-roleplay-runtime/src/registry/client.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/registry/oauth.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/registry/transport.ts"
+    - "packages/experimental/charpub-roleplay-runtime/tests/registry.test.ts"
+    - "packages/experimental/charpub-roleplay-runtime/README.md"
+relations:
+  requires:
+    - "security/credentials-accounts.mdx"
+  related:
+    - "roleplay/author-return.mdx"
+    - "roleplay/local-player.mdx"
+---
+
+# Registry OAuth、精确读取与授权
+
+Registry client 以固定 registry/issuer/client 配置完成 PKCE OAuth，再读取精确 Release 或私有 dbld。来源、锁、产物摘要及 Source 字节需相互匹配；local origin 本身不授予服务端读取权限。
+
+Refresh 不改变既有授权身份，但新的登录、撤销、401 或 dispose 必须使旧进行中的结果失效。不能让迟到 refresh 复活 token，也不能在 Bearer 失败后偷偷用浏览器 cookie。
+
+授权状态只报告当前client实际持有的grant；固定模型配置不触发在线探测，也不被表述为已验证可用。读取和写入受 timeout/字节上限约束；未知 POST 结果不能自动重试为新操作。派生/投稿还需要本地明确确认与当前授权绑定。当前 scopes和错误码以client/contracts为准，凭据不进入Session、候选或交接URL。
+
+## 权威入口
+
+<CodeRef path="packages/experimental/charpub-roleplay-runtime/README.md" />

@@ -1,0 +1,34 @@
+---
+description: "跨主题执行模型 (execution-model)：所有能力为什么都是plugin；Host与Client谁拥有状态；新能力是否改loop；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/core/scope/src/index.ts"
+    - "packages/core/agent/src/types.ts"
+    - "packages/core/session/src/types.ts"
+    - "AGENTS.md"
+    - "docs/architecture.md"
+    - "docs/capability-seams.md"
+relations:
+  related:
+    - "composition/profiles.mdx"
+    - "sessions/event-log.mdx"
+    - "model/agent-turns.mdx"
+    - "clients/remote-api.mdx"
+    - "roleplay/session-runtime.mdx"
+    - "engineering/verification.mdx"
+---
+
+# 跨主题执行模型
+
+Harness 的运行能力由 Cordis 插件组成。定义包给出契约，Provider 提供执行能力，Consumer 使用注入的能力；Host 持有进程、资源和领域事实，Client 呈现投影及用户尚未提交的输入。新增可替换能力先定位这三个角色，不把实现选择塞进 AgentLoop。
+
+Session event 记录需要恢复的事实；agent event 表达进行中的回合；capability event 承担能力自身的策略与适配。把其中一类改成另一类会改变恢复、取消或授权语义，不能只看类型是否可编译。
+
+默认编码回合和独立 roleplay driver 是不同组合。共同使用 Session/LLM 不意味着共享提示词、自动执行流程或用户授权。应用启动、工具执行、持久化和客户端分别进入对应 owner；这里不保存包清单或生成服务目录。
+
+## 权威入口
+
+<CodeRef path="AGENTS.md" />
+<CodeRef path="docs/architecture.md" />
+<CodeRef path="docs/capability-seams.md" />

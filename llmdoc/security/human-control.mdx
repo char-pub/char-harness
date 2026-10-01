@@ -1,0 +1,37 @@
+---
+description: "人类审批、权限preset与提问 (human-control)：Allowed once谁决定；Sandbox和Approval是否同一权限；Auto review信任范围；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/interaction/user-approval/src/types.ts"
+    - "packages/experimental/auto-review/src/index.ts"
+    - "packages/interaction/user-approval/src/index.ts"
+    - "packages/interaction/permission-presets/src/index.ts"
+    - "packages/interaction/user-questions/src/index.ts"
+    - "packages/interaction/commands/src/index.ts"
+    - "packages/client/ui-approval/src/index.ts"
+    - "packages/client/ui-user-questions/src/index.ts"
+    - "docs/subsystems/approval.md"
+    - "docs/subsystems/permission-presets.md"
+    - "docs/subsystems/user-questions.md"
+    - "docs/subsystems/commands.md"
+relations:
+  requires:
+    - "model/tools.mdx"
+  related:
+    - "execution/sandbox.mdx"
+---
+
+# 人类审批、权限preset与提问
+
+人类审批、Permission preset、Sandbox 和问题回答拥有不同语义。审批结果针对一个实际操作；preset 选择默认策略；sandbox约束执行效果；回答问题不自动批准它所提到的动作。
+
+模型建议、自动 review 和界面展示都不能冒充人的确认。真正执行处仍须消费有效授权，PTC 或嵌套工具也一样；取消/失效后迟到的审批结果不得作用于另一操作。
+
+改审批能力时检查请求身份、一次/持续许可、拒绝与取消，以及 caller 如何执行结果。不要仅用隐藏工具、改变提示词或 UI 禁用来证明服务端副作用已被阻止。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/approval.md" />
+<CodeRef path="docs/subsystems/permission-presets.md" />
+<CodeRef path="docs/subsystems/user-questions.md" />

@@ -1,0 +1,34 @@
+---
+description: "Roleplay持久请求与Story提交 (session-runtime)：pending模型请求会推进Story吗；重复命令怎样恢复；stop后还能对话吗；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/charpub-roleplay-runtime/src/events.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/projection.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/index.ts"
+    - "packages/experimental/charpub-roleplay-runtime/cordis.patch.yml"
+    - "packages/experimental/charpub-roleplay-runtime/tests/composition.test.ts"
+    - "packages/experimental/charpub-roleplay-runtime/README.md"
+    - "docs/subsystems/charpub-roleplay.md"
+relations:
+  requires:
+    - "roleplay/replay-sdk.mdx"
+    - "sessions/event-log.mdx"
+    - "sessions/durability-migrations.mdx"
+  related:
+    - "roleplay/author-return.mdx"
+    - "roleplay/local-player.mdx"
+---
+
+# Roleplay持久请求与Story提交
+
+Roleplay driver 使用现有 Session store，却不挂编码 AgentLoop/system prompt。Opened 固定输入，requested 在派发前持久化实际有序消息与有效模型配置，settled 记录成功结果或失败尝试；pending 不是已经提交的剧情。
+
+只成功结算推进 Story，失败与取消保留尝试证据。恢复 pending 请求不会自动重发模型；重复命令需匹配原身份与输入。开始持久提交后取消可能与结果不确定相遇，应重读日志而不是自信回滚。
+
+投影重建和流终止检查都属于恢复契约，成功流不能在终止后继续输出。改动必须验证实际 Loader、JSONL、请求与日志对账；纯回放通过不足以证明持久层或模型派发正确。
+
+## 权威入口
+
+<CodeRef path="packages/experimental/charpub-roleplay-runtime/README.md" />
+<CodeRef path="docs/subsystems/charpub-roleplay.md" />

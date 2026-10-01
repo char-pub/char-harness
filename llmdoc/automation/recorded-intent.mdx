@@ -1,0 +1,35 @@
+---
+description: "Goal、Plan、Todo与人类意图 (recorded-intent)：goal何时自动继续；plan确认算不算执行许可；todo是否持久；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/goal/goal/src/types.ts"
+    - "packages/goal/goal-round-driver/src/index.ts"
+    - "packages/goal/goal/src/fold.ts"
+    - "packages/plan/plan-mode/src/index.ts"
+    - "packages/todo/tool-todo/src/index.ts"
+    - "packages/client/ui-goal/src/index.ts"
+    - "packages/client/ui-plan/src/index.ts"
+    - "docs/subsystems/goal.md"
+    - "docs/subsystems/plan.md"
+    - "docs/subsystems/todo.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+  related:
+    - "security/human-control.mdx"
+---
+
+# Goal、Plan、Todo与人类意图
+
+Goal、Plan 和 Todo 表达不同的人类意图。Goal 持久阶段和当前进程的激活状态不同；Plan 的审阅不自动批准其中每个副作用；Todo 是工作记录，不能被当成已执行证据。
+
+自动继续的 driver 只能根据明确的 Goal 状态和运行边界推进，不能从一段自然语言或 UI 显示推断持久状态已改变。历史 revision 的折叠与新的用户修改需要保持可解释。
+
+变更这些能力时分别检查持久记录、折叠结果、当前执行与客户端显示。停止或取消并不总能撤回已提交动作；精确状态机和命令由所属 schema/README 恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/goal.md" />
+<CodeRef path="docs/subsystems/plan.md" />
+<CodeRef path="docs/subsystems/todo.md" />

@@ -1,0 +1,33 @@
+---
+description: "上游同步、固定外部SDK与许可 (upstream-dependencies)：本仓和DeepSeek上游怎样同步；vendor改动怎么重放；SDK归档能覆盖吗；主权、失败与变更约束"
+kind: guide
+code:
+  paths:
+    - "third_party/charpub/manifest.json"
+    - "scripts/verify-charpub-sdk.mjs"
+    - "scripts/rescope-vendor.ts"
+    - "scripts/gen-third-party-notices.ts"
+    - "pnpm-workspace.yaml"
+    - "scripts/release/pack.ts"
+    - "vendor/README.md"
+    - "third_party/charpub/README.md"
+    - "docs/rescope.md"
+    - "spec/goals/roleplay/VISION.md"
+relations:
+  related:
+    - "engineering/documentation.mdx"
+---
+
+# 上游同步、固定外部SDK与许可
+
+上游代码、vendored Cordis 和固定 char.pub SDK 各有独立来源。同步保留许可与既有边界，不能把本地private实验包视为上游公共发行或将source checkout当作已安装SDK。
+
+SDK快照与旧历史字节不可覆盖；新current选择必须与依赖/lock/verifier一致。Vendor改动通过正式rescope/notice流程恢复，具体remote和版本以Git/manifest为权威，不在人工知识正文复制commit标识。
+
+更新依赖时核其实际public入口、许可notice、旧数据恢复和安装后行为。上游同步成功不证明本地扩展已兼容，固定hash也不证明接口语义未变化；这些需要分别验收。
+
+## 权威入口
+
+<CodeRef path="vendor/README.md" />
+<CodeRef path="third_party/charpub/README.md" />
+<CodeRef path="docs/rescope.md" />

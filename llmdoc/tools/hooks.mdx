@@ -1,0 +1,31 @@
+---
+description: "Claude/Codex hook桥 (hooks)：旧hooks.json哪些支持；hook能阻止工具吗；detached任务在哪收口；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/hooks/hook-protocol/src/types.ts"
+    - "packages/hooks/hook-protocol/src/runner.ts"
+    - "packages/hooks/hook-protocol/src/detached.ts"
+    - "packages/hooks/hooks-claude-code/src/index.ts"
+    - "packages/hooks/hooks-codex/src/index.ts"
+    - "packages/hooks/README.md"
+    - "packages/hooks/hook-protocol/README.md"
+relations:
+  requires:
+    - "model/agent-turns.mdx"
+  related:
+    - "execution/processes-terminals.mdx"
+---
+
+# Claude/Codex hook桥
+
+Claude/Codex hook bridge 复用共享协议解析与 runner，仅承诺当前支持的 command 子集，不模拟外部产品全部 hook 语义。Hook 输入、阻断结果和继续执行必须映射到 Harness 自己的拦截点。
+
+执行 hook 是实际子进程操作；detached 任务仍有 owner 和收口边界。某个外部配置字段能解析并不意味着其效果已经实现，不能忽略不支持项后对外宣称兼容。
+
+改变适配时核对触发时点、输入编码、阻断与失败策略，以及后台任务释放。模型/工具实际看见的效果要有相应事件证据，而不是只保存原 hooks 配置。
+
+## 权威入口
+
+<CodeRef path="packages/hooks/README.md" />
+<CodeRef path="packages/hooks/hook-protocol/README.md" />

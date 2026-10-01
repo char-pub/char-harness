@@ -1,0 +1,34 @@
+---
+description: "插件安装、激活、HMR与处置 (plugin-lifecycle)：插件明明安装为何不生效；撤掉插件如何清资源；配置热更失败；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/boot/plugin-manager/src/index.ts"
+    - "packages/boot/plugin-manager/src/build-approval.ts"
+    - "packages/boot/plugin-manager/src/operations.ts"
+    - "packages/boot/hmr/src/index.ts"
+    - "packages/client/hmr/src/index.ts"
+    - "packages/boot/plugin-manager/README.md"
+    - "packages/boot/hmr/README.md"
+    - "docs/subsystems/boot.md"
+relations:
+  requires:
+    - "composition/profiles.mdx"
+  related:
+    - "clients/web-composition.mdx"
+    - "security/credentials-accounts.mdx"
+---
+
+# 插件安装、激活、HMR与处置
+
+Plugin Manager 负责当前 profile 的安装与选择，Loader/HMR 负责实际挂载和释放。包已安装不代表服务已激活；动态 UI 模块也必须随所属 entry 生命周期处置。管理写入和配置重载有各自串行边界，不能因为一次 pnpm 成功就宣称组合已 ready。
+
+安装失败/取消会恢复所记录的 manifest 与 lock，但已获准依赖脚本的外部效果不能由此保证回滚。权限许可和版本兼容豁免是两件事；精确版本豁免不允许执行脚本，也不跟随插件或 Harness 升级自动迁移。
+
+取消只能在尚可取消阶段停止安装；进入应用阶段后应等待最终状态。失去响应时查询正在执行的 request，不把没有活动记录解释为成功。修复应保留失败阶段和诊断，避免以重复安装掩盖资源未清退。
+
+## 权威入口
+
+<CodeRef path="packages/boot/plugin-manager/README.md" />
+<CodeRef path="packages/boot/hmr/README.md" />
+<CodeRef path="docs/subsystems/boot.md" />

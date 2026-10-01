@@ -1,0 +1,36 @@
+---
+description: "Web Host、Client启动与资源模块 (web-composition)：Web页面怎么组装；插件脚本从哪加载；Host进程未ready怎么办；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/host/webserver/src/index.ts"
+    - "packages/client/modules/src/client/entry-lifecycle.ts"
+    - "packages/host/webserver/src/injections.ts"
+    - "packages/host/frontend-static/src/index.ts"
+    - "packages/client/modules/src/index.ts"
+    - "packages/client/modules/src/client/system.ts"
+    - "packages/client/resources/src/index.ts"
+    - "apps/web/src/main.ts"
+    - "docs/subsystems/web-server.md"
+    - "docs/subsystems/client-modules.md"
+    - "docs/subsystems/web-client.md"
+relations:
+  requires:
+    - "clients/remote-api.mdx"
+  related:
+    - "clients/conversation-ui.mdx"
+---
+
+# Web Host、Client启动与资源模块
+
+Web Host 提供路由、boot injections 和静态资源；Client module 系统负责 browser 侧激活与处置。资源成功加载不表示 Host 服务 ready，页面打开也不意味着所有插件已经可用。
+
+模块版本、entry 生命周期和资源来源要一致，热更/处置不能让旧模块继续持有当前状态。Node 半部与 browser 半部通过明确的公开接口连接，不能从页面直接导入 Host 实现绕过边界。
+
+修改启动时分别验证静态文档、注入、连接、模块ready以及卸载；一个 HTTP health 200 无法覆盖整个用户业务链。独立 roleplay client 有其专属 app/controller，不默认成为通用 Web profile 的模块。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/web-server.md" />
+<CodeRef path="docs/subsystems/client-modules.md" />
+<CodeRef path="docs/subsystems/web-client.md" />

@@ -1,0 +1,36 @@
+---
+description: "TS/Python SDK与ACP自动化 (sdk-acp)：Python runtime从哪找；SDK能绕过profile启动吗；ACP为何不是人类UI；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/sdk/protocol/src/types.ts"
+    - "python/sdk/src/deepseek_harness/client.py"
+    - "packages/sdk/server/src/server.ts"
+    - "packages/sdk/client/src/client.ts"
+    - "python/sdk-runtime/src/deepseek_harness_runtime/_resources.py"
+    - "packages/acp/acp/src/index.ts"
+    - "packages/sdk/README.md"
+    - "python/sdk/README.md"
+    - "python/sdk-runtime/README.md"
+    - "packages/acp/acp/README.md"
+relations:
+  requires:
+    - "composition/profiles.mdx"
+    - "sessions/event-log.mdx"
+  related:
+    - "security/human-control.mdx"
+---
+
+# TS/Python SDK与ACP自动化
+
+TypeScript/Python SDK 都投影同一 Host 协议与运行模型。SDK 选择同版本 dsh runtime 和明确 profile；Python runtime wheel 是分发载体，不是另一个业务实现或任意 config launcher。
+
+ACP 面向机器自动化，其批准与交互语义不能伪装成人类 Web UI 的点击。跨语言 API 的同名方法也需要保持真实 wire 行为，类型可编译不足以证明 runtime 已被正确打包。
+
+修改 SDK 时检查公开 compiled entry、安装后资源查找、协议失败和进程退出。测试直连源码只覆盖开发面，不能据此声明 npm/wheel 与目标平台可用。
+
+## 权威入口
+
+<CodeRef path="packages/sdk/README.md" />
+<CodeRef path="python/sdk/README.md" />
+<CodeRef path="python/sdk-runtime/README.md" />

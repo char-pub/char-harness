@@ -1,0 +1,29 @@
+---
+description: "LSP生命周期 (lsp)：语言服务器怎样启动；远端文件URI；重启谁释放stdio；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/lsp/lsp/src/types.ts"
+    - "packages/lsp/lsp-stdio/src/index.ts"
+    - "packages/lsp/tool-lsp/src/index.ts"
+    - "docs/subsystems/lsp.md"
+    - "packages/lsp/lsp-stdio/README.md"
+relations:
+  requires:
+    - "execution/processes-terminals.mdx"
+  related:
+    - "execution/filesystem.mdx"
+---
+
+# LSP生命周期
+
+LSP seam 负责 workspace 下语言服务器的协议与生命周期，stdio Provider 持有真实进程和通道，工具消费其能力。它不是可任意重试的普通文件查询。
+
+文件 URI 必须属于正确执行世界和 workspace。重启、取消或卸载应释放 stdio 资源，不能让旧服务器的迟到响应作用于新请求；协议故障和语言诊断也不能合并为同一种失败。
+
+修改 LSP 时检查 workspace 匹配、进程 ready/退出与请求关联，而不只验证某个补全结果。命令、语言支持和协议字段由 provider 和类型直接恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/lsp.md" />
+<CodeRef path="packages/lsp/lsp-stdio/README.md" />

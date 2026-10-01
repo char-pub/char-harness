@@ -1,0 +1,35 @@
+---
+description: "工具定义、执行与展示 (tools)：工具schema在哪；PTC typed return；工具UI能否执行操作；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/core/tools/src/index.ts"
+    - "packages/core/tools/src/presentation.ts"
+    - "packages/core/tools/src/schema.ts"
+    - "packages/core/tools/src/ptc.ts"
+    - "packages/core/agent-tool-presentation/src/index.ts"
+    - "packages/guard/timeout-policy/src/index.ts"
+    - "packages/guard/repeat-tool-reminder/src/index.ts"
+    - "packages/client/ui-tool/src/index.ts"
+    - "docs/subsystems/tools.md"
+    - "docs/cookbook/adding-a-tool.md"
+relations:
+  requires:
+    - "execution-model.mdx"
+  related:
+    - "security/human-control.mdx"
+    - "execution/ptc.mdx"
+---
+
+# 工具定义、执行与展示
+
+工具定义、执行和呈现是三个边界。Schema 告诉模型如何表达调用；执行管线持有拦截、授权和结果契约；Host presenter/Client UI 描述已经发生的调用。隐藏一个按钮或 schema 项不能代替执行处拒绝。
+
+PTC 内部调用同样必须经过工具授权和 typed 结果约束，不能因为它由一段程序发起就绕过检查。Timeout/repeat guard 是明确附加策略，其行为不能被误认为每一个原始 ToolDefinition 都天然拥有。
+
+更改工具时同时检查模型声明、实际执行、副作用结算和用户看到的结果。返回值或附件布局变化还需核对持久回放与消费者；当前字段清单从工具定义恢复，不在知识文档另抄一份。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/tools.md" />
+<CodeRef path="docs/cookbook/adding-a-tool.md" />

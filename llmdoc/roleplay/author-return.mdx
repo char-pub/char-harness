@@ -1,0 +1,28 @@
+---
+description: "玩家产出回创作与合成预览 (author-return)：保存结局投稿；游玩状态能否续作；导出会复制私聊吗；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/charpub-roleplay-runtime/src/ending-proposal.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/preview-export.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/story-continuation.ts"
+    - "packages/experimental/charpub-roleplay-runtime/README.md"
+relations:
+  requires:
+    - "roleplay/session-runtime.mdx"
+    - "roleplay/registry-access.mdx"
+  related:
+    - "roleplay/local-player.mdx"
+---
+
+# 玩家产出回创作与合成预览
+
+玩家回流分成 Ending 投稿、from_play 续作和合成预览导出。每项先准备可审阅候选，再按候选摘要、当前授权与 committed Session head 确认；准备不是已提交，确认也不等于服务端必定成功。
+
+Ending 发送允许的贡献字段；续作由服务端按精确发布作者定义构造本人新私有稿，携带的是校验过的状态起点而非完整游玩历史。合成预览必须由用户显式提供 history/bindings，不能自动复制真实私聊或私人角色描述。
+
+候选只含该动作白名单，不上传 Session日志、OAuth凭据或 Source正文。新的开局重置进度不能被称为原玩家存档恢复；导出文件也不自动保存为作者测试。每个用户确认对应独立动作，取消保留原Session字节。
+
+## 权威入口
+
+<CodeRef path="packages/experimental/charpub-roleplay-runtime/README.md" />

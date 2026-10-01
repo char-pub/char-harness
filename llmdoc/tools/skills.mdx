@@ -1,0 +1,32 @@
+---
+description: "Skill发现与渐进加载 (skills)：skill目录何时暴露；SKILL正文谁读；office技能依赖；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/skill/skill/src/index.ts"
+    - "packages/skill/skill-filesystem/src/index.ts"
+    - "packages/skill/tool-skill/src/index.ts"
+    - "packages/skill/skill-office/src/index.ts"
+    - "packages/skill/tool-workspace-dependencies/src/index.ts"
+    - "docs/subsystems/skills.md"
+    - "packages/skill/README.md"
+relations:
+  requires:
+    - "model/context-inputs.mdx"
+  related:
+    - "execution/filesystem.mdx"
+    - "tools/mcp.mdx"
+---
+
+# Skill发现与渐进加载
+
+Skill registry 分离用于发现的 metadata 与按需加载的正文。一个 Skill 出现在目录中不表示其所有文本、文件或依赖都已进入模型上下文；filesystem Provider 负责实际来源解析，tool 负责模型读取入口。
+
+Skill 说明本身不能越过原有工具授权和文件边界。Office 等能力的依赖检测也有明确执行来源，不应因目录发现成功就承诺外部程序已经可用。
+
+修改发现或加载时检查来源、作用域、缺失正文以及依赖失败的归因。保持 metadata 轻量并按需读取正文，避免将所有 Skill 一次注入 prompt 而绕过原来的渐进加载机制。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/skills.md" />
+<CodeRef path="packages/skill/README.md" />

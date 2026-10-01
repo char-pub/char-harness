@@ -1,0 +1,32 @@
+---
+description: "非Session存储与schema迁移 (domain-storage)：什么时候用storageDomain而非Session；SQLite版本怎么升；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/storage/storage/src/index.ts"
+    - "packages/storage/storage-sqlite/src/schema.ts"
+    - "packages/storage/storage-domain/src/index.ts"
+    - "packages/storage/storage-json/src/index.ts"
+    - "packages/storage/storage-sqlite/src/unit.ts"
+    - "docs/subsystems/storage.md"
+    - "packages/storage/README.md"
+relations:
+  requires:
+    - "execution-model.mdx"
+  related:
+    - "sessions/durability-migrations.mdx"
+    - "state/workspace-settings.mdx"
+---
+
+# 非Session存储与schema迁移
+
+非 Session 领域数据通过 Storage hub 与 typed domain 存储；JSON/SQLite backend 管介质，domain 管含义。普通键值记录没有自动获得 append-only 日志的事实或回放语义。
+
+迁移由拥有该 schema 的 domain 明确承担，SQLite 版本单调推进。清缓存、重建索引与迁移持久领域状态不能共享一个含糊的“重置数据”动作。
+
+修改存储时检查 schema 版本、部分写入与关闭/恢复路径，确认需要的是领域状态还是 Session event。Backend 可替换不代表所有实现有相同事务和持久性保证，消费者应依公开契约行事。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/storage.md" />
+<CodeRef path="packages/storage/README.md" />

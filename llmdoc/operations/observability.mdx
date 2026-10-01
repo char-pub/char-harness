@@ -1,0 +1,37 @@
+---
+description: "遥测、反馈与诊断 (observability)：哪个字段会上报；Session日志如何脱敏；Inspector能看到什么；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/telemetry/otel/src/index.ts"
+    - "packages/session/session-telemetry-otel/src/index.ts"
+    - "packages/host/product-telemetry-otel/src/index.ts"
+    - "packages/client/product-analytics/src/index.ts"
+    - "packages/feedback/command-feedback/src/index.ts"
+    - "packages/feedback/message-feedback/src/index.ts"
+    - "packages/runtime-diagnostics/invariants/src/index.ts"
+    - "packages/experimental/inspector/src/index.ts"
+    - "docs/subsystems/otel.md"
+    - "docs/subsystems/product-telemetry.md"
+    - "docs/subsystems/session-telemetry.md"
+    - "docs/subsystems/invariants.md"
+    - "packages/experimental/inspector/README.md"
+relations:
+  related:
+    - "security/credentials-accounts.mdx"
+    - "engineering/verification.mdx"
+---
+
+# 遥测、反馈与诊断
+
+Telemetry、feedback 和诊断是不同出口，事件存在并不自动授权采集。OTel 的独立 channel 管理自己的队列和销毁期限，产品统计与 Session 内容采集不能共享一个宽泛的“可上报”判断。
+
+Session 日志、用户反馈与调试 Inspector 可能包含敏感事实，应按各出口既定截取/脱敏规则处理。诊断不得把凭据或原始聊天混进普通错误信息。
+
+修改观测能力时检查实际发送字段、取消/flush deadline和停用后的资源释放。计数面板或mock收件成功只证明传输，不证明用户授权范围；字段列表从实际collector而非知识文档恢复。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/otel.md" />
+<CodeRef path="docs/subsystems/product-telemetry.md" />
+<CodeRef path="docs/subsystems/session-telemetry.md" />

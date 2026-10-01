@@ -1,0 +1,32 @@
+---
+description: "每Session preset与运行扩展 (presets-extensions)：如何选择Agent preset；模型可否安装自己的Cordis插件；personas作用域；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/preset/agent-preset-registry/src/types.ts"
+    - "packages/extensions/cordis-host-runner/src/index.ts"
+    - "packages/preset/agent-preset/src/index.ts"
+    - "packages/preset/persona/src/index.ts"
+    - "packages/extensions/cordis-client-runner/src/index.ts"
+    - "packages/extensions/tool-cordis/src/index.ts"
+    - "packages/preset/README.md"
+    - "docs/subsystems/extensions.md"
+relations:
+  requires:
+    - "composition/profiles.mdx"
+  related:
+    - "automation/delegation-teams.mdx"
+---
+
+# 每Session preset与运行扩展
+
+全局 profile 决定应用组成，Session 的 Agent preset 决定该会话采用的配置；persona 又是有作用域的内容贡献。改变其中一种不意味着可以重写另一种的既有事实或所有正在运行的会话。
+
+运行扩展通过明确的 Host/Client runner 和 Cordis 入口挂载。模型调用扩展工具不消除安装、执行和资源释放边界，移除 scope 时其注册与资源也应清退。不能为扩展能力另起隐藏的主循环。
+
+修改 preset 或动态扩展时，分别核对配置何时对新会话生效、已有会话是否变化、模型看到的新增能力如何记录，以及卸载后有哪些待结算工作。精确字段和默认值由当前类型/README 决定。
+
+## 权威入口
+
+<CodeRef path="packages/preset/README.md" />
+<CodeRef path="docs/subsystems/extensions.md" />

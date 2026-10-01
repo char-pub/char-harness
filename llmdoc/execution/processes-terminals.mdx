@@ -1,0 +1,37 @@
+---
+description: "子进程、shell与持久PTY (processes-terminals)：取消如何杀进程树；Bash/Pwsh输出保留；PTY跨调用归谁；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/subprocess/subprocess/src/types.ts"
+    - "packages/subprocess/subprocess-local/src/managed-owner.ts"
+    - "packages/subprocess/subprocess-local/src/windows-job.ts"
+    - "packages/shell/shell/src/types.ts"
+    - "packages/shell/bash-local/src/index.ts"
+    - "packages/shell/pwsh-local/src/index.ts"
+    - "packages/shell/tool-bash/src/index.ts"
+    - "packages/terminal/terminal/src/types.ts"
+    - "packages/terminal/terminal-bash/src/session.ts"
+    - "packages/terminal/tool-terminal/src/index.ts"
+    - "docs/subsystems/subprocess.md"
+    - "docs/subsystems/shell.md"
+    - "docs/subsystems/terminal.md"
+relations:
+  related:
+    - "execution/sandbox.mdx"
+    - "execution/ssh-world.mdx"
+---
+
+# 子进程、shell与持久PTY
+
+Subprocess seam、一次 shell 调用与跨调用持久 PTY 有不同资源生命周期。子进程退出、stdout/stderr 排空、终端 Session 保留和整个进程树停止不是同一事件。
+
+取消必须按实际进程/终端 owner 收口，不能只抛 AbortError 就把仍持有管道的后代留在后台。输出截断、spill 与返回结果应保留彼此关系，而不把丢失的输出冒充空成功。
+
+修改进程能力时检查 shell 选择、执行世界、继承句柄、超时和 dispose。测试须独占端口/临时路径/子进程；在单独运行时通过而并行互扰的用例仍是缺陷。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/subprocess.md" />
+<CodeRef path="docs/subsystems/shell.md" />
+<CodeRef path="docs/subsystems/terminal.md" />

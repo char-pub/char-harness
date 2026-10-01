@@ -1,0 +1,38 @@
+---
+description: "持久化、崩溃恢复与代际迁移 (durability-migrations)：JSONL损坏如何恢复；能否覆盖旧Session文件；迁移版本如何确认；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/session/session-persistence/src/index.ts"
+    - "packages/session/session-persistence-jsonl/src/generation.ts"
+    - "packages/session/session-persistence-jsonl/src/storage.ts"
+    - "packages/session/session-persistence-jsonl/src/lease.ts"
+    - "packages/session/session-format/src/index.ts"
+    - "packages/session/session-format-v3-to-v4/src/index.ts"
+    - "scripts/persistence-releases.ts"
+    - "native/system/packages/entry/src/flock.ts"
+    - "packages/util/atomic-write/src/index.ts"
+    - "docs/subsystems/persistence.md"
+    - "docs/session-format-status.md"
+    - "docs/cookbook/reviewing-persistence-type-changes.md"
+relations:
+  requires:
+    - "sessions/event-log.mdx"
+  related:
+    - "state/domain-storage.mdx"
+    - "engineering/verification.mdx"
+---
+
+# 持久化、崩溃恢复与代际迁移
+
+Session 持久化的承诺是可重建已经记录的事实，不能把内存更新或接口返回当作 flush 已成功。Storage/lease/worker 的持久屏障决定取消和恢复边界；写入结果不确定时要重新读取事实，不能直接重发外部操作。
+
+已提交的 Session generation 原字节不可移动、覆盖或删除。格式演进使用明确的相邻迁移与类型 acknowledgement；存在前代文件并不意味着支持自动回退或任意历史版本。SQLite schema 则遵循独立的单调迁移规则。
+
+变更 required event、序列化类型或恢复路径时同时检查生成 catalog、持久类型记录与真实旧 generation fixture。新构建恢复一个历史样本只证明该样本，不能据此宣称全部历史兼容。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/persistence.md" />
+<CodeRef path="docs/session-format-status.md" />
+<CodeRef path="docs/cookbook/reviewing-persistence-type-changes.md" />

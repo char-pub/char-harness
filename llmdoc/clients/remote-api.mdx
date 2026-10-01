@@ -1,0 +1,35 @@
+---
+description: "Typert Remote、API与浏览器信任 (remote-api)：Remote类型如何生成；对象实例怎么定位；browser RPC凭据谁持有；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/typert/protocol/src/types.ts"
+    - "packages/client/connection/src/api-request-trust.ts"
+    - "packages/typert/generator/src/analyzer.ts"
+    - "packages/typert/registry/src/service.ts"
+    - "packages/api/gateway/src/index.ts"
+    - "packages/api/remotes/src/index.ts"
+    - "packages/client/connection/src/rpc-host.ts"
+    - "packages/client/connection/src/client/rpc.ts"
+    - "packages/client/connection/src/browser-auth.ts"
+    - "docs/subsystems/typert.md"
+    - "docs/api-gateway.md"
+relations:
+  requires:
+    - "execution-model.mdx"
+  related:
+    - "clients/sdk-acp.mdx"
+---
+
+# Typert Remote、API与浏览器信任
+
+Typert 从声明生成 Remote 协议和类型，但生成类型不授权访问某个 Host 实例。Gateway/registry/controller 持有真实实例和请求边界，Client transport 负责可信连接，不复制 Host 业务事实。
+
+浏览器 RPC、凭据和对象实例定位不能靠任意输入字符串绕过检查。连接失败应保留原身份与错误语义，不得退回另一 Host、匿名通道或旧会话却继续展示成功。
+
+修改 Remote seam 时同步检查定义、生成物、Provider 和 Consumer；只更新类型可能掩盖实际协议缺口。当前方法清单和字段留在生成 catalog，知识层仅保留跨边界主权与失败规则。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/typert.md" />
+<CodeRef path="docs/api-gateway.md" />

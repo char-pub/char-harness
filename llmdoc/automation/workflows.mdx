@@ -1,0 +1,32 @@
+---
+description: "Workflow脚本编排 (workflows)：workflow和直接子代理区别；ralph循环如何结束；脚本在哪隔离；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/workflow/workflow/src/types.ts"
+    - "packages/workflow/workflow-ptc/src/runtime.ts"
+    - "packages/workflow/tool-workflow/src/index.ts"
+    - "packages/workflow/tool-ralph/src/index.ts"
+    - "packages/client/ui-workflow-run/src/index.ts"
+    - "docs/subsystems/workflow.md"
+    - "packages/workflow/workflow-ptc/README.md"
+relations:
+  requires:
+    - "execution/ptc.mdx"
+    - "automation/delegation-teams.mdx"
+  related:
+    - "automation/schedules-jobs.mdx"
+---
+
+# Workflow脚本编排
+
+Workflow 通过声明的 seam 和 PTC engine 执行编排，沿调用 Session 的执行世界与授权运行。脚本可以组织工具和委派，但不能另开绕过 sandbox/审批的 Host eval 通道。
+
+Workflow run 的状态不是普通子代理状态的别名；循环、取消、结果和资源处置由 engine 明确承担。前端看到运行中、后台 job 存在或模型说已完成，都不足以证明 workflow 结算。
+
+修改编排时同时核对 typed bindings、子操作授权、输出界限与取消传播。新 engine 应遵循同一契约；不要把测试中直接挂载某个实现当成产品组合入口。
+
+## 权威入口
+
+<CodeRef path="docs/subsystems/workflow.md" />
+<CodeRef path="packages/workflow/workflow-ptc/README.md" />

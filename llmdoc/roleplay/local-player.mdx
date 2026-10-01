@@ -1,0 +1,60 @@
+---
+description: "独立游玩页面与launch交接 (local-player)：从char.pub怎么打开Runtime；旧页签会回错Session吗；深色宿主文字看不见；主权、失败与变更约束"
+kind: architecture
+code:
+  paths:
+    - "packages/experimental/charpub-roleplay-runtime/src/app.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/app-ui.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/app-controller.ts"
+    - "packages/experimental/charpub-roleplay-runtime/app.patch.yml"
+    - "packages/experimental/charpub-roleplay-runtime/tests/app.test.ts"
+    - "packages/experimental/charpub-roleplay-runtime/PROFILE.md"
+    - "packages/experimental/charpub-roleplay-runtime/README.md"
+    - "apps/roleplay/README.md"
+    - "spec/roleplay-ui.md"
+    - "apps/roleplay/src/App.tsx"
+    - "apps/roleplay/src/api.ts"
+    - "apps/roleplay/src/main.tsx"
+    - "apps/roleplay/src/components/Bindings.tsx"
+    - "apps/roleplay/src/components/ReviewPanel.tsx"
+    - "apps/roleplay/src/components/Modal.tsx"
+    - "apps/roleplay/src/i18n.ts"
+    - "apps/roleplay/src/styles.css"
+    - "apps/roleplay/tests/App.test.tsx"
+    - "apps/roleplay/tests/api.test.ts"
+    - "apps/roleplay/package.json"
+    - "apps/roleplay/vite.config.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/app-assets.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/app-types.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/app-records.ts"
+    - "packages/experimental/charpub-roleplay-runtime/package.json"
+    - "packages/util/crypto/src/index.ts"
+relations:
+  requires:
+    - "roleplay/session-runtime.mdx"
+    - "roleplay/registry-access.mdx"
+  related:
+    - "clients/conversation-ui.mdx"
+---
+
+# 独立游玩页面与launch交接
+
+独立游玩 app 是 named dsh profile 的显式 opt-in 组合；React 包仅提供 private 静态产物，没有另一条应用 launcher。Host 持有 Registry/OAuth、模型和 Session 服务，浏览器只消费 type-only app-types DTO 与同源 API，不导入 Host 的执行实现。共享 util/crypto 为浏览器生成可恢复请求ID，不能改用仅安全上下文可用的临时UUID方案。
+
+静态文件在激活时从声明的浏览器包载入，只服务明确列出的产物，不以请求路径读取任意文件。页面 bootstrap 仅含本实例 nonce 与 Registry origin；Host 同时核对 Host、Origin、nonce 和 JSON 类型，页面/接口不缓存，打包的指纹资源可缓存。启动监听不依赖 Registry discovery；首次API/回调按需连接，连接失败可在下一次明确操作重试。Dispose 中止连接与活动操作、释放server并等待在途请求，不能在卸载后继续授权或派发。
+
+来自 char.pub 的 tokenless launch envelope 只描述精确来源、locale、视角和开局，不能覆盖本地模型/Registry配置。审阅rating、许可、能力与角色绑定后才创建新的日志；刷新dbld必须重新交接并解释新开局，不能把新产物覆盖旧Session。来源仍由真实Registry读取与SDK摘要验证。
+
+列表经持久化公共接口按页识别roleplay日志，unreadable条目保留可诊断状态，不把存储路径发给页面；record handle用于选择本地记录，active session handle用于实际操作，两者不互换。Resume重新读取精确Registry来源、核产物与授权后恢复已提交投影，不重新开场。旧页签、旧授权或另一个活跃Session的handle不能把输入转投新会话。
+
+每次用户发送固定request_id和原文本；结果未知先查询该请求，不立即换ID重发。确认not_found后才允许用户显式按原ID重试；持久pending必须明确处理，不能由刷新页面自动重发模型。取消只请求停止，已结算的回复仍可能被保存。配置中的模型名不证明凭据或在线模型已验证。
+
+未发送草稿和待查请求按record保存在tab-local session storage，界面语言/主题是本地偏好，不改变Story locale或日志。Synthetic导出使用独立空的摘要和绑定表单，不自动复制私聊/游玩角色私描述；审阅与下载是两个动作，服务端仍重核head。用户自选的Story状态也可能含秘密，不能把白名单导出称为全无敏感内容。
+
+真实宿主验收需要实际观察启动、OAuth、来源review、角色绑定、恢复、窄屏与浅深背景的可操作性；DOM/health成功不足以证明可玩。首选新tab失败时平台可选择同tab交接，仍使用原精确信封与守卫，不传token或正文。
+
+## 权威入口
+
+<CodeRef path="packages/experimental/charpub-roleplay-runtime/PROFILE.md" />
+<CodeRef path="packages/experimental/charpub-roleplay-runtime/README.md" />
+<CodeRef path="apps/roleplay/README.md" />
