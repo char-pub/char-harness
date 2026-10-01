@@ -1,0 +1,168 @@
+{
+  "schema": "llmdoc.meta/v3",
+  "baseline": {
+    "revision": "5e77418770985640e6b2bad0a5bb64d1ea23528d",
+    "verifiedAt": "2026-10-01T05:12:51.271Z"
+  },
+  "documents": {
+    "automation/delegation-teams.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "automation/recorded-intent.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "automation/schedules-jobs.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "automation/webhooks.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "automation/workflows.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/conversation-ui.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/desktop-lifecycle.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/remote-api.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/sdk-acp.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/voice-input.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/web-composition.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/worker-preview.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "clients/workspace-surfaces.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "composition/plugin-lifecycle.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "composition/presets-extensions.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "composition/profiles.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "content/files-and-attachments.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "engineering/build-release.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "engineering/documentation.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "engineering/upstream-dependencies.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "engineering/verification.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "execution-model.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "execution/filesystem.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "execution/lsp.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "execution/processes-terminals.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "execution/ptc.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "execution/sandbox.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "execution/ssh-world.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "model/agent-turns.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "model/compaction.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "model/context-inputs.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "model/provider-requests.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "model/tools.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "operations/observability.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "roleplay/author-return.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "roleplay/local-player.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "roleplay/registry-access.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "roleplay/replay-sdk.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "roleplay/selectors.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "roleplay/session-runtime.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "security/credentials-accounts.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "security/human-control.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "sessions/derived-views.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "sessions/durability-migrations.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "sessions/event-log.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "state/domain-storage.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "state/workspace-settings.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "tools/hooks.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "tools/mcp.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "tools/skills.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    },
+    "tools/web-and-device-use.mdx": {
+      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+    }
+  },
+  "convergence": {
+    "capturedAt": "2026-10-01T05:10:56Z",
+    "source": "init",
+    "documentCount": 51,
+    "totalEstimatedTokens": 6091
+  }
+}
