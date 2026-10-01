@@ -15,7 +15,7 @@ description: Roleplay Selector 目录提供额外的可见元数据，可能改�
 
 ## 迁移
 
-1. 保留 Replay JSON、Session JSONL 与 SDK 来源的原始字节，升级前备份；保留的 SDK 快照见[供应方目录](../../../../third_party/charpub/README.zh.md)。
+1. 保留 Replay JSON、Session JSONL 与 SDK 快照清单的原始字节，升级前备份；保留的 SDK 快照见[供应方目录](../../../../third_party/charpub/README.zh.md)。
 2. 重新检查实际请求限额并审阅 Selector 目录。只有经过明确配置决定才提高限额，不得通过移除新增元数据或跳过预算校验让旧请求勉强通过。
 3. 在副本上验证已存练习和 Session。验证失败时，保留原记录及匹配 SDK 供隔离检查；不要重算旧 head、重写旧 Plan 或重新标记以前的提供方证据。使用新行为继续游玩时，应明确创建新 Session。
 4. 更新模型可见请求快照前先审阅差异。运行 `pnpm run test:roleplay` 与 `pnpm run test:roleplay-runtime`，确认历史夹具摘要及 pending 恢复行为不变。这些本地测试不评估在线模型的选材质量。

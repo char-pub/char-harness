@@ -1,0 +1,34 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write apps/roleplay/README.md
+/:
+  en: 46957889bdfa177b
+  zh: d644cab589013b69
+/deepseek-ai-dsh-charpub-roleplay-web:
+  en: 7693526533674db3
+  zh: f773bcbcd442c1b0
+/deepseek-ai-dsh-charpub-roleplay-web/summary:
+  en: 009bfef8ba28cd44
+  zh: a1492e544384e38a
+/deepseek-ai-dsh-charpub-roleplay-web/table-of-contents:
+  en: b36ad997172eed1b
+  zh: 3f54a17b0e044cd3
+/deepseek-ai-dsh-charpub-roleplay-web/use-this-application:
+  en: 4646284a41a76b99
+  zh: 602e8273e01ada34
+/deepseek-ai-dsh-charpub-roleplay-web/recovery-and-privacy:
+  en: d0cc23905aeff13d
+  zh: 7745b4b8345983f8
+/deepseek-ai-dsh-charpub-roleplay-web/understand-the-implementation:
+  en: 63a054b946c0b74d
+  zh: 5760e75525b1a494
+/deepseek-ai-dsh-charpub-roleplay-web/model-experience:
+  en: 161e2f245fc2b132
+  zh: c21c4baef067c588
+/deepseek-ai-dsh-charpub-roleplay-web/known-limitations-and-deferred-work:
+  en: d69b150bd38865ff
+  zh: b41bf2e9df2bf1f7
+/deepseek-ai-dsh-charpub-roleplay-web/known-limitations-and-deferred-work/dev-note:
+  en: 37fa1e663a770df3
+  zh: 2ed8307cfb24881d

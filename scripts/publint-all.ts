@@ -12,6 +12,7 @@ import { parseArgs } from 'node:util'
 import { publint, type Message, type PackFile } from 'publint'
 import { formatMessage } from 'publint/utils'
 import ts from 'typescript'
+import { PRIVATE_EXPERIMENTAL_PACKAGE_DIRECTORIES } from './experimental-package-policy.ts'
 
 const CONCURRENCY_ENV = 'DSH_PUBLINT_CONCURRENCY'
 const repositoryRoot = resolve(import.meta.dirname, '..')
@@ -30,6 +31,7 @@ interface PackageTarget {
 interface PackageManifest {
   name?: string
   files?: unknown
+  private?: boolean
 }
 
 type PublintResult =
@@ -202,7 +204,12 @@ async function runPublint(target: PackageTarget): Promise<PublintResult> {
       pack: { files },
     })
     const manifest = result.pkg as Record<string, unknown>
-    const messages = result.messages.filter(message => !isBrowserBundleFormatFalsePositive(message))
+    // These explicit private consumers install verified SDK tarballs from this checkout;
+    // npm installation is not their distribution path. All export/closure checks still apply.
+    const privateSnapshotConsumer = target.manifest.private === true
+      && PRIVATE_EXPERIMENTAL_PACKAGE_DIRECTORIES.includes(target.path)
+    const messages = result.messages.filter(message => !isBrowserBundleFormatFalsePositive(message)
+      && !(privateSnapshotConsumer && message.code === 'LOCAL_DEPENDENCY'))
     return messages.some(message => message.type === 'error') || closureViolations.length > 0
       ? { path: target.path, status: 'failed', messages, closureViolations, manifest }
       : { path: target.path, status: 'passed', messages, closureViolations, manifest }

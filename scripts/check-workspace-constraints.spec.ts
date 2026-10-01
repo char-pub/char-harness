@@ -317,6 +317,17 @@ describe('package payload constraints', () => {
       .toEqual([expect.stringContaining('package.json files must be')])
   })
 
+  it('keeps only the named roleplay static app private with its exact payload', () => {
+    const dir = 'apps/roleplay'
+    const manifest = JSON.parse(readFileSync(new URL('../apps/roleplay/package.json', import.meta.url), 'utf8')) as WorkspaceManifest['manifest']
+    expect(checkWorkspaceManifest({ dir, manifest })).toEqual([])
+    expect(checkWorkspaceManifest({ dir, manifest: { ...manifest, private: false } })).toContainEqual(expect.stringContaining('must set "private": true'))
+    expect(checkWorkspaceManifest({ dir, manifest: { ...manifest, name: '@deepseek-ai/dsh-unregistered' } })).toContainEqual(expect.stringContaining('must use'))
+    expect(checkWorkspaceManifest({ dir, manifest: { ...manifest, publishConfig: { access: 'public' } } })).toContainEqual(expect.stringContaining('must omit publishConfig'))
+    expect(checkWorkspaceManifest({ dir, manifest: { ...manifest, files: ['src'] } })).toContainEqual(expect.stringContaining('package.json files must be'))
+    expect(checkWorkspaceManifest({ dir: 'apps/unregistered', manifest })).toContainEqual(expect.stringContaining('release member must not set "private": true'))
+  })
+
   it('ships the private roleplay app row and shared chunk without an executable or broad JS wildcard', () => {
     const dir = 'packages/experimental/charpub-roleplay-runtime'
     const manifest = JSON.parse(readFileSync(new URL(`../${dir}/package.json`, import.meta.url), 'utf8')) as WorkspaceManifest['manifest']

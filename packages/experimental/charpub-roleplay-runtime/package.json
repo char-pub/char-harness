@@ -19,7 +19,10 @@
       "types": "./lib/types/app.d.ts",
       "default": "./lib/app.js"
     },
-    "./app.patch.yml": "./app.patch.yml"
+    "./app.patch.yml": "./app.patch.yml",
+    "./app-types": {
+      "types": "./lib/types/app-types.d.ts"
+    }
   },
   "files": [
     "lib/index.js",
@@ -43,7 +46,8 @@
     "@deepseek-ai/dsh-session-persistence-jsonl": "workspace:*",
     "@char-pub/contracts": "file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz",
     "oauth4webapi": "3.8.8",
-    "@deepseek-ai/dsh-llm-deepseek-api-key": "workspace:*"
+    "@deepseek-ai/dsh-llm-deepseek-api-key": "workspace:*",
+    "@deepseek-ai/dsh-charpub-roleplay-web": "workspace:*"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "workspace:~"

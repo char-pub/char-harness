@@ -14,6 +14,7 @@ export interface OAuthOptions {
 
 interface OAuthSession {
   authorizationVersion(): number
+  authorizationStatus(): 'required' | 'authorized'
   beginAuthorization(): Promise<{ authorizationURL: string }>
   completeAuthorization(callbackURL: string): Promise<void>
   access(): Promise<string | undefined>
@@ -97,6 +98,7 @@ export async function connectOAuth(options: OAuthOptions): Promise<OAuthSession>
   }
   return {
     authorizationVersion: () => generation,
+    authorizationStatus: () => !closed && tokens && (tokens.expires > Date.now() || tokens.refresh) ? 'authorized' : 'required',
     beginAuthorization() {
       return exclusive(async () => {
         if (closed) throw new Error('registry.disposed')

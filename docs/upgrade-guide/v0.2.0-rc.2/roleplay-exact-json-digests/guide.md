@@ -15,7 +15,7 @@ Older records created from canonical text remain compatible. A record containing
 
 ## Migration
 
-1. Back up existing roleplay Replay JSON and Session JSONL files before upgrading. Keep their original bytes and the SDK snapshot identified by their provenance; retained snapshots are documented in [the SDK vendor directory](../../../../third_party/charpub/README.md).
+1. Back up existing roleplay Replay JSON and Session JSONL files before upgrading. Keep their original bytes and the SDK snapshot identified by their recorded manifest; retained snapshots are documented in [the SDK vendor directory](../../../../third_party/charpub/README.md).
 2. Run the existing consumer's replay or Session inspection against a copy. Successful verification permits normal use. An exact-digest mismatch requires review; it does not authorize modifying the log or recalculating its hashes.
 3. If review requires the old behavior, use the matching earlier checkout and retained SDK snapshot in isolation, without model calls or continued writes to the old log. Start a new Session explicitly when continuing with the updated runtime; do not present it as an automatic migration of old state.
 4. Confirm the original files remain byte-identical. The runtime tests cover three retained historical Session samples and explicitly reject a preserved older raw-text Replay without rewriting it.

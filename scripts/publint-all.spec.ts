@@ -23,12 +23,14 @@ afterEach(async () => {
 
 function fixture(options: {
   exportPath?: string
+  directory?: string
+  manifest?: Record<string, unknown>
   indexSource?: string
   files?: Record<string, string>
 } = {}): string {
   const root = mkdtempSync(join(tmpdir(), 'dsh-publint-all-'))
   roots.push(root)
-  const packageDir = join(root, 'packages/core/probe')
+  const packageDir = join(root, options.directory ?? 'packages/core/probe')
   mkdirSync(join(packageDir, 'lib'), { recursive: true })
   writeFileSync(join(packageDir, 'package.json'), `${JSON.stringify({
     name: '@deepseek-ai/dsh-probe',
@@ -39,6 +41,7 @@ function fixture(options: {
     sideEffects: false,
     files: ['lib'],
     exports: { '.': { default: options.exportPath ?? './lib/index.js' } },
+    ...options.manifest,
   }, null, 2)}\n`)
   writeFileSync(join(packageDir, 'README.md'), '# Probe\n')
   writeFileSync(join(packageDir, 'lib/index.js'), options.indexSource ?? 'export const probe = true\n')
@@ -131,6 +134,22 @@ describe('publint package runner', () => {
     expect(result.exitCode, result.stderr).toBe(0)
     expect(result.stdout).toContain('linting 1 package(s)')
     expect(result.stdout).toContain('All good!')
+  })
+
+  it.for([
+    { directory: 'packages/experimental/charpub-roleplay', private: true, exit: 0 },
+    { directory: 'packages/experimental/charpub-roleplay-runtime', private: true, exit: 0 },
+    { directory: 'packages/experimental/unregistered', private: true, exit: 1 },
+    { directory: 'packages/experimental/charpub-roleplay', private: false, exit: 1 },
+  ])('keeps npm local-dependency checks except for explicitly private consumers: $directory / $private', async ({ directory, private: isPrivate, exit }, { signal }) => {
+    const result = await run(fixture({ directory, manifest: { private: isPrivate, dependencies: { '@char-pub/core': 'file:../../../third_party/charpub/core.tgz' } } }), signal)
+    expect(result.exitCode, result.stdout + result.stderr).toBe(exit)
+  })
+
+  it('still rejects an unpublished import in an explicitly private SDK consumer', async ({ signal }) => {
+    const result = await run(fixture({ directory: 'packages/experimental/charpub-roleplay', manifest: { private: true }, indexSource: "import './missing.js'\n" }), signal)
+    expect(result.exitCode).toBe(1)
+    expect(result.stderr).toContain('does not publish')
   })
 
   it('rejects an export that exists in the workspace but is not published', async ({ signal }) => {

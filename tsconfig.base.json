@@ -43,6 +43,7 @@
       "@deepseek-ai/dsh-deepseek-account/types": ["./packages/credentials/deepseek-account/src/types.ts"],
       "@deepseek-ai/dsh-experimental-charpub-roleplay": ["./packages/experimental/charpub-roleplay/src/index.ts"],
       "@deepseek-ai/dsh-experimental-charpub-roleplay-runtime": ["./packages/experimental/charpub-roleplay-runtime/src/index.ts"],
+      "@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types": ["./packages/experimental/charpub-roleplay-runtime/src/app-types.ts"],
       "@deepseek-ai/dsh-experimental-speech-to-text": ["./packages/experimental/speech-to-text/src/index.ts"],
       "@deepseek-ai/dsh-experimental-speech-to-text-sensevoice": ["./packages/experimental/speech-to-text-sensevoice/src/index.ts"],
       "@deepseek-ai/dsh-experimental-api-speech-to-text": ["./packages/experimental/api-speech-to-text/src/index.ts"],

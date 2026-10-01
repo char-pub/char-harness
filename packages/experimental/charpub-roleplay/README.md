@@ -74,7 +74,7 @@ The owner-local tests use Node's test runner with `tsx/esm`, which also works ac
 
 The input is parsed with the installed char.pub SDK schemas. Origin fields identify build inputs; this offline library does not verify Registry permissions, draft expiry or signed download authority. Source text is supplied explicitly and verified against its asset digest. Trace retains the root identity and semantic digest. `startSession` supplies the opening exactly once; `confirm`, `enterScene`, `setPresent` and `toTurnStory` own state semantics. `createPreparationCatalog`, `fixedSelection` and `prepareContext` own selection and final messages. No content schema, condition evaluator or prompt assembler is copied here. Each append replays the existing log before constructing one detached entry, so there is no mutable session cache to reconcile.
 
-No `./invariant` companion is published: this library has no registry or shared runtime observations that can diverge. Its replay comparisons and owner-local tests check the returned exercise data.
+No runtime invariant companion is published because this library has no registry or shared runtime observations that can diverge. Its replay comparisons and owner-local tests check the returned exercise data.
 
 <a id="model-experience"></a>
 ## Model Experience

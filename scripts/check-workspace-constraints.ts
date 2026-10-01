@@ -59,9 +59,12 @@ const experimentalPackageNamePrefix = '@deepseek-ai/dsh-experimental-'
 const standardReleaseMemberDirectory = /^(?:packages\/(?!experimental\/)[^/]+\/[^/]+|apps\/(?!desktop(?:-host)?$)[^/]+|vendor\/[^/]+)$/
 /** Installable application assembled by electron-builder rather than published to npm. */
 const desktopApplicationDirectory = 'apps/desktop'
+/** Static assets for the private roleplay profile, never an npm release or executable. */
+const privateRoleplayApplication = { directory: 'apps/roleplay', name: '@deepseek-ai/dsh-charpub-roleplay-web' } as const
 const localArtifactDirs = new Set(['node_modules'])
 const appPackageFiles: Readonly<Record<string, readonly string[]>> = {
   '@deepseek-ai/dsh': ['lib/*.js', 'lib/types/*.d.ts'],
+  '@deepseek-ai/dsh-charpub-roleplay-web': ['dist', '!dist/**/*.map'],
   '@deepseek-ai/dsh-desktop-host': [
     'lib/index.js', 'lib/cli.js',
   ],
@@ -357,7 +360,8 @@ export function checkExperimentalManifest(
 }
 
 function isReleaseMemberDirectory(dir: string): boolean {
-  return standardReleaseMemberDirectory.test(dir) || isPublicExperimentalPackageDirectory(dir)
+  return (dir !== privateRoleplayApplication.directory && standardReleaseMemberDirectory.test(dir))
+    || isPublicExperimentalPackageDirectory(dir)
 }
 
 /**
@@ -396,6 +400,11 @@ export function checkWorkspaceManifest({ dir, manifest }: WorkspaceManifest): st
   const isPublicNativePackage = isNativePackageDir
     && manifest.name !== undefined
     && publicNativePackages.has(manifest.name)
+
+  if (dir === privateRoleplayApplication.directory) {
+    if (manifest.name !== privateRoleplayApplication.name) errors.push(`${label}: private roleplay app must use ${privateRoleplayApplication.name}`)
+    if (manifest.publishConfig !== undefined) errors.push(`${label}: private roleplay app must omit publishConfig`)
+  }
 
   if (isPublicNativePackage) {
     if (manifest.private === true) {

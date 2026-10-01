@@ -25,6 +25,8 @@ export interface ConfirmedWrite {
 export interface RegistryClient {
   /** Local grant epoch; new grants, revocation or credential loss invalidate earlier reviews. Refresh preserves it. */
   authorizationVersion(): number
+  /** Whether a local grant is available; does not probe remote validity or disclose credentials. */
+  authorizationStatus(): 'required' | 'authorized'
   /** Open one pending authorization request; a new request replaces pending state. */
   beginAuthorization(): Promise<{ authorizationURL: string }>
   /** Validate and consume the exact browser callback before exchanging its code. */
@@ -148,6 +150,7 @@ export async function createRegistryClient(options: RegistryClientOptions): Prom
   }
   return {
     authorizationVersion: () => auth.authorizationVersion(),
+    authorizationStatus: () => auth.authorizationStatus(),
     beginAuthorization: () => auth.beginAuthorization(),
     completeAuthorization: (callbackURL: string) => auth.completeAuthorization(callbackURL),
     refreshAuthorization: () => auth.refreshAuthorization(),

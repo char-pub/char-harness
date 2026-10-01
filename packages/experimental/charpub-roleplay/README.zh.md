@@ -74,7 +74,7 @@ Jev 请求快照位于 `tests/jev.test.ts.snapshot`；协议测试使用注入�
 
 输入由已安装的 char.pub SDK schema 解析。来源字段标识构建输入；这个离线库不校验 Registry 权限、草稿过期或签名下载授权。资料正文必须显式提供，并按资产摘要校验。Trace 保留根身份和语义摘要。`startSession` 恰好提供一次开场；`confirm`、`enterScene`、`setPresent` 和 `toTurnStory` 负责状态语义。`createPreparationCatalog`、`fixedSelection` 和 `prepareContext` 负责选材及最终消息。本包不复制内容 schema、条件求值器或提示词组装器。每次追加先回放原日志，再构造独立条目，因此没有需要对账的可变会话缓存。
 
-本库不发布 `./invariant` 配套入口：没有可能发生偏离的注册表或共享运行时观测。回放比较和包内测试检查返回的演练数据。
+本库不发布运行时不变量配套入口，因为没有可能发生偏离的注册表或共享运行时观测。回放比较和包内测试检查返回的演练数据。
 
 <a id="model-experience"></a>
 ## 模型体验

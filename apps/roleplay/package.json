@@ -1,0 +1,42 @@
+{
+  "name": "@deepseek-ai/dsh-charpub-roleplay-web",
+  "version": "0.2.0-rc.2",
+  "private": true,
+  "description": "Static browser application for the char.pub roleplay profile",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/char-pub/char-harness.git",
+    "directory": "apps/roleplay"
+  },
+  "exports": {
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-experimental-charpub-roleplay-runtime": "workspace:*",
+    "@types/node": "^22.0.0",
+    "@types/react": "~18.3.1",
+    "@types/react-dom": "~18.3.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^6.0.0",
+    "vitest": "^4.1.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "jsdom": "29.1.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/dom": "^10.4.1",
+    "@deepseek-ai/dsh-util-crypto": "workspace:*"
+  }
+}

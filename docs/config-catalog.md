@@ -945,7 +945,7 @@ export interface StagehandModelConfig {
 ## `@deepseek-ai/dsh-experimental-charpub-roleplay-runtime`
 
 - `inject`: `sessions` · `sessionPersistence` · `llm`
-- `source`: [`packages/experimental/charpub-roleplay-runtime/src/index.ts:26`](../packages/experimental/charpub-roleplay-runtime/src/index.ts)
+- `source`: [`packages/experimental/charpub-roleplay-runtime/src/index.ts:29`](../packages/experimental/charpub-roleplay-runtime/src/index.ts)
 
 ```ts config-catalog
 /** Explicit operation and retained-payload limits for this driver. */

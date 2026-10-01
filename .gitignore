@@ -46,3 +46,7 @@ worktrees/
 .agents/worktrees/
 .typert-*/
 native/system/test/bin/
+
+# Local knowledge investigations and generated roleplay browser assets.
+.llmdoc-tmp/
+apps/roleplay/dist/

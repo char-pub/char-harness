@@ -1,0 +1,63 @@
+name: char-harness keyless
+
+# The private fork consumes the public SDK and fixed model fixtures; it does not
+# publish packages, deploy previews, or use the upstream live-model credentials.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: char-harness-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DSH_TELEMETRY_DISABLED: '1'
+
+jobs:
+  keyless:
+    if: github.repository == 'char-pub/char-harness'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v4
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install immutable dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Workspace and workflow boundaries
+        run: |
+          pnpm run constraints
+          pnpm exec vitest run scripts/ci-workflow.spec.ts scripts/preview-workflow.spec.ts scripts/verify-repository-references.spec.ts
+          pnpm run verify-repository-references
+
+      - name: Replay, SDK bytes and compiled public entries
+        run: pnpm run test:roleplay
+
+      - name: Durable runtime and loopback app
+        run: pnpm run test:roleplay-runtime
+
+      - name: React client types and interactions
+        run: |
+          pnpm --filter @deepseek-ai/dsh-charpub-roleplay-web typecheck
+          pnpm --filter @deepseek-ai/dsh-charpub-roleplay-web test
+
+      - name: Validate llmdoc knowledge
+        run: npx -y @tokenroll/llmdoc@3.6.0 validate

@@ -1,81 +1,40 @@
-# DeepSeek Harness
+# char-harness
 
 [English](README.md) | 中文
 
-DeepSeek Harness（`dsh`）是由 [DeepSeek AI](https://deepseek.com) 开发的开源 agent harness（智能体框架）。
+char-harness 是 [char.pub](https://char.pub) 的本地剧情扮演运行时，由 [char-pub](https://github.com/char-pub/char-harness) 维护。它把已发布角色和故事接入本地对话工作区，使用精确内容版本并持久保存会话。
 
-它构建于**一切皆插件**的架构之上，由 [Cordis](https://github.com/cordiverse/cordis) 驱动，其设计参见论文 [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512)。
-
-文档：[https://deepseek-harness.github.io/deepseek-harness/](https://deepseek-harness.github.io/deepseek-harness/)
-
-## 开发者预览
-
-DeepSeek Harness 处于 _开发者预览_ 阶段，正在快速迭代。**未来将出现破坏兼容性的变更。**
-
-运行本项目前，请阅读[安全说明](SAFETY.zh.md)。
+本项目基于 DeepSeek AI 开发、由 Cordis 驱动的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)。上游源码历史、许可和扩展规则均予保留。char.pub 负责静态创作与发布；本仓库负责游玩、模型请求和本地会话记录。
 
 <a id="run"></a>
-
-## 运行
-
-### 通过 `npm` 运行
-
-安装 `Node.js`，然后运行：
-
-```sh
-npx @deepseek-ai/dsh web
-```
-
-该命令默认会在 `http://127.0.0.1:3080` 启动 Web UI，本机启动时还会用默认浏览器打开页面。通过 SSH 启动时只打印宿主机 URL，因为本地转发地址由 SSH 客户端或编辑器持有。传入 `--no-open` 可仅运行服务器而不打开浏览器。详见 [Web UI 指南](docs/user/guide/index.zh.md)。
-
 <a id="run-from-source"></a>
 
-### 从源码运行
+## 启动游玩工作区
 
-如需从仓库源码运行：
+使用仓库 manifest 指定的 Node.js 和 pnpm 版本，然后从本仓库构建私有浏览器应用和运行时：
 
 ```sh
-git clone https://github.com/deepseek-ai/deepseek-harness.git
-cd deepseek-harness
+git clone https://github.com/char-pub/char-harness.git
+cd char-harness
 pnpm install
-pnpm run build
-pnpm dsh web
+node scripts/build-charpub-replay.mjs
 ```
 
-`pnpm run build` 会准备仓库产物。`pnpm dsh web` 会直接使用这些已构建产物，不会重新构建。
+按照 [roleplay profile 配置说明](packages/experimental/charpub-roleplay-runtime/PROFILE.md) 设置 Registry、公共 OAuth 客户端、模型和本地会话目录。应用通过命名 `dsh` profile 启动，浏览器应用没有独立的 Node 服务器。这些私有 workspace 包尚未发布到 npm。
 
-## 社区与支持
+在 char.pub 选择作品，点击 **Start playing** 或 **Try draft in Runtime**。运行时先审阅精确版本、开局和角色绑定，再开始游玩。[浏览器应用](apps/roleplay/README.zh.md) 提供本地会话、对话和剧情资料；连接与技术细节使用独立入口。
 
-- 通过 [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) 提交反馈或 bug 报告。
-- 为你的插件仓库添加 [`dsh-plugin`](https://github.com/topics/dsh-plugin) 话题，便于被发现。
-- 欢迎加入 DeepSeek Harness 企微群！扫描下方二维码填写入群问卷，小助手会定期发送入群邀请。
+## 行为与限制
 
-<table>
-  <thead>
-    <tr>
-      <th align="center">入群问卷</th>
-      <th align="center">微信公众号</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://trtgsjkv6r.feishu.cn/share/base/form/shrcnIt5twSVdLGD52KJBckGCgg"><img src="https://cdn.deepseek.com/harness/readme/community-wecom-survey.png" alt="DeepSeek Harness 入群问卷二维码" width="180" height="180"></a></td>
-      <td align="center"><img src="https://cdn.deepseek.com/harness/readme/community-wechat-official-account.png" alt="DeepSeek Harness 团队微信公众号二维码" width="180" height="180"></td>
-    </tr>
-  </tbody>
-</table>
+模型凭据保留在本机配置的提供方中。配置了模型路由不代表密钥或在线模型已经验证。运行前请阅读[安全说明](SAFETY.zh.md)。
 
-## 参与贡献
-
-参见 [CONTRIBUTING.md](CONTRIBUTING.zh.md)。
+应用支持文本 Story 游玩，并保留现有 Session 日志。自由对话不会自动推断剧情转移。[roleplay 库](packages/experimental/charpub-roleplay/README.zh.md) 提供 Jev 和 Laya 决策适配器，浏览器 profile 不会默默启用它们。精确能力与恢复规则见[运行时 README](packages/experimental/charpub-roleplay-runtime/README.zh.md)。
 
 ## 开发
 
-请先阅读[开发指南](docs/development.zh.md)与[架构文档](docs/architecture.zh.md)。
+从 [UI 设计](spec/roleplay-ui.md)、[架构](docs/architecture.zh.md) 和[开发指南](docs/development.zh.md) 开始。上游编程、工具和 Desktop 组件仍可使用，其指南与 roleplay 应用分别说明。
 
-`pnpm run dev:web` 会在一个终端里完成构建、启动，并在源码修改时重建 client bundle；`make help` 列出 Web 与 Desktop 对应的 Make target。完整表格见开发指南的「应用命令」一节。
-
-面向 agent：请遵循 [AGENTS.md](AGENTS.md)。
+修改本仓库时遵循 [AGENTS.md](AGENTS.md)。char-harness 的问题反馈到[本仓库](https://github.com/char-pub/char-harness/issues)。上游项目文档见 [DeepSeek Harness docs](https://deepseek-harness.github.io/deepseek-harness/)。
 
 ## 引用
 

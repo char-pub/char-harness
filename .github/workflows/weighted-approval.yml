@@ -20,7 +20,9 @@ concurrency:
 
 jobs:
   publish-status:
+    # Keep status and reviewer writes with the original repository's policy.
     if: >-
+      github.repository == 'deepseek-harness/deepseek-harness' &&
       (github.event_name != 'pull_request_target' || github.event.pull_request.state == 'open') &&
       (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') &&
       (github.event_name != 'issue_comment' || (github.event.issue.pull_request && github.event.issue.state == 'open' &&

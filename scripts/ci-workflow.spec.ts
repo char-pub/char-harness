@@ -13,6 +13,87 @@ const root = resolve(import.meta.dirname, '..')
 const runnerPrivatePnpmDestination = /^\$\{\{ runner\.temp \}\}\/setup-pnpm-\$\{\{ github\.run_id \}\}-\$\{\{ github\.run_attempt \}\}$/
 const nativeWindowsPnpmDestination = '${{ runner.temp }}/setup-pnpm-js-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}'
 
+describe('char-harness fork workflow boundaries', () => {
+  it.each([
+    ['e2e.yml', 'e2e', 'push'],
+    ['build-preview-cloudflare.yml', 'preview', 'pull_request'],
+    ['issue-lifecycle.yml', 'lifecycle', 'issues'],
+    ['issue-policy.yml', 'policy', 'pull_request'],
+    ['weighted-approval.yml', 'publish-status', 'pull_request_target'],
+  ])('keeps %s external actions in their original repository', (file, name, event) => {
+    const job = workflowJob(loadWorkflow(`.github/workflows/${file}`), name)
+    if (typeof job.if !== 'string') throw new TypeError('External action job must have a repository guard')
+    for (const repository of ['deepseek-harness/deepseek-harness', 'char-pub/char-harness', 'someone/another-fork']) {
+      const enabled: unknown = runInNewContext(job.if, {
+        github: { repository, event_name: event, event: { pull_request: { state: 'open' } } },
+      }, { timeout: 1000 })
+      expect(enabled).toBe(repository === 'deepseek-harness/deepseek-harness')
+    }
+  })
+
+  it('uses keyless fork entrypoints and requires llmdoc validation without a missing-file escape', () => {
+    const workflow = loadWorkflow('.github/workflows/char-harness.yml')
+    expect(workflow.on).toEqual({ push: { branches: ['main'] }, pull_request: { branches: ['main'] }, workflow_dispatch: null })
+    expect(workflow.permissions).toEqual({ contents: 'read' })
+    expect(workflow.env).toEqual({ DSH_TELEMETRY_DISABLED: '1' })
+    const job = workflowJob(workflow, 'keyless')
+    expect(job.if).toBe("github.repository == 'char-pub/char-harness'")
+    expect(job['runs-on']).toBe('ubuntu-24.04')
+    if (!Array.isArray(job.steps)) throw new TypeError('Fork CI must define steps')
+    const steps = job.steps.filter(isRecord)
+    expect(steps.find(step => step.uses === 'actions/checkout@v6')).toMatchObject({
+      with: { 'fetch-depth': 0, 'persist-credentials': false },
+    })
+    expect(steps.find(step => step.uses === 'actions/setup-node@v6')).toMatchObject({ with: { 'node-version': 24 } })
+    const commands = steps.flatMap(step => typeof step.run === 'string' ? step.run.split('\n') : [])
+    for (const command of [
+      'pnpm install --frozen-lockfile',
+      'pnpm run test:roleplay',
+      'pnpm run test:roleplay-runtime',
+      'pnpm --filter @deepseek-ai/dsh-charpub-roleplay-web typecheck',
+      'pnpm --filter @deepseek-ai/dsh-charpub-roleplay-web test',
+    ]) expect(commands).toContain(command)
+    expect(steps.find(step => step.name === 'Validate llmdoc knowledge')).toEqual({
+      name: 'Validate llmdoc knowledge', run: 'npx -y @tokenroll/llmdoc@3.6.0 validate',
+    })
+    expect(JSON.stringify(workflow)).not.toMatch(
+      /secrets\.|id-token|deploy-pages|wrangler|release:publish|gh pr comment|test:e2e|continue-on-error/,
+    )
+  })
+
+  it('keeps reusable wheel builders keyless outside the original repository', () => {
+    const build = workflowJob(loadWorkflow('.github/workflows/build-exe-for-python-sdk.yml'), 'build')
+    if (!Array.isArray(build.steps)) throw new TypeError('Wheel builder must define steps')
+    const live = build.steps.filter(isRecord).filter(step => typeof step.name === 'string' && step.name.includes('real API'))
+    expect(live).toHaveLength(4)
+    for (const step of live) {
+      if (typeof step.if !== 'string' || typeof step.name !== 'string') throw new TypeError('Live test requires an explicit guard')
+      for (const repository of ['deepseek-harness/deepseek-harness', 'char-pub/char-harness']) {
+        const enabled: unknown = runInNewContext(step.if, {
+          inputs: { ci: true },
+          runner: { os: step.name.endsWith('(Windows)') ? 'Windows' : 'Linux' },
+          github: {
+            repository, event_name: 'pull_request',
+            event: { pull_request: { head: { repo: { fork: false } }, user: { login: 'author' } } },
+          },
+        }, { timeout: 1000 })
+        expect(enabled).toBe(repository === 'deepseek-harness/deepseek-harness')
+      }
+    }
+    const keyless = build.steps.filter(isRecord).filter(step => typeof step.name === 'string' && step.name.includes('keyless black-box'))
+    expect(keyless).toHaveLength(2)
+    for (const step of keyless) expect(step.if).not.toContain('github.repository')
+  })
+
+  it.each(['release-publish.yml', 'release-vendor-publish.yml', 'python-release.yml', 'node-addon-system-release.yml', 'docs-pages.yml'])(
+    'retains manual-only publication in %s', (file) => {
+      const workflow = loadWorkflow(`.github/workflows/${file}`)
+      if (!isRecord(workflow.on)) throw new TypeError('Publication workflow must declare its trigger')
+      expect(Object.keys(workflow.on)).toEqual(['workflow_dispatch'])
+    },
+  )
+})
+
 describe('CI workflow', () => {
   it('prepares confinement before Node compatibility smokes', () => {
     const job = workflowJob(loadWorkflow('.github/workflows/ci.yml'), 'node-compat')
@@ -996,7 +1077,8 @@ describe('Weighted approval workflow', () => {
       'cancel-in-progress': false,
     })
     expect(job).toMatchObject({
-      if: "(github.event_name != 'pull_request_target' || github.event.pull_request.state == 'open') && "
+      if: "github.repository == 'deepseek-harness/deepseek-harness' && "
+        + "(github.event_name != 'pull_request_target' || github.event.pull_request.state == 'open') && "
         + "(github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') && "
         + "(github.event_name != 'issue_comment' || (github.event.issue.pull_request && github.event.issue.state == 'open' &&\n"
         + "  (contains(github.event.comment.body, '/delegate') || contains(github.event.changes.body.from, '/delegate'))))",
@@ -1106,7 +1188,7 @@ describe('Issue lifecycle workflow', () => {
     expect(preflightStep?.run).toContain('if [ -f .github/issue-management/selective-preflight.json ]; then')
     expect(preflightStep?.run).toContain('node .github/issue-management/policy.mjs pr-preflight')
     expect(preflightStep?.if).toBeUndefined()
-    expect(policyJob.if).toBeUndefined()
+    expect(policyJob.if).toBe("github.repository == 'deepseek-harness/deepseek-harness'")
     expect(validateStep?.if).toBe("${{ steps.preflight.outputs.legacy-automated != 'true' }}")
 
     expect(tokenStep).toMatchObject({

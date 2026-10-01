@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   policy:
+    # The policy reads an original-organization App and project.
+    if: github.repository == 'deepseek-harness/deepseek-harness'
     name: Issue policy
     runs-on: ubuntu-latest
     steps:

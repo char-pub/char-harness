@@ -29,6 +29,56 @@ function isMaintained(file: string): boolean {
   return !excludedPrefixes.some(prefix => file.startsWith(prefix))
 }
 
+function hasKeys(value: unknown, keys: string[]): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key))
+}
+
+function isLedgerTime(value: unknown): boolean {
+  return typeof value === 'string'
+    && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value)
+    && !value.startsWith('0000-')
+    && Number.isFinite(Date.parse(value))
+    && new Date(value).toISOString().slice(0, 19) === value.slice(0, 19)
+}
+
+// V3 writeMeta emits this exact JSON representation. Recognize its machine ledger,
+// not a directory-wide documentation exception. Canonical round-trip equality also
+// rejects duplicate keys and disguised string tokens before masking values.
+function commitReferenceText(file: string, source: string): string {
+  if (file !== 'llmdoc/meta.json') return source
+  let value: unknown
+  try {
+    value = JSON.parse(source)
+  } catch {
+    return source
+  }
+  if (!hasKeys(value, ['schema', 'baseline', 'documents', 'convergence'])
+    || value.schema !== 'llmdoc.meta/v3' || `${JSON.stringify(value, null, 2)}\n` !== source) return source
+  const { baseline, documents, convergence } = value
+  const revision = (input: unknown): input is string => typeof input === 'string' && /^[\da-f]{40}$/.test(input)
+  if (!hasKeys(baseline, ['revision', 'verifiedAt']) || !revision(baseline.revision)
+    || !isLedgerTime(baseline.verifiedAt)
+    || documents === null || typeof documents !== 'object' || Array.isArray(documents)
+    || !hasKeys(convergence, ['capturedAt', 'source', 'documentCount', 'totalEstimatedTokens'])
+    || !isLedgerTime(convergence.capturedAt)
+    || (convergence.source !== 'init' && convergence.source !== 'prune')
+    || typeof convergence.documentCount !== 'number' || !Number.isInteger(convergence.documentCount)
+    || convergence.documentCount < 0
+    || typeof convergence.totalEstimatedTokens !== 'number' || !Number.isInteger(convergence.totalEstimatedTokens)
+    || convergence.totalEstimatedTokens < 0) return source
+  const entries = Object.values(documents)
+  if (!entries.every(entry => hasKeys(entry, ['validatedRevision'])
+    && (entry.validatedRevision === null || revision(entry.validatedRevision)))) return source
+  baseline.revision = ' '.repeat(40)
+  for (const entry of entries) {
+    if (hasKeys(entry, ['validatedRevision']) && entry.validatedRevision !== null) {
+      entry.validatedRevision = ' '.repeat(40)
+    }
+  }
+  return `${JSON.stringify(value, null, 2)}\n`
+}
+
 /**
  * Inspect a maintained source file against known commit identifiers.
  * @param file - Repository-relative path used in diagnostics and exclusions.
@@ -43,11 +93,12 @@ export function findRepositoryReferences(
 ): RepositoryReference[] {
   if (!isMaintained(file)) return []
   const references: RepositoryReference[] = []
+  const commitLines = commitReferenceText(file, source).split('\n')
   for (const [index, line] of source.split('\n').entries()) {
     if (organizationUrl.test(canonicalReferenceText(line).replace(kitRepositoryUrl, ''))) {
       references.push({ file, line: index + 1, kind: 'organization-url' })
     }
-    if ([...line.matchAll(commitCandidate)].some(match => commits.has(match[0].toLowerCase()))) {
+    if ([...(commitLines[index] ?? line).matchAll(commitCandidate)].some(match => commits.has(match[0].toLowerCase()))) {
       references.push({ file, line: index + 1, kind: 'commit-hash' })
     }
   }

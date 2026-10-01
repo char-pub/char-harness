@@ -43,7 +43,78 @@ function repository(test: TestContext) {
   return { root, git, write, commit, tree }
 }
 
+function ledger(revision: string) {
+  return {
+    schema: 'llmdoc.meta/v3',
+    baseline: { revision, verifiedAt: '2026-10-01T00:00:00.000Z' },
+    documents: { 'execution.mdx': { validatedRevision: revision }, 'pending.mdx': { validatedRevision: null } },
+    convergence: { capturedAt: '2026-10-01T00:00:00.000Z', source: 'init', documentCount: 2, totalEstimatedTokens: 100 },
+  }
+}
+
+function ledgerText(value: unknown): string {
+  return `${JSON.stringify(value, null, 2)}\n`
+}
+
 describe('maintained repository reference policy', () => {
+  it('permits only generated V3 ledger revision values in the exact metadata file', (test) => {
+    const fixture = repository(test)
+    fixture.write('llmdoc/meta.json', ledgerText(ledger(fixture.commit)))
+    expect(scanRepositoryReferences(fixture.root)).toEqual([])
+    fixture.write('llmdoc/guide.mdx', `Source revision: ${fixture.commit}\n`)
+    fixture.write('llmdoc/other.json', ledgerText(ledger(fixture.commit)))
+    expect(scanRepositoryReferences(fixture.root)).toEqual([
+      { file: 'llmdoc/guide.mdx', line: 1, kind: 'commit-hash' },
+      { file: 'llmdoc/other.json', line: 4, kind: 'commit-hash' },
+      { file: 'llmdoc/other.json', line: 9, kind: 'commit-hash' },
+    ])
+  })
+
+  it('does not hide commit references in ledger document names or extra fields', (test) => {
+    const fixture = repository(test)
+    const value = ledger(fixture.commit)
+    const source = ledgerText({ ...value, documents: { [`${fixture.commit}.mdx`]: { validatedRevision: fixture.commit } } })
+    expect(findRepositoryReferences('llmdoc/meta.json', source, new Set([fixture.commit])))
+      .toEqual([{ file: 'llmdoc/meta.json', line: 8, kind: 'commit-hash' }])
+    for (const changed of [
+      { ...value, note: fixture.commit },
+      { ...value, baseline: { ...value.baseline, note: fixture.commit } },
+      { ...value, documents: { 'execution.mdx': { validatedRevision: fixture.commit, note: fixture.commit } } },
+      { ...value, convergence: { ...value.convergence, note: fixture.commit } },
+    ]) {
+      expect(findRepositoryReferences('llmdoc/meta.json', ledgerText(changed), new Set([fixture.commit])).length).toBeGreaterThan(0)
+    }
+  })
+
+  it('fails closed for unsupported, malformed, or non-CLI ledgers', (test) => {
+    const fixture = repository(test)
+    const value = ledger(fixture.commit)
+    for (const source of [
+      ledgerText({ ...value, schema: 'llmdoc.meta/v4' }),
+      ledgerText({ ...value, baseline: { revision: fixture.commit } }),
+      ledgerText({ ...value, baseline: { ...value.baseline, verifiedAt: 'not a date' } }),
+      ledgerText({ ...value, baseline: { ...value.baseline, verifiedAt: '2026-02-30T00:00:00Z' } }),
+      ledgerText({ ...value, convergence: { ...value.convergence, documentCount: -1 } }),
+      ledgerText({ ...value, documents: [] }),
+      ledgerText({ ...value, documents: { 'execution.mdx': { validatedRevision: fixture.commit.slice(0, 12) } } }),
+      ledgerText(value).replace('  "schema":', `  "note": "${fixture.commit}",\n  "note": null,\n  "schema":`),
+      JSON.stringify(value),
+      `{ "revision": "${fixture.commit}",`,
+    ]) {
+      expect(findRepositoryReferences('llmdoc/meta.json', source, new Set([fixture.commit, fixture.commit.slice(0, 12)])).length)
+        .toBeGreaterThan(0)
+    }
+  })
+
+  it('keeps organization URL checks active in machine metadata', (test) => {
+    const fixture = repository(test)
+    const value = ledger(fixture.commit)
+    const source = ledgerText({ ...value, documents: { [`${organizationUrl}/guide.mdx`]: { validatedRevision: fixture.commit } } })
+    expect(findRepositoryReferences('llmdoc/meta.json', source, new Set([fixture.commit])))
+      .toEqual([{ file: 'llmdoc/meta.json', line: 8, kind: 'organization-url' }])
+    expect(findRepositoryReferences('README.md', 'https://github.com/char-pub/char-harness', new Set())).toEqual([])
+  })
+
   it('permits only the independent kit repository and its source URLs', () => {
     for (const suffix of ['', '.git', '/tree/main/packages/entry']) {
       expect(findRepositoryReferences('package.json', `${organizationUrl}/libreoffice-kit${suffix}`, new Set())).toEqual([])

@@ -15,7 +15,7 @@ description: Roleplay 回放和 Session 校验现在会拒绝旧规范化摘要�
 
 ## 迁移
 
-1. 升级前备份已有 roleplay Replay JSON 和 Session JSONL，保留原始字节及其来源对应的 SDK 快照；保留规则见 [SDK 供应目录](../../../../third_party/charpub/README.zh.md)。
+1. 升级前备份已有 roleplay Replay JSON 和 Session JSONL，保留原始字节及其已记录清单对应的 SDK 快照；保留规则见 [SDK 供应目录](../../../../third_party/charpub/README.zh.md)。
 2. 使用现有消费者对副本执行回放或 Session 检查。校验成功可正常使用；精确摘要不匹配时需审阅，不能修改日志或重新计算摘要来绕过校验。
 3. 如需按旧行为审阅，在隔离环境使用对应旧 checkout 和 SDK 快照，不调用模型、不继续写旧日志。使用新 runtime 继续时明确创建新 Session，不将其描述为旧状态的自动迁移。
 4. 确认原文件字节未变。runtime 测试覆盖三个保留的历史 Session 样本，并明确验证旧原文 Replay 被拒绝且不会被重写。

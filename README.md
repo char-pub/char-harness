@@ -1,62 +1,40 @@
-# DeepSeek Harness
+# char-harness
 
 English | [中文](README.zh.md)
 
-DeepSeek Harness (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com).
+char-harness is the local Story roleplay runtime for [char.pub](https://char.pub), maintained by [char-pub](https://github.com/char-pub/char-harness). It combines published characters and stories with a local conversation workspace, exact content versions and durable sessions.
 
-It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
+The project builds on [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), developed by DeepSeek AI and powered by Cordis. Upstream source history, licenses and extension rules are retained. char.pub owns static authoring and publication; this repository owns play, model requests and local session records.
 
-Documentation: [https://deepseek-harness.github.io/deepseek-harness/](https://deepseek-harness.github.io/deepseek-harness/)
+<a id="run"></a>
+<a id="run-from-source"></a>
 
-## Developer preview
+## Start a roleplay workspace
 
-DeepSeek Harness is in _developer preview_ and iterating rapidly. **THERE WILL BE COMPATIBILITY-BREAKING CHANGES.**
-
-Review the [safety notice](SAFETY.md) before running the project.
-
-## Run
-
-### Run from `npm`
-
-Install `Node.js`, then run:
+Use Node.js and pnpm versions from the repository manifest, then build the private browser application and runtime from this checkout:
 
 ```sh
-npx @deepseek-ai/dsh web
-```
-
-The command starts the Web UI at `http://127.0.0.1:3080` by default and opens it in the default browser for a local launch. An SSH launch only prints the host URL because the SSH client or editor owns the local forwarded address. Pass `--no-open` to run the server without opening a browser. See [Web UI guide](docs/user/guide/index.md).
-
-### Run from source
-
-To run from a repository checkout:
-
-```sh
-git clone https://github.com/deepseek-ai/deepseek-harness.git
-cd deepseek-harness
+git clone https://github.com/char-pub/char-harness.git
+cd char-harness
 pnpm install
-pnpm run build
-pnpm dsh web
+node scripts/build-charpub-replay.mjs
 ```
 
-`pnpm run build` prepares the repository artifacts. `pnpm dsh web` uses those built artifacts without rebuilding.
+Follow the [roleplay profile setup](packages/experimental/charpub-roleplay-runtime/PROFILE.md) to configure your Registry, public OAuth client, model and local session directory. Start it through the named `dsh` profile; the browser application has no separate Node server. The private workspace packages are not published to npm.
 
-## Community and support
+Choose a work in char.pub and use **Start playing** or **Try draft in Runtime**. The runtime reviews the exact version, opening and role bindings before starting. Its [browser application](apps/roleplay/README.md) provides local sessions, conversation and story information; connection and technical details have separate controls.
 
-- Submit feedback or bug reports through [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions).
-- Add the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic to your plugin repository for discoverability.
-- Join <a href="https://discord.gg/4MrtZUhpxg">DeepSeek Harness Discord community</a>.
+## Behavior and limits
 
-## Contributing
+Model credentials stay with the locally configured provider. A configured route is not evidence that a key or online model has been verified. Read the [safety notice](SAFETY.md) before running the project.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+The app supports text Story play and preserves the existing Session log. It does not infer plot transitions from free conversation. Jev and Laya decision adapters are available in the [roleplay library](packages/experimental/charpub-roleplay/README.md); the browser profile does not silently enable them. The [runtime README](packages/experimental/charpub-roleplay-runtime/README.md) owns the exact capabilities and recovery rules.
 
 ## Development
 
-Start with the [development guide](docs/development.md) and [architecture documentation](docs/architecture.md).
+Start with the [UI design](spec/roleplay-ui.md), [architecture](docs/architecture.md) and [development guide](docs/development.md). The upstream coding, tools and Desktop components remain available; their guides describe those applications separately from roleplay.
 
-`pnpm run dev:web` builds, serves, and rebuilds client bundles on source edits in one terminal, and `make help` lists the matching Make targets for Web and Desktop; the guide's application commands section owns the full table.
-
-For agents, follow [AGENTS.md](AGENTS.md).
+Follow [AGENTS.md](AGENTS.md) when changing this repository. Report char-harness issues in [this repository](https://github.com/char-pub/char-harness/issues). The upstream project's documentation is available at [DeepSeek Harness docs](https://deepseek-harness.github.io/deepseek-harness/).
 
 ## Citation
 

@@ -15,3 +15,10 @@ H3/H4 终态证据（2026-10-01）：
 - H4：`test:roleplay` 为 40 项源码 + 2 项真实 compiled ESM + 1 项 SDK verifier；`test:roleplay-runtime` 为 84 项（含真实命名 profile/Loader、JSONL 与三代历史恢复），合计 127 项。包构建、无源码 alias 的独立 NodeNext tests 类型、定向 lint、constraints、持久化检查及当前文档门禁通过，完整命令与日志见 PROGRESS 本轮记录。
 - Jev/Laya 的模型可见协议快照及历史 Session 回放均无需在线密钥。当前持久工件只因来源行号 23→24 重生，65 roots/10 records 的语义检查仍是空变化；没有修改历史确认或 Session 存储代。
 - 这些勾选只验收 VISION 的独立基础消费入口，不新增完整游戏客户端、默认 Web/SDK 分发或自动模型开局回执义务。相关限制继续保留，不能将本地固定替身称作在线模型质量验收。
+
+## 用户追加的交付
+
+- [x] H5：获取最新upstream/master并rebase，保留备份分支与上游来源。2026-10-01实际fetch核对upstream/master，rebase结果up to date；本轮前backup分支保留原状态，具体引用以Git分支列表为准。
+- [x] H6：完成面向游玩的UI设计与实现；主路径、首次进入/无作品/授权/模型配置缺失/加载/回复/取消/错误与恢复可实际操作，技术细节渐进暴露；通过当前真实浏览器及浅/深背景可读性验证，不以固定模型替身冒称在线质量。
+- [ ] H7：char-pub/char-harness仓库创建并推送已验证代码；保留上游许可/历史，密钥与实际Session不上传；真实远端默认分支与本地交付SHA一致，远端检查按实际状态记录。
+- [ ] H8：llmdoc按init建立有效V3语义路由与元数据；domain/owner矩阵、概念/文件/关系/精度验证通过并经CLI正式提交，无未记录的一等子系统缺口。

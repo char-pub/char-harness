@@ -182,3 +182,22 @@ The current VISION requires the independent minimal consumer, fixed-decision rep
 - 本地源码验证：实际 HTML 的 JSDOM 交互/owner-local snapshot 3 项，以及真实命名 profile、loopback HTTP、JSONL 的既有 app 回归 3 项，合计 6/6 通过，日志 `/tmp/harness-contrast-tests.log`。覆盖空入口链接/步骤/高级折叠、传入 launch/OAuth 返回、清除 launch 后旧候选失效、显式页面/控件颜色和状态句不重复；既有 Host/Origin/nonce、精确身份、取消和旧 Session 拒绝回归保持。产品 noEmit types `/tmp/harness-welcome-types.log`、范围 lint `/tmp/harness-contrast-lint.log`、Markdown wrap `/tmp/harness-welcome-doc-wrap.log` 与 diff check 通过。
 - 主代理随后运行现有 `node scripts/build-charpub-replay.mjs` 并以原完整 profile 重启本地 app（执行会话 62110）。实际浏览器 body 背景为 rgb(248,250,252)、前景为 rgb(23,32,51)，截图 `/tmp/story-local-session-readable.png` 已实际查看，标题、标签、开场与回复输入可读。同一 launch 重新完成 OAuth 读取、角色绑定和明确创建新 Session，真实开场白显示；旧 JSONL 保留，未发模型请求。这是实际浏览器可操作性和可读性证据，不是在线模型质量验收。
 - 提交范围为 app-ui/app、既有 app 测试、新 UI 测试与其快照、PROFILE、README 中英及配对记录、此执行记录。没有修改 SDK/锁文件、模型 provider/key、实际 Session 数据或主仓代码；没有增加回退模型、跨仓源码别名或伪回复。按授权创建本地提交，正常 hooks 保留，不推送；配对记录验证日志 `/tmp/harness-welcome-pair.log`。
+
+## 2026-10-01 用户追加：产品UI、组织仓库与llmdoc
+
+- 活动范围扩展到H5–H8，用户明确要求rebase最新DeepSeek Harness、重做UI、推送char-pub/char-harness、补llmdoc；原H0–H4已验收记录保留，不把新要求缩回原准备范围。
+- 已创建本轮前的backup分支，具体引用保存在Git分支列表。实际gh读取默认分支master，git fetch upstream master核对当前远端对象，git rebase FETCH_HEAD输出up to date，无冲突/无源码改写。继续获取完整浅克隆祖先以保留首次远端推送所需历史。
+- tb检索没有Github仓库工具，使用已登录gh；char-pub组织membership为active/admin，目标repo此前未解析。已异步询问private/public，默认先private；创建与remote准备正在进行，尚未宣称已推送。
+- UI按游玩者主路径调查现有React/Vite/client工具，investigator只读给架构建议；reflector按llmdoc:init给全仓domain/owner矩阵；recorder先完成主仓最后知识更新后转此仓初始化。所有stable llmdoc写入仍只归recorder。
+- 当前本地app已可开场，无可用模型key且未发在线请求；新UI需要明确配置与失败恢复。实际服务仍由root持有，UI实现前不会清会话/换凭据。
+
+
+## 2026-10-01 — React 游玩工作区与真实浏览器验收
+
+- 新增私有 `apps/roleplay` React/Vite 静态客户端，沿用既有命名 profile 和同源 loopback 服务。左侧是真实本地会话，中间为对话与回复，右侧为当前场景和可见角色；支持中英界面、明暗主题与窄屏抽屉。开局审阅包含精确版本、分级、许可、开局/视角、独立角色绑定和明确新建确认；技术内容默认折叠。
+- 会话目录使用稳定 opaque record，恢复重新验证精确 Registry 内容，旧标签使用失效 handle 时拒绝写入。刷新只读恢复当前快照；未发送草稿按 record 保存。回复未知结果保留 request id 并先核对；持久中断需明确确认才创建新请求，旧 request id 不重发。客户端没有伪造 streaming 或模型状态。
+- 服务按实际构建清单提供静态资源；首次 Registry discovery 失败后下一次明确操作可重试，关闭会取消实际 pending 请求。启动按状态、会话列表、恢复/审阅顺序执行，修复真实浏览器发现的并发 busy 错误。模型路由显示已配置但尚未验证在线可用，凭据仍归本地 provider 配置。
+- 主代理实际操作当前浏览器，完成 OAuth、真实草稿审阅、恢复原有会话、开场/场景/角色读取，以及刷新后保留未发送回复。浅色桌面和 390px 窄屏截图已逐张检查；窄屏无横向溢出，输入区在视口内。证据为 `.llmdoc-tmp/investigations/char-harness-browser/README.md`。没有发送线上模型请求，不能把本轮 UI 验收当作生成质量验收。
+- Runtime 89 项与其真实 HTTP/JSONL 生命周期测试通过；新版客户端最终 26 项通过，模板/注入边界 3 项通过。`test:roleplay` 的 40 项源码、2 项 compiled ESM、1 项 SDK verifier 通过。`pnpm run build` 完整构建通过。相关日志分别为 `/tmp/harness-player-runtime-all.log`、`/tmp/char-harness-final-ui-tests.log`、`/tmp/char-harness-bootstrap-tests.log`、`/tmp/char-harness-final-roleplay.log`、`/tmp/char-harness-final-full-build.log`。
+- 完整 doc-sync 首轮 39/43 通过；其余实际失败是新 README 旧锚点、配对时序、生成配置来源行号及两份旧升级指南的泛称。逐项最小修复后四个 owner gate 均通过，日志 `/tmp/char-harness-docfix-{links,pairing,config,terms}.log`。没有把失败首轮称为全绿，也没有重复无关测试。
+- 本次没有更换 SDK 快照、重写历史 Session/JSONL 或接入第二套存储。Jev/Laya 适配器保持可组合；此 UI 不自动启用其剧情决策，在线质量仍未验证。组织仓库已创建为 private，首次推送仍以源码门禁和 llmdoc 正式初始化完成为前提。
