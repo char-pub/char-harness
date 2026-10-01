@@ -1,162 +1,162 @@
 {
   "schema": "llmdoc.meta/v3",
   "baseline": {
-    "revision": "5e77418770985640e6b2bad0a5bb64d1ea23528d",
-    "verifiedAt": "2026-10-01T05:12:51.271Z"
+    "revision": "875a822efc58bbcdb557cec99e5aded3756a7f25",
+    "verifiedAt": "2026-10-01T05:14:06.722Z"
   },
   "documents": {
     "automation/delegation-teams.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "automation/recorded-intent.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "automation/schedules-jobs.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "automation/webhooks.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "automation/workflows.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/conversation-ui.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/desktop-lifecycle.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/remote-api.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/sdk-acp.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/voice-input.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/web-composition.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/worker-preview.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "clients/workspace-surfaces.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "composition/plugin-lifecycle.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "composition/presets-extensions.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "composition/profiles.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "content/files-and-attachments.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "engineering/build-release.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "engineering/documentation.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "engineering/upstream-dependencies.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "engineering/verification.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "execution-model.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "execution/filesystem.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "execution/lsp.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "execution/processes-terminals.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "execution/ptc.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "execution/sandbox.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "execution/ssh-world.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "model/agent-turns.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "model/compaction.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "model/context-inputs.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "model/provider-requests.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "model/tools.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "operations/observability.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "roleplay/author-return.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "roleplay/local-player.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "roleplay/registry-access.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "roleplay/replay-sdk.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "roleplay/selectors.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "roleplay/session-runtime.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "security/credentials-accounts.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "security/human-control.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "sessions/derived-views.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "sessions/durability-migrations.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "sessions/event-log.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "state/domain-storage.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "state/workspace-settings.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "tools/hooks.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "tools/mcp.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "tools/skills.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "tools/web-and-device-use.mdx": {
-      "validatedRevision": "5e77418770985640e6b2bad0a5bb64d1ea23528d"
+      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     }
   },
   "convergence": {
