@@ -201,3 +201,12 @@ The current VISION requires the independent minimal consumer, fixed-decision rep
 - Runtime 89 项与其真实 HTTP/JSONL 生命周期测试通过；新版客户端最终 26 项通过，模板/注入边界 3 项通过。`test:roleplay` 的 40 项源码、2 项 compiled ESM、1 项 SDK verifier 通过。`pnpm run build` 完整构建通过。相关日志分别为 `/tmp/harness-player-runtime-all.log`、`/tmp/char-harness-final-ui-tests.log`、`/tmp/char-harness-bootstrap-tests.log`、`/tmp/char-harness-final-roleplay.log`、`/tmp/char-harness-final-full-build.log`。
 - 完整 doc-sync 首轮 39/43 通过；其余实际失败是新 README 旧锚点、配对时序、生成配置来源行号及两份旧升级指南的泛称。逐项最小修复后四个 owner gate 均通过，日志 `/tmp/char-harness-docfix-{links,pairing,config,terms}.log`。没有把失败首轮称为全绿，也没有重复无关测试。
 - 本次没有更换 SDK 快照、重写历史 Session/JSONL 或接入第二套存储。Jev/Laya 适配器保持可组合；此 UI 不自动启用其剧情决策，在线质量仍未验证。组织仓库已创建为 private，首次推送仍以源码门禁和 llmdoc 正式初始化完成为前提。
+
+
+## 2026-10-01 — 组织仓库与知识交付
+
+- 已正常推送至 `https://github.com/char-pub/char-harness`，当前为 private，默认分支 main。首次推送前正常 pre-push 类型检查通过；实际查询确认远端 main 与交付 HEAD 一致。upstream 仍指向 DeepSeek Harness，完整祖先历史、原许可和本轮前备份分支保留；最后 fetch 后没有遗漏上游提交。没有向上游推送，也没有生产部署、npm 发布或外部评论。
+- llmdoc 正式初始化完成：51 篇职责文档、13 个主题，483 个精确路径；102 项自然查询、504 项文件/owner 归属断言及 4 个精度反例全部通过。CLI validate、引用门禁与最终 status 通过，51 篇正文均已跟踪且 metadata 通过 CLI 两阶段提交。精确提交与日志见 Git 和 `.llmdoc-tmp/investigations/char-harness-llmdoc-init-success.md`，不以 scratch 草稿代替正式知识面。
+- 首次 CLI commit 遇到 Git 折叠未跟踪目录导致仅提交 metadata 的工具缺陷；已保留真实中间提交，精确暂存 51 篇正文后再次走 CLI 和正常 hooks，随后逐文件及 ledger 复验。未手改 metadata、伪造成功或改写历史。
+- 仓库包含专用无密钥 CI，实际覆盖 SDK、Replay、Runtime、React 和 llmdoc；继承的线上模型、原组织管理及预览部署动作仅在原仓触发。本地完整构建、角色消费测试、UI、HTTP/JSONL、文档、精确包策略和密钥扫描均已验证。首次推送后立即查询尚未出现 Actions run，因此本记录不宣称远端 CI 已通过；后续以 GitHub Actions 实际结果为准。
+- 本轮 H5–H8 完成。线上模型质量、浏览器自动剧情决策，以及 char.pub 的规范预期/Commons 人工内容审阅仍是各自明确的后续项，不由此次仓库推送替代。
