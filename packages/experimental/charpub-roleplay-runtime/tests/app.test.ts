@@ -65,8 +65,9 @@ void test('named roleplay app reviews exact work, starts and generates once, exp
     { id: 'roleplay-storage', config: { root: join(home, 'sessions'), compression: 'none' } },
     { id: 'roleplay-runtime', config: { timeout_ms: 3000, max_event_bytes: 2_000_000, max_stream_bytes: 100_000 } },
     { insert: [
+      { id: 'test-credentials', name: '@deepseek-ai/dsh-credentials-local', config: { dshHome: home, watch: false } },
       { id: 'test-provider', name: new URL('tests/fixtures/provider.ts', packageURL).href },
-      { id: 'roleplay-app', name: new URL('src/app.ts', packageURL).href, config: { host: '127.0.0.1', port, registry_origin: registryOrigin, issuer: registryOrigin, client_id: 'offline-protocol-client', timeout_ms: 3000, max_request_bytes: 100_000, max_response_bytes: 2_000_000, max_artifact_bytes: 2_000_000, profile: input.profile, model: { provider: 'roleplay-test', model: 'fixed', maxTokens: 256 } } },
+      { id: 'roleplay-app', name: new URL('src/app.ts', packageURL).href, config: { host: '127.0.0.1', port, registry_origin: registryOrigin, issuer: registryOrigin, client_id: 'offline-protocol-client', timeout_ms: 3000, max_request_bytes: 100_000, max_response_bytes: 2_000_000, max_artifact_bytes: 2_000_000, profile: input.profile, model: { provider: 'roleplay-test', model: 'fixed', maxTokens: 256 }, credential_ref: 'CHARPUB_APP_TEST_API_KEY' } },
     ] },
   ]))
   const profile = loadProfile('test-dsh', 'roleplay', fileURLToPath(new URL('package.json', rootURL)), home)
@@ -82,7 +83,15 @@ void test('named roleplay app reviews exact work, starts and generates once, exp
   const { nonce } = z.object({ nonce: z.string() }).parse(JSON.parse(bootstrap))
   const post = async (path: string, value: unknown = {}, origin = appOrigin) => fetch(`${appOrigin}/api/${path}`, { method: 'POST', headers: { origin, 'content-type': 'application/json', 'x-roleplay-client': nonce }, body: JSON.stringify(value) })
   assert.equal((await post('status')).status, 400)
+  const Credential = z.strictObject({ configured: z.boolean(), source: z.string().optional(), writable: z.boolean() })
+  assert.equal((await post('credential', { value: '   ' })).status, 400)
+  const stored = await post('credential', { value: ' sk-local-test ' }); assert.equal(stored.status, 200, await stored.clone().text())
+  assert.deepEqual(Credential.parse(await stored.json()), { configured: true, source: 'file', writable: true })
+  assert.match(await readFile(join(home, '.credentials.yaml'), 'utf8'), /CHARPUB_APP_TEST_API_KEY: sk-local-test\n/)
   discoveryAvailable = true
+  assert.deepEqual(z.object({ model: z.object({ credential: Credential }) }).parse(await (await post('status')).json()).model.credential, { configured: true, source: 'file', writable: true })
+  const cleared = await post('credential-clear'); assert.equal(cleared.status, 200)
+  assert.deepEqual(Credential.parse(await cleared.json()), { configured: false, writable: true })
   assert.equal((await post('status')).status, 200)
   const launch = { format: 'char.pub/runtime-launch', version: 1, registry_origin: registryOrigin, source: artifact.root, lock_digest: artifact.lock_digest, locale: 'ja', view: { mode: 'narrator' } }
   assert.equal((await post('review', launch, 'https://untrusted.example')).status, 403)
@@ -107,7 +116,7 @@ void test('named roleplay app reviews exact work, starts and generates once, exp
   const recovered = await post('turn-status', { session, request_id: 'reply-1' }); assert.equal(recovered.status, 200)
   assert.equal(z.object({ status: z.string() }).parse(await recovered.json()).status, 'success')
   const absent = await post('turn-status', { session, request_id: 'not-dispatched' }); assert.equal(z.object({ status: z.string() }).parse(await absent.json()).status, 'not_found')
-  const appStatus = await (await post('status')).json(); assert.deepEqual(z.object({ model: z.object({ credential: z.string(), online_verified: z.boolean() }), current_session: z.string() }).parse(appStatus), { model: { credential: 'unverified', online_verified: false }, current_session: session })
+  const appStatus = await (await post('status')).json(); assert.deepEqual(z.object({ model: z.object({ credential: Credential, online_verified: z.boolean() }), current_session: z.string() }).parse(appStatus), { model: { credential: { configured: false, writable: true }, online_verified: false }, current_session: session })
   const fresh = await (await post('session', { session })).json(); assert.equal(z.object({ record: z.string() }).parse(fresh).record, result.snapshot.record)
   assert.ok(!('state' in (fresh as object)), 'player snapshot must not expose raw knowing/variables')
   const listed = z.object({ items: z.array(z.object({ record: z.string() })) }).parse(await (await post('sessions', { limit: 1 })).json()); assert.equal(listed.items.length, 1); assert.equal(listed.items[0]?.record, result.snapshot.record)

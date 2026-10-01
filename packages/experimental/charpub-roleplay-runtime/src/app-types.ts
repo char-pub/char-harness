@@ -31,10 +31,20 @@ export interface AppSessionSnapshot {
   can_continue: boolean
   limitations: string[]
 }
+/** Presence of the configured model credential reference; never the value. A configured key is not an online check. */
+export interface AppCredentialState {
+  configured: boolean
+  /** Credential provider source layer, such as `env` or `file`; absent while unconfigured. */
+  source?: string
+  /** False while a read-only layer such as the launching environment supplies the reference. */
+  writable: boolean
+}
+/** Store one non-empty model API key in the profile's writable credential source. */
+export interface AppCredentialRequest { value: string }
 /** Registry authorization and fixed local model configuration, without an online inference probe. */
 export interface AppStatus {
   registry: { origin: string; authorization: 'required' | 'authorized' }
-  model: { provider: string; id: string; credential: 'unverified'; online_verified: false }
+  model: { provider: string; id: string; credential: AppCredentialState; online_verified: false }
   operation: { kind: 'review' | 'start' | 'resume' | 'turn' | 'export'; session?: string; request_id?: string } | null
   current_session?: string
   limitations: string[]

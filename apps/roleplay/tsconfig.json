@@ -13,6 +13,9 @@
     },
     {
       "path": "../../packages/util/crypto"
+    },
+    {
+      "path": "../../packages/client/ui-primitives"
     }
   ]
 }

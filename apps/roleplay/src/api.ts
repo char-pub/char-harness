@@ -1,6 +1,6 @@
 /** Same-origin transport for the named-profile app; model and Registry credentials stay on the host. */
 import type {
-  AppCancelRequest, AppLaunchReview, AppSessionSnapshot, AppSessionsResponse,
+  AppCancelRequest, AppCredentialState, AppLaunchReview, AppSessionSnapshot, AppSessionsResponse,
   AppStartRequest, AppStatus, AppTurnRequest, AppTurnResult, AppTurnStatus,
 } from '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types'
 
@@ -22,6 +22,10 @@ export interface RoleplayApi {
   turnStatus(session: string, requestId: string): Promise<AppTurnStatus>
   cancel(input: AppCancelRequest): Promise<void>
   authorize(): Promise<{ authorizationURL: string }>
+  /** Store the model API key in the profile's writable credential source; the value is never returned. */
+  saveCredential(value: string): Promise<AppCredentialState>
+  /** Remove the stored model API key; a read-only launching environment value remains in effect. */
+  clearCredential(): Promise<AppCredentialState>
   prepareExport(input: { session: string; history: AppSessionSnapshot['history']; bindings: AppStartRequest['bindings'] }): Promise<PreviewReview>
   exportPreview(input: { session: string; digest: string }): Promise<PreviewFile>
 }
@@ -55,10 +59,14 @@ function snapshot(value: unknown): value is AppSessionSnapshot {
     && typeof value.stopped === 'boolean' && typeof value.interrupted === 'boolean' && typeof value.can_continue === 'boolean'
     && Array.isArray(value.limitations) && value.limitations.every(string)
 }
+function credential(value: unknown): value is AppCredentialState {
+  return record(value) && typeof value.configured === 'boolean' && typeof value.writable === 'boolean'
+    && (value.source === undefined || string(value.source))
+}
 function status(value: unknown): value is AppStatus {
   return record(value) && record(value.registry) && string(value.registry.origin)
     && ['required', 'authorized'].includes(String(value.registry.authorization))
-    && record(value.model) && string(value.model.provider) && string(value.model.id) && value.model.credential === 'unverified'
+    && record(value.model) && string(value.model.provider) && string(value.model.id) && credential(value.model.credential)
     && value.model.online_verified === false && (value.operation === null || record(value.operation))
     && (value.current_session === undefined || string(value.current_session))
     && Array.isArray(value.limitations) && value.limitations.every(string)
@@ -159,6 +167,8 @@ export function createRoleplayApi(bootstrap: RoleplayBootstrap, transport: typeo
       if (target.origin !== bootstrap.registryOrigin) throw new RoleplayApiError('roleplay_app.registry_mismatch')
       return result
     },
+    saveCredential: value => call('credential', { value }, credential, true),
+    clearCredential: () => call('credential-clear', {}, credential, true),
     prepareExport: input => call('prepare-export', input, previewReview),
     exportPreview: input => call('export', input, previewFile, true),
   }

@@ -156,7 +156,7 @@ export function ReviewPanel({
           />
           <span>{t('confirmStart')}</span>
         </label>
-        <button className="primary large" type="submit" disabled={!ready || busy}>
+        <button className="button primary large" type="submit" disabled={!ready || busy}>
           {busy ? <span className="spinner" /> : <Icon name="arrow" />}
           {t(busy ? 'starting' : 'startStory')}
         </button>

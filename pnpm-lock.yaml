@@ -754,6 +754,12 @@ importers:
 
   apps/roleplay:
     devDependencies:
+      '@deepseek-ai/dsh-client-ui-primitives':
+        specifier: workspace:*
+        version: link:../../packages/client/ui-primitives
+      '@deepseek-ai/dsh-client-ui-theme':
+        specifier: workspace:*
+        version: link:../../packages/client/ui-theme
       '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime':
         specifier: workspace:*
         version: link:../../packages/experimental/charpub-roleplay-runtime
@@ -7734,6 +7740,12 @@ importers:
       '@deepseek-ai/dsh-charpub-roleplay-web':
         specifier: workspace:*
         version: link:../../../apps/roleplay
+      '@deepseek-ai/dsh-credentials':
+        specifier: workspace:*
+        version: link:../../credentials/credentials
+      '@deepseek-ai/dsh-credentials-local':
+        specifier: workspace:*
+        version: link:../../credentials/credentials-local
       '@deepseek-ai/dsh-experimental-charpub-roleplay':
         specifier: workspace:*
         version: link:../charpub-roleplay

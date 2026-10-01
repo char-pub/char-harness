@@ -67,6 +67,20 @@ describe('profile-bound browser transport', () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(json({ authorizationURL }))
     expect(await createRoleplayApi(bootstrap, fetcher).authorize()).toEqual({ authorizationURL })
   })
+  it('writes the model key only through the credential operations and validates their replies', async () => {
+    const fetcher = vi.fn<typeof fetch>()
+      .mockResolvedValueOnce(json({ configured: true, source: 'file', writable: true }))
+      .mockResolvedValueOnce(json({ configured: false, writable: true }))
+      .mockResolvedValueOnce(json({ configured: 'yes', writable: true }))
+    const api = createRoleplayApi(bootstrap, fetcher)
+    expect(await api.saveCredential('sk-entered')).toEqual({ configured: true, source: 'file', writable: true })
+    expect(await api.clearCredential()).toEqual({ configured: false, writable: true })
+    expect(fetcher.mock.calls.map(call => [call[0], call[1]?.body])).toEqual([
+      ['/api/credential', JSON.stringify({ value: 'sk-entered' })],
+      ['/api/credential-clear', '{}'],
+    ])
+    await expect(api.saveCredential('sk-entered')).rejects.toMatchObject({ code: 'roleplay_app.invalid_response', unknownOutcome: true })
+  })
   it('rejects an authorization redirect outside the configured Registry', async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(json({ authorizationURL: 'https://unexpected.example/authorize' }))
     await expect(createRoleplayApi(bootstrap, fetcher).authorize()).rejects.toMatchObject({ code: 'roleplay_app.registry_mismatch' })

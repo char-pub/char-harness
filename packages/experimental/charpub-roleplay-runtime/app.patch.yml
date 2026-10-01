@@ -1,5 +1,7 @@
 # Opt-in overlay for an initialized roleplay profile. All endpoints and credentials are local configuration.
 - insert:
+    - id: roleplay-credentials
+      name: '@deepseek-ai/dsh-credentials-local'
     - id: roleplay-model
       name: '@deepseek-ai/dsh-llm-deepseek-api-key'
       config:
@@ -27,3 +29,4 @@
           provider: deepseek-official
           model: !!js process.env.CHARPUB_MODEL
           maxTokens: !!js Number(process.env.CHARPUB_OUTPUT_TOKENS)
+        credential_ref: DEEPSEEK_API_KEY

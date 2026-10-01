@@ -11,7 +11,7 @@ import type RoleplayRuntime from './index.ts'
 import type { RoleplayProjection } from './projection.ts'
 import type { LoadedContent, RegistryClient } from './registry/client.ts'
 import { createRuntimePreviewExports, type RuntimePreviewExportResult, type RuntimePreviewExportReview } from './preview-export.ts'
-import type { AppLaunchReview, AppSessionSnapshot, AppSessionsResponse, AppStatus, AppTurnResult, AppTurnStatus, AppWork } from './app-types.ts'
+import type { AppCredentialState, AppLaunchReview, AppSessionSnapshot, AppSessionsResponse, AppStatus, AppTurnResult, AppTurnStatus, AppWork } from './app-types.ts'
 export type { AppLaunchReview } from './app-types.ts'
 
 const supported = ['catalog.v1', 'sources.v1', 'perspective.v1', 'story.v1', 'cast.override', 'view.outward', 'style.scope', 'policy.1-draft', 'story.conditions', 'story.knowing', 'story.items', 'story.events']
@@ -62,7 +62,8 @@ export interface AppControllerOptions {
 }
 /** Same-origin operations; Session state stays in its durable log and browser handles are process-local. */
 export interface AppController {
-  status(): AppStatus
+  /** @param credential - Current credential presence read by the profile entry for the configured model route. */
+  status(credential: AppCredentialState): AppStatus
   sessions(raw: unknown): Promise<AppSessionsResponse>
   resume(raw: unknown): Promise<AppSessionSnapshot>
   session(raw: unknown): Promise<AppSessionSnapshot>
@@ -173,7 +174,13 @@ export function createAppController(options: AppControllerOptions): AppControlle
     return { request_id: requestID, status: settled.status, ...('reason' in settled ? { error_code: settled.reason } : {}), snapshot: state }
   }
   return {
-    status() { return { registry: { origin: registryOrigin, authorization: registry.authorizationStatus() }, model: { provider: model.provider, id: model.model, credential: 'unverified', online_verified: false }, operation: activity, ...(current ? { current_session: current.handle } : {}), limitations: [...limitations] } },
+    status(credential) {
+      return {
+        registry: { origin: registryOrigin, authorization: registry.authorizationStatus() },
+        model: { provider: model.provider, id: model.model, credential, online_verified: false },
+        operation: activity, ...(current ? { current_session: current.handle } : {}), limitations: [...limitations],
+      }
+    },
     async sessions(raw) {
       const input = z.strictObject({ limit: z.number().int().min(1).max(20).default(10), cursor: z.string().optional() }).parse(raw)
       const after = input.cursor ? cursors.get(input.cursor) : undefined

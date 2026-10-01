@@ -42,7 +42,12 @@ function snapshot(record = 'first', patch: Partial<AppSessionSnapshot> = {}): Ap
 }
 const status: AppStatus = {
   registry: { origin: bootstrap.registryOrigin, authorization: 'authorized' },
-  model: { provider: 'configured-provider', id: 'configured-model', credential: 'unverified', online_verified: false },
+  model: {
+    provider: 'configured-provider',
+    id: 'configured-model',
+    credential: { configured: true, source: 'file', writable: true },
+    online_verified: false,
+  },
   operation: null,
   limitations: [],
 }
@@ -96,6 +101,8 @@ function makeApi(overrides: Partial<RoleplayApi> = {}): TestApi {
     })),
     cancel: vi.fn(async () => {}),
     authorize: vi.fn(async () => ({ authorizationURL: 'https://registry.example/authorize' })),
+    saveCredential: vi.fn(async () => ({ configured: true, source: 'file', writable: true })),
+    clearCredential: vi.fn(async () => ({ configured: false, writable: true })),
     prepareExport: vi.fn(async () => ({ digest: 'review-digest', payload: { synthetic: true } })),
     exportPreview: vi.fn(async () => ({ json: '{"synthetic":true}', payload: { synthetic: true } })),
     ...overrides,
@@ -178,9 +185,10 @@ describe('story discovery and exact-version setup', () => {
     expect(screen.getByRole('button', { name: 'Review this version' })).toHaveProperty('disabled', true)
     expect(screen.getByText('Advanced: launch details').closest('details')?.open).toBe(false)
     expect(await screen.findByText('Your first story is waiting')).toBeTruthy()
-    fireEvent.click(screen.getAllByRole('button', { name: /Connection & settings/ })[0])
-    const dialog = screen.getByRole('dialog', { name: 'Connection & settings' })
-    expect(within(dialog).getByText('Configured · not verified online')).toBeTruthy()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
+    const dialog = screen.getByRole('dialog', { name: 'Settings' })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Model' }))
+    expect(within(dialog).getByText('Not verified online yet')).toBeTruthy()
     expect(api.review).not.toHaveBeenCalled()
     expect(api.turn).not.toHaveBeenCalled()
   })
@@ -400,15 +408,55 @@ describe('real conversation lifecycle', () => {
 describe('local controls and synthetic preview', () => {
   it('changes interface language and theme without changing authored text or sending model calls', async () => {
     const api = await active()
-    fireEvent.click(screen.getAllByRole('button', { name: /Connection & settings/ })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
     fireEvent.change(screen.getByRole('combobox', { name: /Interface language/ }), { target: { value: 'zh' } })
-    expect(screen.getByRole('dialog', { name: '连接与设置' })).toBeTruthy()
-    fireEvent.change(screen.getByRole('combobox', { name: '外观' }), { target: { value: 'dark' } })
-    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(screen.getByRole('dialog', { name: '设置' })).toBeTruthy()
+    fireEvent.click(within(screen.getByRole('radiogroup', { name: '外观' })).getByRole('radio', { name: '深色' }))
+    expect(document.body.hasAttribute('data-ds-dark-theme')).toBe(true)
+    fireEvent.click(screen.getByRole('button', { name: '增大字号' }))
+    expect(document.body.style.getPropertyValue('--dsh-content-font-size')).toBe('15px')
+    expect(localStorage.getItem('charpub-roleplay-font-size')).toBe('15')
     expect(screen.getByText('The innkeeper leaves a light in the window.')).toBeTruthy()
     expect(api.turn).not.toHaveBeenCalled()
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
     expect(screen.queryByRole('dialog')).toBeNull()
+  })
+  it('stores and removes the model API key only through explicit settings actions', async () => {
+    const api = makeApi({
+      status: vi.fn(async () => ({ ...status, model: { ...status.model, credential: { configured: false, writable: true } } })),
+    })
+    mount(api)
+    expect(await screen.findByText('Add a model API key in Settings before replying.')).toBeTruthy()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
+    fireEvent.click(screen.getByRole('button', { name: 'Model' }))
+    expect(screen.getByText('Not configured')).toBeTruthy()
+    fireEvent.change(screen.getByLabelText('API key'), { target: { value: '  sk-entered  ' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(await screen.findByText('API key saved. The next reply uses it.')).toBeTruthy()
+    expect(api.saveCredential).toHaveBeenCalledWith('sk-entered')
+    expect(screen.getByText('Configured')).toBeTruthy()
+    expect(screen.getByLabelText('API key')).toHaveProperty('value', '')
+    expect(screen.queryByText('Add a model API key in Settings before replying.')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Remove' }))
+    expect(await screen.findByText('API key removed.')).toBeTruthy()
+    expect(api.clearCredential).toHaveBeenCalledTimes(1)
+    expect(api.turn).not.toHaveBeenCalled()
+  })
+  it('explains a launching-environment key without offering a write that it would shadow', async () => {
+    const api = makeApi({
+      status: vi.fn(async () => ({ ...status, model: { ...status.model, credential: { configured: true, source: 'env', writable: false } } })),
+      saveCredential: vi.fn(async () => {
+        throw new RoleplayApiError('roleplay_app.credential_read_only')
+      }),
+    })
+    mount(api)
+    await screen.findByText('Your first story is waiting')
+    fireEvent.click(screen.getAllByRole('button', { name: 'Settings' })[0])
+    fireEvent.click(screen.getByRole('button', { name: 'Model' }))
+    expect(screen.getByText('Supplied by the launching environment. Change it there and restart the Runtime.')).toBeTruthy()
+    expect(screen.getByLabelText('API key')).toHaveProperty('disabled', true)
+    expect(screen.queryByRole('button', { name: 'Remove' })).toBeNull()
+    expect(api.saveCredential).not.toHaveBeenCalled()
   })
   it('starts export with empty synthetic inputs and invalidates an old file review on edits', async () => {
     const s = snapshot('first', {

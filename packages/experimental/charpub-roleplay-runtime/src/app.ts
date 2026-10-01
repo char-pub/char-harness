@@ -4,11 +4,13 @@ import { randomBytes } from 'node:crypto'
 import type { Context } from '@deepseek-ai/cordis'
 import { z } from 'zod'
 import { RuntimeProfileSchema } from '@char-pub/core'
+import { credentialRef, isCredentialRefName } from '@deepseek-ai/dsh-credentials'
 import { createRegistryClient } from './registry/client.ts'
 import { createAppController } from './app-controller.ts'
 import { appRecordReader } from './app-records.ts'
 import { appHTML } from './app-ui.ts'
 import { loadAppAssets } from './app-assets.ts'
+import type { AppCredentialState } from './app-types.ts'
 import type {} from './index.ts'
 
 /** Explicit local deployment; launch files cannot override these endpoints or limits. */
@@ -20,11 +22,14 @@ export const Config = z.strictObject({
   max_artifact_bytes: z.number().int().positive(),
   profile: RuntimeProfileSchema,
   model: z.strictObject({ provider: z.string().min(1), model: z.string().min(1), maxTokens: z.number().int().positive() }),
+  /** Credential reference the configured model adapter resolves; the Settings dialog describes and writes only this name. */
+  credential_ref: z.string().refine(isCredentialRefName),
 })
+const CredentialInput = z.strictObject({ value: z.string().trim().min(1).max(4096) })
 /** The local app is an explicit opt-in profile row, not a default runtime surface. */
 export const name = 'charpub-roleplay-app'
 /** Session requests remain owned by the existing durable runtime service. */
-export const inject = ['roleplayRuntime', 'sessionPersistence']
+export const inject = ['roleplayRuntime', 'sessionPersistence', 'credentials']
 
 /**
  * Mount the bounded local HTTP entry and release all listeners, reads and model requests on disposal.
@@ -33,6 +38,7 @@ export const inject = ['roleplayRuntime', 'sessionPersistence']
  */
 export async function apply(ctx: Context, raw: z.input<typeof Config>) {
   const config = Config.parse(raw)
+  const credential = credentialRef(config.credential_ref)
   const assets = await loadAppAssets()
   const origin = `http://${config.host === '::1' ? '[::1]' : config.host}:${config.port}`
   const nonce = randomBytes(24).toString('base64url')
@@ -66,6 +72,17 @@ export async function apply(ctx: Context, raw: z.input<typeof Config>) {
       void next.catch(() => { if (connection === next) connection = undefined })
     }
     return connection
+  }
+  async function credentialState(): Promise<AppCredentialState> {
+    const info = await ctx.credentials.describe(credential)
+    return { configured: info.configured, ...(info.source === undefined ? {} : { source: info.source }), writable: info.writable }
+  }
+  async function writeCredential(value: string | undefined): Promise<AppCredentialState> {
+    // A read-only layer such as the launching environment would keep shadowing the stored value.
+    if (!(await ctx.credentials.describe(credential)).writable) throw new Error('roleplay_app.credential_read_only')
+    if (value === undefined) await ctx.credentials.unset(credential)
+    else await ctx.credentials.set(credential, value)
+    return credentialState()
   }
   const respond = (res: ServerResponse, status: number, value: unknown) => {
     const json = JSON.stringify(value)
@@ -102,8 +119,11 @@ export async function apply(ctx: Context, raw: z.input<typeof Config>) {
       if (req.method !== 'POST' || req.headers.origin !== origin || req.headers['x-roleplay-client'] !== nonce || req.headers['content-type']?.split(';')[0] !== 'application/json') { respond(res, 403, { error: 'roleplay_app.origin_forbidden' }); return }
       const input = await body(req)
       lifecycle.signal.throwIfAborted()
+      // Credential settings stay usable while Registry discovery is unavailable.
+      if (url.pathname === '/api/credential') { respond(res, 200, await writeCredential(CredentialInput.parse(input).value)); return }
+      if (url.pathname === '/api/credential-clear') { z.strictObject({}).parse(input); respond(res, 200, await writeCredential(undefined)); return }
       const { registry, app } = await connect()
-      const result = url.pathname === '/api/status' ? app.status()
+      const result = url.pathname === '/api/status' ? app.status(await credentialState())
         : url.pathname === '/api/sessions' ? await app.sessions(input)
           : url.pathname === '/api/resume' ? await app.resume(input)
             : url.pathname === '/api/session' ? await app.session(input)
