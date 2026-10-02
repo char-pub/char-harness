@@ -323,6 +323,16 @@ pnpm run package:desktop:win:x64:unsigned
 
 该命令要求设置 `DSH_DESKTOP_APP_ID` 并具备常规构建依赖，包括编译原生模块所需的 Python 和 Visual C++ 构建工具。Python 不在 `PATH` 中时，将 `PYTHON` 设置为其可执行文件路径。命令将安装包写入 `.desktop-build/targets/win-x64/unsigned-artifacts/`，省略自动更新配置，清除签名凭据，且不生成发布完成记录。它不需要 EV 凭据或更新源地址。签名打包和上传命令仍遵循正式发布要求。
 
+### 未签名 macOS 测试构建
+
+在 Apple Silicon 上，无需 Developer ID 证书即可构建本地未签名 DMG 用于安装测试：
+
+```sh
+pnpm run package:desktop:mac:arm64:unsigned
+```
+
+该命令要求在 `.env.macos` 中设置 `DSH_DESKTOP_APP_ID` 和所选部署的强制更新源站。它跳过运行时与应用签名、hardened runtime、公证、ZIP 更新包和自动更新配置，把 `deepseek-harness-<version>-mac-arm64-unsigned.dmg` 写入 `.desktop-build/targets/mac-arm64/unsigned-artifacts/`，且不生成发布完成记录。它仍会运行载荷和 Host 冒烟检查。Gatekeeper 会拒绝未签名应用；可在 Finder 右键菜单中选择**打开**，或用 `xattr -dr com.apple.quarantine` 移除隔离属性。`mac-x64` 没有未签名模式。
+
 ### Windows 安装界面
 
 Windows 安装程序使用原生 NSIS 页面，提供亮暗配色、系统阴影、可编辑的安装目录，以及默认勾选立即启动的完成页。安装仅面向当前用户。点击安装或按 Enter 均校验当前路径；新安装位置必须为空，非空位置必须是已登记的安装目录。受影响安装路径中的程序运行时显示系统提示，并保持应用运行；其他目录中的同名应用不阻止安装。静默更新最多等待受影响应用退出十秒，若仍在运行则以退出码 2 结束。
