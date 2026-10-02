@@ -1,0 +1,16 @@
+# Bilingual-pair consistency record for guide.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/upgrade-guide/v0.2.0-rc.2/roleplay-app-credentials/guide.md
+/:
+  en: 04338591ff2b8dda
+  zh: dbcf3539f1434514
+/roleplay-app-settings-and-credentials:
+  en: 3ed5d8b56fd81d59
+  zh: 93c7fa884564638e
+/roleplay-app-settings-and-credentials/change:
+  en: 4504d1ed2edf9e00
+  zh: 94001114ab57d580
+/roleplay-app-settings-and-credentials/migration:
+  en: 4b9b50edcf924e3d
+  zh: 815a9fe761835c85

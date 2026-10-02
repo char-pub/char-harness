@@ -59,12 +59,13 @@ export function createElectronBuilderConfig(
     throw new Error('desktop package: DSH_DESKTOP_UNSIGNED must be 0 or 1')
   }
   const unsigned = env.DSH_DESKTOP_UNSIGNED === '1'
-  if (unsigned && resolvedPlatform !== 'win32') throw new Error('desktop package: unsigned builds require Windows')
   const packagesMacOS = targetPlatform === 'darwin' || (targetPlatform === undefined && hostPlatform === 'darwin')
   const packagesWindows = resolvedPlatform === 'win32'
   if (resolvedPlatform === 'win32') installWindowsDirectoryInstaller()
-  const macOSSigning = packagesMacOS ? resolveMacOSSigningEnvironment(env) : undefined
-  if (packagesMacOS) resolveMacOSNotarizationEnvironment(env)
+  // An unsigned macOS build is a local test artifact: no Developer ID, notarization or update feed.
+  const signsMacOS = packagesMacOS && !unsigned
+  const macOSSigning = signsMacOS ? resolveMacOSSigningEnvironment(env) : undefined
+  if (signsMacOS) resolveMacOSNotarizationEnvironment(env)
   const buildPaths = desktopTargetBuildPaths(resolveDesktopBuildTarget(env, hostPlatform, hostArch))
   let primaryRuntimeDestination
   let dshDestination
@@ -152,19 +153,20 @@ export function createElectronBuilderConfig(
       category: 'public.app-category.developer-tools',
       // macOS matches the application locale against this bundle, not Electron Framework resources.
       extendInfo: { CFBundleLocalizations: ['en', 'zh_CN'] },
-      identity: macOSSigning?.signingIdentity,
-      forceCodeSigning: true,
-      hardenedRuntime: true,
+      // `null` tells electron-builder to skip signing instead of discovering a keychain identity.
+      identity: signsMacOS ? macOSSigning?.signingIdentity : null,
+      forceCodeSigning: signsMacOS,
+      hardenedRuntime: signsMacOS,
       extendInfo: { NSMicrophoneUsageDescription: 'DeepSeek Harness uses your microphone to transcribe speech into message drafts.' },
       entitlements: fileURLToPath(new URL('./macos-entitlements.plist', import.meta.url)),
       entitlementsInherit: fileURLToPath(new URL('./macos-entitlements.plist', import.meta.url)),
       // ASAR-unpacked native runtime files are pre-signed; PAK resources are sealed by their enclosing bundle.
       signIgnore: ['/Contents/Resources/app\\.asar\\.unpacked/dsh(?:/|$)', '/Contents/Resources/runtime/primary-runtime(?:/|$)', '\\.pak$'],
-      notarize: true,
-      target: ['dmg', 'zip'],
+      notarize: signsMacOS,
+      target: unsigned ? ['dmg'] : ['dmg', 'zip'],
     },
     dmg: {
-      sign: true,
+      sign: signsMacOS,
       writeUpdateInfo: false,
     },
     beforePack: async context => {
@@ -210,10 +212,11 @@ export function createElectronBuilderConfig(
         await verifyMacOSAppUpdateConfig(appPath, resolveMacOSAppUpdateFeed(context.packager.config.publish),
           context.packager.appInfo.updaterCacheDirName)
       }
+      if (!signsMacOS) return
       verifyMacOSSignatureAfterSign(context, macOSSigning ?? resolveMacOSSigningEnvironment(env))
     },
     artifactBuildCompleted: artifact => {
-      if (!artifact.file.endsWith('.dmg')) return
+      if (!artifact.file.endsWith('.dmg') || !signsMacOS) return
       return notarizeMacOSDiskImageArtifact(
         artifact,
         env,

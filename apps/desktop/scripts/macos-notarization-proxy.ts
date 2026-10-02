@@ -24,7 +24,7 @@ interface ProxyOperations {
   readonly ownerAlive: (pid: number) => boolean
 }
 
-const LOCK = join(homedir(), 'Library', 'Caches', 'com.deepseek.harness', 'notarization-proxy')
+const LOCK = join(homedir(), 'Library', 'Caches', 'pub.char.harness', 'notarization-proxy')
 const RECOVERY = 'pnpm --dir apps/desktop run restore:mac-proxy'
 const NETWORKSETUP = '/usr/sbin/networksetup'
 const operations: ProxyOperations = {

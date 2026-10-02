@@ -4,11 +4,13 @@ import { randomBytes } from 'node:crypto'
 import type { Context } from '@deepseek-ai/cordis'
 import { z } from 'zod'
 import { RuntimeProfileSchema } from '@char-pub/core'
+import { isCredentialRefName } from '@deepseek-ai/dsh-credentials'
 import { createRegistryClient } from './registry/client.ts'
 import { createAppController } from './app-controller.ts'
 import { appRecordReader } from './app-records.ts'
 import { appHTML } from './app-ui.ts'
 import { loadAppAssets } from './app-assets.ts'
+import { createAppSettings } from './app-settings.ts'
 import type {} from './index.ts'
 
 /** Explicit local deployment; launch files cannot override these endpoints or limits. */
@@ -20,11 +22,13 @@ export const Config = z.strictObject({
   max_artifact_bytes: z.number().int().positive(),
   profile: RuntimeProfileSchema,
   model: z.strictObject({ provider: z.string().min(1), model: z.string().min(1), maxTokens: z.number().int().positive() }),
+  /** Credential reference the configured model adapter resolves when its own settings name none. */
+  credential_ref: z.string().refine(isCredentialRefName),
 })
 /** The local app is an explicit opt-in profile row, not a default runtime surface. */
 export const name = 'charpub-roleplay-app'
 /** Session requests remain owned by the existing durable runtime service. */
-export const inject = ['roleplayRuntime', 'sessionPersistence']
+export const inject = ['roleplayRuntime', 'sessionPersistence', 'credentials', 'llm', 'loader']
 
 /**
  * Mount the bounded local HTTP entry and release all listeners, reads and model requests on disposal.
@@ -33,6 +37,9 @@ export const inject = ['roleplayRuntime', 'sessionPersistence']
  */
 export async function apply(ctx: Context, raw: z.input<typeof Config>) {
   const config = Config.parse(raw)
+  const settings = createAppSettings(ctx, {
+    credentialRef: config.credential_ref, appEntryId: ctx.fiber.entry?.options.id ?? name, provider: config.model.provider,
+  })
   const assets = await loadAppAssets()
   const origin = `http://${config.host === '::1' ? '[::1]' : config.host}:${config.port}`
   const nonce = randomBytes(24).toString('base64url')
@@ -102,8 +109,16 @@ export async function apply(ctx: Context, raw: z.input<typeof Config>) {
       if (req.method !== 'POST' || req.headers.origin !== origin || req.headers['x-roleplay-client'] !== nonce || req.headers['content-type']?.split(';')[0] !== 'application/json') { respond(res, 403, { error: 'roleplay_app.origin_forbidden' }); return }
       const input = await body(req)
       lifecycle.signal.throwIfAborted()
+      // Settings stay usable while Registry discovery is unavailable.
+      const local = url.pathname === '/api/settings/models' ? await settings.models()
+        : url.pathname === '/api/settings/models/save' ? await settings.saveModel(input)
+          : url.pathname === '/api/settings/models/clear-key' ? await settings.clearModelKey(input)
+            : url.pathname === '/api/settings/plugins' ? await settings.plugins()
+              : url.pathname === '/api/settings/plugin' ? settings.pluginConfig(input)
+                : url.pathname === '/api/settings/plugin/save' ? await settings.savePluginConfig(input) : undefined
+      if (local !== undefined) { respond(res, 200, local); return }
       const { registry, app } = await connect()
-      const result = url.pathname === '/api/status' ? app.status()
+      const result = url.pathname === '/api/status' ? app.status(await settings.credential())
         : url.pathname === '/api/sessions' ? await app.sessions(input)
           : url.pathname === '/api/resume' ? await app.resume(input)
             : url.pathname === '/api/session' ? await app.session(input)

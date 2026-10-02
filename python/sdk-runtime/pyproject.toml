@@ -12,10 +12,10 @@ license = "MIT"
 authors = [{ name = "DeepSeek" }]
 
 [project.urls]
-Homepage = "https://github.com/deepseek-ai/deepseek-harness"
-Documentation = "https://github.com/deepseek-ai/deepseek-harness/blob/master/python/sdk-runtime/README.md"
-Issues = "https://github.com/deepseek-ai/deepseek-harness/issues"
-Source = "https://github.com/deepseek-ai/deepseek-harness"
+Homepage = "https://github.com/char-pub/char-harness"
+Documentation = "https://github.com/char-pub/char-harness/blob/main/python/sdk-runtime/README.md"
+Issues = "https://github.com/char-pub/char-harness/issues"
+Source = "https://github.com/char-pub/char-harness"
 
 [project.scripts]
 dsh = "deepseek_harness_runtime:main"

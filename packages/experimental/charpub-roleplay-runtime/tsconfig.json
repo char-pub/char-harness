@@ -31,6 +31,21 @@
     },
     {
       "path": "../../util/brand"
+    },
+    {
+      "path": "../../credentials/credentials"
+    },
+    {
+      "path": "../../settings/settings"
+    },
+    {
+      "path": "../../boot/config-editor"
+    },
+    {
+      "path": "../../host/plugin-inventory"
+    },
+    {
+      "path": "../../boot/app-boot"
     }
   ]
 }

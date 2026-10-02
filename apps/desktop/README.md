@@ -321,6 +321,16 @@ pnpm run package:desktop:win:x64:unsigned
 
 The command requires `DSH_DESKTOP_APP_ID` and the normal build dependencies, including Python and Visual C++ build tools for native modules. Set `PYTHON` to the Python executable when it is absent from `PATH`. It writes the installer to `.desktop-build/targets/win-x64/unsigned-artifacts/`, omits automatic-update configuration, strips signing credentials, and creates no release completion record. It does not require EV credentials or an update origin. The signed packaging and upload commands retain their release requirements.
 
+### Unsigned macOS test build
+
+On Apple Silicon, build a local unsigned DMG for installation testing without a Developer ID certificate:
+
+```sh
+pnpm run package:desktop:mac:arm64:unsigned
+```
+
+The command requires `DSH_DESKTOP_APP_ID` and the selected deployment's mandatory-update origin in `.env.macos`. It skips runtime and application signing, hardened runtime, notarization, the ZIP update archive and automatic-update configuration, writes `deepseek-harness-<version>-mac-arm64-unsigned.dmg` to `.desktop-build/targets/mac-arm64/unsigned-artifacts/`, and creates no release completion record. It still runs the payload and Host smoke checks. Gatekeeper rejects the unsigned application; open it with **Open** from the Finder context menu or remove the quarantine attribute with `xattr -dr com.apple.quarantine`. `mac-x64` has no unsigned mode.
+
 ### Windows installer interface
 
 The Windows installer uses native NSIS pages with light and dark palettes, system shadows, an editable installation directory, and a finish page whose launch checkbox is selected by default. Installation is restricted to the current user. Clicking Install or pressing Enter validates the current path; new destinations must be empty, and nonempty destinations must be registered installations. Running executables at the affected installation path produce a native prompt and remain running; same-named applications in other directories do not block installation. Silent updates wait up to ten seconds for the affected application to exit, then stop with exit code 2 if it is still running.

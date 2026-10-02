@@ -31,10 +31,78 @@ export interface AppSessionSnapshot {
   can_continue: boolean
   limitations: string[]
 }
+/** Presence of the configured model credential reference; never the value. A configured key is not an online check. */
+export interface AppCredentialState {
+  configured: boolean
+  /** Credential provider source layer, such as `env` or `file`; absent while unconfigured. */
+  source?: string
+  /** False while a read-only layer such as the launching environment supplies the reference. */
+  writable: boolean
+}
+/** Store one non-empty model API key in the profile's writable credential source. */
+export interface AppCredentialRequest { value: string }
+/** JSON value carried by a settings form; secrets are redacted before they reach the browser. */
+export type AppJson = string | number | boolean | null | AppJson[] | { [key: string]: AppJson }
+/** One path-addressed edit to a profile entry's user section. */
+export type AppSettingsPathOp = { op: 'set'; path: string[]; value: AppJson } | { op: 'unset'; path: string[] }
+/** A settings write fenced by the revision the form was read at. */
+export interface AppSettingsWrite { ns: string; ops: AppSettingsPathOp[]; revision?: number }
+/** Live configuration form of one profile entry: serialized schemastery schema and redacted layers. */
+export interface AppSettingsForm {
+  schema: unknown
+  /** Effective value: schema defaults, then bundle layers, then the user section. */
+  value: unknown
+  /** Value without the user section. */
+  base: unknown
+  /** The profile's own section; a field present here is user-overridden. */
+  user: unknown
+  revision: number
+  /** False while a command-line overlay owns this entry, so a profile write could not take effect. */
+  writable: boolean
+}
+/** One configurable model provider as the Models page renders it. */
+export interface AppModelProvider {
+  provider: string
+  display_name: string
+  /** Profile entry id that owns this provider's settings. */
+  ns: string
+  /** Path from the section root to this provider's profile object. */
+  path: string[]
+  credential_ref: string
+  credential: AppCredentialState
+  /** False while a command-line overlay owns the provider entry. */
+  settings_writable: boolean
+  /** Absent while the owning entry exposes no live form. */
+  form?: AppSettingsForm
+}
+/** Every configurable provider in declaration order. */
+export interface AppModelsView { providers: AppModelProvider[] }
+/** Write one provider card: settings path edits, then an optional new API key. */
+export interface AppModelsWrite extends AppSettingsWrite { api_key?: string }
+/** Localized text from a plugin package manifest or locale file. */
+export type AppLocalizedText = string | { en: string; [locale: string]: string }
+/** One Loader entry in the plugin list. */
+export interface AppPluginEntry {
+  entry_id: string
+  /** Settings namespace (profile entry id). */
+  ns: string
+  module_name: string
+  enabled: boolean
+  phase: 'pending' | 'loading' | 'active' | 'failed' | 'unloading' | null
+  /** `form`: a generated live form; `models`: configured on the Models page; `none`: launch configuration only. */
+  configurable: 'form' | 'models' | 'none'
+  /** False while a command-line overlay owns this entry. */
+  settings_writable: boolean
+  meta?: { title?: AppLocalizedText; description?: AppLocalizedText; icon?: string; error?: string }
+}
+/** Current plugin inventory of the running profile. */
+export interface AppPluginsView { entries: AppPluginEntry[] }
+/** One plugin's live form with its namespace. */
+export interface AppPluginConfigView extends AppSettingsForm { ns: string }
 /** Registry authorization and fixed local model configuration, without an online inference probe. */
 export interface AppStatus {
   registry: { origin: string; authorization: 'required' | 'authorized' }
-  model: { provider: string; id: string; credential: 'unverified'; online_verified: false }
+  model: { provider: string; id: string; credential: AppCredentialState; online_verified: false }
   operation: { kind: 'review' | 'start' | 'resume' | 'turn' | 'export'; session?: string; request_id?: string } | null
   current_session?: string
   limitations: string[]

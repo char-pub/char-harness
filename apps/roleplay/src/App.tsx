@@ -9,6 +9,7 @@ import type {
   AppStatus,
   AppTurnRequest,
   AppTurnResult,
+  AppModelsView,
 } from '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types'
 import {
   createRoleplayApi,
@@ -21,13 +22,16 @@ import {
 import { translate, type Language, type MessageKey } from './i18n.ts'
 import { Icon } from './components/Icon.tsx'
 import { Modal } from './components/Modal.tsx'
+import { BrandMark, BrandWordmark } from './components/Brand.tsx'
+import { FONT_SIZE_MAX, FONT_SIZE_MIN, SettingsDialog, type SettingsSection, type Theme } from './components/SettingsDialog.tsx'
+import type { ModelsOperations } from './components/ModelsSection.tsx'
+import { PluginManagerPage, type PluginOperations } from './components/Plugins.tsx'
 import { Bindings, enteredBindings } from './components/Bindings.tsx'
 import { ReviewPanel } from './components/ReviewPanel.tsx'
 
 type Pending = { request: AppTurnRequest; phase: 'sending' | 'unknown' | 'not_found' }
 type ErrorInfo = { code: string; message: MessageKey }
 type Busy = 'bootstrap' | 'list' | 'review' | 'start' | 'resume' | 'send' | 'authorize' | 'inspect' | 'export' | null
-type Theme = 'light' | 'dark' | 'system'
 const DRAFTS = 'charpub-roleplay-reply-drafts',
   REQUESTS = 'charpub-roleplay-pending-requests'
 function readText(key: string, local = false): string | null {
@@ -87,25 +91,24 @@ function storedRequests(): Record<string, Pending> {
   }
   return result
 }
+/** First matching machine-code pattern selects the user-facing explanation. */
+const ERROR_MESSAGES: ReadonlyArray<readonly [RegExp, MessageKey]> = [
+  [/credential_read_only/, 'credentialReadOnly'],
+  [/settings_conflict/, 'settingsConflict'],
+  [/settings_overridden/, 'settingsOverridden'],
+  [/settings_not_live/, 'settingsNotLive'],
+  [/stale_session/, 'stale'],
+  [/http_401|authorization_changed|authorization_required|unauthorized/, 'unauthorized'],
+  [/http_403/, 'forbidden'],
+  [/expired/, 'expired'],
+  [/credential|provider|model_unavailable|api_key/, 'modelUnavailable'],
+  [/unsupported|story_required|content_required/, 'unsupported'],
+  [/connection_lost|bootstrap/, 'unavailable'],
+  [/invalid|unknown|mismatch/, 'invalid'],
+]
 function errorInfo(error: unknown): ErrorInfo {
   const code = error instanceof RoleplayApiError ? error.code : 'roleplay_app.operation_failed'
-  const message: MessageKey = /stale_session/.test(code)
-    ? 'stale'
-    : /http_401|authorization_changed|authorization_required|unauthorized/.test(code)
-      ? 'unauthorized'
-      : /http_403/.test(code)
-        ? 'forbidden'
-        : /expired/.test(code)
-          ? 'expired'
-          : /credential|provider|model_unavailable|api_key/.test(code)
-            ? 'modelUnavailable'
-            : /unsupported|story_required|content_required/.test(code)
-              ? 'unsupported'
-              : /connection_lost|bootstrap/.test(code)
-                ? 'unavailable'
-                : /invalid|unknown|mismatch/.test(code)
-                  ? 'invalid'
-                  : 'operationFailed'
+  const message = ERROR_MESSAGES.find(([pattern]) => pattern.test(code))?.[1] ?? 'operationFailed'
   return { code, message }
 }
 function initialLanguage(): Language {
@@ -115,6 +118,10 @@ function initialLanguage(): Language {
 function initialTheme(): Theme {
   const saved = readText('charpub-roleplay-theme', true)
   return saved === 'light' || saved === 'dark' ? saved : 'system'
+}
+function initialFontSize(): number {
+  const saved = Number(readText('charpub-roleplay-font-size', true))
+  return Number.isInteger(saved) && saved >= FONT_SIZE_MIN && saved <= FONT_SIZE_MAX ? saved : 14
 }
 function incomingLaunch(): string {
   const intent = new URLSearchParams(location.hash.slice(1)).get('launch')
@@ -142,7 +149,8 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
   })
   const api = boot.api
   const [language, setLanguage] = useState<Language>(initialLanguage),
-    [theme, setTheme] = useState<Theme>(initialTheme)
+    [theme, setTheme] = useState<Theme>(initialTheme),
+    [fontSize, setFontSize] = useState(initialFontSize)
   const t = useCallback((key: MessageKey) => translate(language, key), [language])
   const [systemDark, setSystemDark] = useState(
     () => typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches,
@@ -162,7 +170,8 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
     [notice, setNotice] = useState<MessageKey | null>(null)
   const [drafts, setDrafts] = useState(storedDrafts),
     [pending, setPending] = useState(storedRequests)
-  const [settings, setSettings] = useState(false),
+  const [settings, setSettings] = useState<SettingsSection | null>(null),
+    [pluginsOpen, setPluginsOpen] = useState(false),
     [exportOpen, setExportOpen] = useState(false)
   const [recoveryRecord, setRecoveryRecord] = useState<string | null>(null)
   const navigation = useRef(0)
@@ -187,9 +196,16 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
     }
   }, [])
   useEffect(() => {
-    document.documentElement.dataset.theme = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme
+    // The DeepSeek Harness token sheets select the dark palette from this body attribute.
+    const dark = theme === 'system' ? systemDark : theme === 'dark'
+    document.body.toggleAttribute('data-ds-dark-theme', dark)
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
     saveText('charpub-roleplay-theme', theme, true)
   }, [theme, systemDark])
+  useEffect(() => {
+    document.body.style.setProperty('--dsh-content-font-size', `${fontSize}px`)
+    saveText('charpub-roleplay-font-size', String(fontSize), true)
+  }, [fontSize])
   useEffect(() => {
     document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en'
     saveText('charpub-roleplay-language', language, true)
@@ -264,6 +280,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
     }
   }
   const acceptSnapshot = (value: AppSessionSnapshot) => {
+    setPluginsOpen(false)
     setRecoveryRecord(null)
     snapshotRef.current = value
     setSnapshot(value)
@@ -320,6 +337,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
   }, [api])
   const reviewLaunch = async (text: string) => {
     if (!api || !text.trim() || !begin('review')) return
+    setPluginsOpen(false)
     setMode('review')
     setReview(null)
     try {
@@ -515,6 +533,45 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
       if (live.current) setError(errorInfo(cause))
     }
   }
+  const explain = (cause: unknown) => errorInfo(cause).message
+  // Status needs the Registry connection; a Models write already returns the generation provider's key state.
+  const adoptCredential = (view: AppModelsView) => {
+    setStatus((previous) => {
+      const row = previous ? view.providers.find(item => item.provider === previous.model.provider) : undefined
+      return previous && row ? { ...previous, model: { ...previous.model, credential: row.credential } } : previous
+    })
+    return view
+  }
+  const modelOperations: ModelsOperations = {
+    load: async () => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.models()
+    },
+    save: async (input) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return adoptCredential(await api.saveModel(input))
+    },
+    clearKey: async (ns) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return adoptCredential(await api.clearModelKey(ns))
+    },
+    explain,
+  }
+  const pluginOperations: PluginOperations = {
+    list: async () => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.plugins()
+    },
+    config: async (ns) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.pluginConfig(ns)
+    },
+    save: async (input) => {
+      if (!api) throw new RoleplayApiError('roleplay_app.bootstrap_missing')
+      return api.savePluginConfig(input)
+    },
+    explain,
+  }
   const currentPending = snapshot ? pending[snapshot.record] : undefined
   const registryOrigin = status?.registry.origin ?? boot.bootstrap?.registryOrigin
   const date = (value: string) => {
@@ -545,7 +602,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
     (snapshot.can_continue || (snapshot.interrupted && recoveryRecord === snapshot.record))
   const detailView = snapshot && mode === 'session' ? snapshot : null
   return (
-    <div className="player-shell">
+    <div className="app-frame">
       {leftOpen || rightOpen ? (
         <button
           type="button"
@@ -557,14 +614,12 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           }}
         />
       ) : null}
-      <aside ref={leftPanel} className={`story-rail ${leftOpen ? 'is-open' : ''}`} aria-label={t('sessions')}>
-        <div className="brand">
-          <span className="brand-mark">
-            <Icon name="book" size={24} />
-          </span>
-          <span>
-            {t('brand')}
-            <small>{t('tagline')}</small>
+      <aside ref={leftPanel} className={`sidebar ${leftOpen ? 'is-open' : ''}`} aria-label={t('sessions')}>
+        <div className="sidebar-logo">
+          <span className="sidebar-brand">
+            <BrandMark size={24} />
+            <BrandWordmark label={t('brand')} />
+            <span className="runtime-badge">{t('runtimeBadge')}</span>
           </span>
           <button
             type="button"
@@ -577,31 +632,52 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             <Icon name="close" />
           </button>
         </div>
-        <button type="button" className="primary new-story" disabled={!!busy} onClick={newStory}>
-          <Icon name="plus" />
-          {t('newStory')}
+        <button
+          type="button"
+          className="new-session"
+          disabled={!!busy}
+          onClick={() => {
+            setPluginsOpen(false)
+            newStory()
+          }}
+        >
+          <Icon name="newStory" />
+          <span>{t('newStory')}</span>
         </button>
-        <div className="rail-label">
+        <nav className="panel-list" aria-label={t('plugins')}>
+          <button
+            type="button"
+            className={`panel-row ${pluginsOpen ? 'active' : ''}`}
+            aria-current={pluginsOpen ? 'page' : undefined}
+            onClick={() => {
+              setPluginsOpen(true)
+              setLeftOpen(false)
+            }}
+          >
+            <Icon name="plugin" />
+            <span>{t('plugins')}</span>
+          </button>
+        </nav>
+        <div className="sidebar-section">
           <span>{t('sessions')}</span>
           <button
             type="button"
-            className="icon-button"
+            className="icon-button small"
             disabled={listLoading || !!busy}
             aria-label={t('retry')}
             onClick={() => void loadRecords()}
           >
-            <Icon name="refresh" size={15} />
+            <Icon name="refresh" size={14} />
           </button>
         </div>
         <nav className="session-list" aria-label={t('sessions')}>
           {listLoading && !records.length ? (
-            <p className="muted rail-message" role="status">
+            <p className="sidebar-message" role="status">
               {t('loadingSessions')}
             </p>
           ) : null}
           {!listLoading && !records.length && !listError ? (
-            <div className="rail-empty">
-              <Icon name="book" size={28} />
+            <div className="sidebar-empty">
               <strong>{t('noSessions')}</strong>
               <p>{t('noSessionsHint')}</p>
             </div>
@@ -610,24 +686,19 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             <button
               type="button"
               key={record.record}
-              className={`session-card ${snapshot?.record === record.record && mode === 'session' ? 'selected' : ''}`}
+              className={`session-row ${snapshot?.record === record.record && mode === 'session' ? 'active' : ''}`}
+              aria-current={snapshot?.record === record.record && mode === 'session' ? 'true' : undefined}
               disabled={!!busy}
               onClick={() => void resume(record.record)}
             >
-              <span className="session-symbol">
-                <Icon name="book" size={18} />
+              <span className="session-title">{record.work?.title || t('unnamed')}</span>
+              <span className={`session-meta state-${record.state}`}>
+                {date(record.created_at)} · {t(record.state)}
               </span>
-              <span className="session-copy">
-                <strong>{record.work?.title || t('unnamed')}</strong>
-                <small>
-                  {date(record.created_at)} <span>·</span> {t(record.state)}
-                </small>
-              </span>
-              <Icon name="chevron" size={13} />
             </button>
           ))}
           {listError ? (
-            <div className="rail-message">
+            <div className="sidebar-message">
               <p>{t(listError.message)}</p>
               <button type="button" className="text-button" onClick={() => void loadRecords()}>
                 {t('retry')}
@@ -645,40 +716,50 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             </button>
           ) : null}
         </nav>
-        <div className="rail-bottom">
+        <div className="sidebar-foot">
           <button
             type="button"
             className="settings-trigger"
             onClick={() => {
-              setSettings(true)
+              setSettings('general')
             }}
           >
             <Icon name="settings" />
-            <span>
-              {t('connection')}
-              <small>{status ? `${status.model.id} · ${t('unverified')}` : t('statusFailure')}</small>
-            </span>
-            <span className="status-dot amber" />
+            <span>{t('connection')}</span>
+            {status && !status.model.credential.configured ? (
+              <span className="state-dot warn" aria-label={t('credentialMissing')} />
+            ) : null}
           </button>
-          <div className="rail-footer">
-            <span>{t('localNotice')}</span>
-            <button
-              type="button"
-              className="language-toggle"
-              onClick={() => {
-                setLanguage(language === 'zh' ? 'en' : 'zh')
-              }}
-            >
-              {language === 'zh' ? 'EN' : '中文'}
-            </button>
-          </div>
         </div>
       </aside>
-      <main className="story-main">
-        <header className="story-header">
+      {pluginsOpen ? (
+        <main className="center plugin-center">
+          <header className="center-header plugin-header">
+            <button
+              type="button"
+              className="icon-button mobile-only"
+              aria-label={t('sessionPanel')}
+              onClick={() => {
+                setLeftOpen(true)
+              }}
+            >
+              <Icon name="menu" />
+            </button>
+          </header>
+          <PluginManagerPage
+            language={language}
+            operations={pluginOperations}
+            onOpenModels={() => {
+              setSettings('models')
+            }}
+          />
+        </main>
+      ) : null}
+      <main className="center" hidden={pluginsOpen}>
+        <header className="center-header">
           <button
             type="button"
-            className="icon-button mobile-menu"
+            className="icon-button mobile-only"
             aria-label={t('sessionPanel')}
             onClick={() => {
               setLeftOpen(true)
@@ -686,7 +767,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           >
             <Icon name="menu" />
           </button>
-          <div className="header-work">
+          <div className="header-title">
             <strong>
               {mode === 'session' && snapshot
                 ? snapshot.work.title
@@ -694,12 +775,12 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                   ? review.title
                   : t('newStory')}
             </strong>
-            <small>{mode === 'session' && snapshot ? (snapshot.scene?.title ?? t('noScene')) : t('tagline')}</small>
+            {mode === 'session' && snapshot ? <small>{snapshot.scene?.title ?? t('noScene')}</small> : null}
           </div>
           {snapshot && mode !== 'session' ? (
             <button
               type="button"
-              className="text-button"
+              className="button ghost small"
               onClick={() => {
                 setMode('session')
               }}
@@ -709,10 +790,10 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           ) : null}
           <button
             type="button"
-            className="icon-button header-settings"
+            className="icon-button mobile-only"
             aria-label={t('connection')}
             onClick={() => {
-              setSettings(true)
+              setSettings('general')
             }}
           >
             <Icon name="settings" />
@@ -720,7 +801,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           {detailView ? (
             <button
               type="button"
-              className="icon-button mobile-details"
+              className="icon-button details-toggle"
               aria-label={t('detailsPanel')}
               onClick={() => {
                 setRightOpen(true)
@@ -730,33 +811,50 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             </button>
           ) : null}
         </header>
-        {error || statusError ? (
-          <ErrorBanner
-            value={error ?? statusError}
-            language={language}
-            onAuthorize={() => void authorize()}
-            onRetry={() => {
-              if (mode === 'review' && launch.trim()) void reviewLaunch(launch)
-              else void refreshStatus()
-            }}
-            busy={!!busy}
-          />
-        ) : null}
-        {status?.registry.authorization === 'required' ? (
-          <div className="authorization-bar">
-            <Icon name="info" />
-            <p>{t(launch.trim() ? 'authorizeLaunch' : 'authorizationRequired')}</p>
-            <button type="button" className="secondary compact" disabled={!!busy} onClick={() => void authorize()}>
-              {t('authorize')}
-            </button>
-          </div>
-        ) : null}
-        {notice ? (
-          <div className="notice-bar" role="status">
-            {t(notice)}
-          </div>
-        ) : null}
-        <div className="story-scroll">
+        <div className="banners">
+          {error || statusError ? (
+            <ErrorBanner
+              value={error ?? statusError}
+              language={language}
+              onAuthorize={() => void authorize()}
+              onRetry={() => {
+                if (mode === 'review' && launch.trim()) void reviewLaunch(launch)
+                else void refreshStatus()
+              }}
+              busy={!!busy}
+            />
+          ) : null}
+          {status?.registry.authorization === 'required' ? (
+            <div className="banner">
+              <Icon name="info" />
+              <p>{t(launch.trim() ? 'authorizeLaunch' : 'authorizationRequired')}</p>
+              <button type="button" className="button outline small" disabled={!!busy} onClick={() => void authorize()}>
+                {t('authorize')}
+              </button>
+            </div>
+          ) : null}
+          {status && !status.model.credential.configured ? (
+            <div className="banner">
+              <Icon name="model" />
+              <p>{t('credentialMissingBanner')}</p>
+              <button
+                type="button"
+                className="button outline small"
+                onClick={() => {
+                  setSettings('models')
+                }}
+              >
+                {t('settingsModel')}
+              </button>
+            </div>
+          ) : null}
+          {notice ? (
+            <div className="banner subtle" role="status">
+              {t(notice)}
+            </div>
+          ) : null}
+        </div>
+        <div className="center-scroll">
           {busy === 'bootstrap' || busy === 'review' || busy === 'resume' ? (
             <div className="loading-page" role="status">
               <span className="spinner" />
@@ -770,25 +868,18 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           ) : null}
           {mode === 'welcome' && busy !== 'resume' && busy !== 'bootstrap' ? (
             <section className="welcome">
-              <div className="story-emblem" aria-hidden="true">
-                <span className="emblem-ring" />
-                <Icon name="book" size={58} />
-                <i className="spark spark-one" />
-                <i className="spark spark-two" />
-                <i className="spark spark-three" />
-              </div>
-              <p className="eyebrow">{t('welcomeEyebrow')}</p>
+              <BrandMark size={56} />
               <h1>{t('welcomeTitle')}</h1>
               <p className="welcome-intro">{t('welcomeIntro')}</p>
               {registryOrigin ? (
-                <a className="primary large" href={registryOrigin} target="_blank" rel="noopener noreferrer">
+                <a className="button primary large" href={registryOrigin} target="_blank" rel="noopener noreferrer">
                   {t('openRegistry')}
-                  <Icon name="arrow" />
+                  <Icon name="external" />
                 </a>
               ) : (
                 <button
                   type="button"
-                  className="secondary"
+                  className="button outline"
                   onClick={() => {
                     location.reload()
                   }}
@@ -796,7 +887,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                   {t('retry')}
                 </button>
               )}
-              <div className="welcome-steps">
+              <ol className="welcome-steps">
                 {(
                   [
                     ['welcomeStepOne', 'welcomeStepOneBody'],
@@ -804,16 +895,16 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                     ['welcomeStepThree', 'welcomeStepThreeBody'],
                   ] as const
                 ).map(([title, body], index) => (
-                  <div className="welcome-step" key={title}>
-                    <span className="step-number">0{index + 1}</span>
+                  <li className="welcome-step" key={title}>
+                    <span className="step-number">{index + 1}</span>
                     <div>
                       <h2>{t(title)}</h2>
                       <p>{t(body)}</p>
                       {index === 1 ? <code>{location.origin}/</code> : null}
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ol>
             </section>
           ) : null}
           {mode === 'review' && review && busy !== 'review' ? (
@@ -827,30 +918,26 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           ) : null}
           {mode === 'session' && snapshot && busy !== 'resume' ? (
             <section className="conversation" aria-label={snapshot.work.title}>
-              <div className="chapter-divider">
-                <span />
-                <p>{snapshot.scene?.title ?? t('noScene')}</p>
-                <span />
+              <div className="scene-marker">
+                <span>{snapshot.scene?.title ?? t('noScene')}</span>
               </div>
               {!snapshot.history.length ? <p className="empty-conversation">{t('noMessages')}</p> : null}
               {snapshot.history.map((message, index) => {
-                const name =
-                  message.role === 'user'
-                    ? t('you')
-                    : (snapshot.participants.find(person => person.key === message.speaker)?.name ?? t('storyVoice'))
+                const person =
+                  message.role === 'user' ? undefined : snapshot.participants.find(item => item.key === message.speaker)
                 return (
-                  <article key={`${index}:${message.role}`} className={`message message-${message.role}`}>
-                    <div className={`avatar avatar-${message.role}`}>{Array.from(name)[0]}</div>
-                    <div className="message-content">
-                      <div className="message-name">{name}</div>
-                      <div className="message-text">{message.text}</div>
-                    </div>
+                  <article
+                    key={`${index}:${message.role}`}
+                    className={`message ${message.role === 'user' ? 'from-user' : person ? 'from-character' : 'from-story'}`}
+                  >
+                    <div className="message-name">{message.role === 'user' ? t('you') : (person?.name ?? t('storyVoice'))}</div>
+                    <div className="message-text">{message.text}</div>
                   </article>
                 )
               })}
               {currentPending?.phase === 'sending' ? (
                 <div className="writing-indicator" role="status">
-                  <span className="spinner" />
+                  <span className="pending-dot" />
                   <span>{t('sending')}</span>
                 </div>
               ) : null}
@@ -878,7 +965,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
               </label>
               <button
                 type="button"
-                className="secondary"
+                className="button outline"
                 disabled={!launch.trim() || !!busy || !api}
                 onClick={() => void reviewLaunch(launch)}
               >
@@ -890,7 +977,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
         {mode === 'session' && snapshot ? (
           <div className="composer-dock">
             {currentPending && currentPending.phase !== 'sending' ? (
-              <div className="request-recovery" role="status">
+              <div className="composer-notice" role="status">
                 <Icon name="alert" />
                 <div>
                   <strong>{t('unknownTitle')}</strong>
@@ -898,7 +985,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                   <div className="button-row">
                     <button
                       type="button"
-                      className="secondary compact"
+                      className="button outline small"
                       disabled={!!busy}
                       onClick={() => void checkRequest()}
                     >
@@ -907,7 +994,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                     {currentPending.phase === 'not_found' ? (
                       <button
                         type="button"
-                        className="secondary compact"
+                        className="button outline small"
                         disabled={!!busy}
                         onClick={() =>
                           void dispatchTurn(snapshot.record, { ...currentPending.request, session: snapshot.session })
@@ -921,7 +1008,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
               </div>
             ) : null}
             {snapshot.interrupted && !snapshot.stopped ? (
-              <div className="request-recovery">
+              <div className="composer-notice">
                 <Icon name="alert" />
                 <div>
                   <strong>{t('interruptedTitle')}</strong>
@@ -950,7 +1037,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
               <textarea
                 id="story-reply"
                 ref={reply}
-                rows={3}
+                rows={2}
                 maxLength={100000}
                 value={drafts[snapshot.record] ?? ''}
                 placeholder={t('replyPlaceholder')}
@@ -967,32 +1054,31 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                 }}
               />
               <div className="composer-footer">
-                <span>{t('enterHint')}</span>
+                <span className="composer-hint">{t('enterHint')}</span>
                 {currentPending?.phase === 'sending' ? (
                   <div className="button-row">
                     {busy !== 'send' ? (
                       <button
                         type="button"
-                        className="text-button"
+                        className="button ghost small"
                         disabled={!!busy}
                         onClick={() => void checkRequest()}
                       >
                         {t('checkRequest')}
                       </button>
                     ) : null}
-                    <button type="button" className="secondary compact" onClick={() => void cancel()}>
-                      <Icon name="stop" size={15} />
-                      {t('stop')}
+                    <button type="button" className="round-button stop" aria-label={t('stop')} onClick={() => void cancel()}>
+                      <Icon name="stop" size={12} />
                     </button>
                   </div>
                 ) : (
                   <button
                     type="submit"
-                    className="primary compact"
+                    className="round-button"
+                    aria-label={t('send')}
                     disabled={!!busy || !!currentPending || !canWrite || !(drafts[snapshot.record] ?? '').trim()}
                   >
-                    {t('send')}
-                    <Icon name="send" size={16} />
+                    <Icon name="send" />
                   </button>
                 )}
               </div>
@@ -1000,21 +1086,21 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           </div>
         ) : null}
       </main>
-      <aside ref={rightPanel} className={`story-inspector ${rightOpen ? 'is-open' : ''}`} aria-label={t('details')}>
-        <div className="inspector-heading">
-          <h2>{t('details')}</h2>
-          <button
-            type="button"
-            className="icon-button drawer-close"
-            aria-label={t('close')}
-            onClick={() => {
-              setRightOpen(false)
-            }}
-          >
-            <Icon name="close" />
-          </button>
-        </div>
-        {detailView ? (
+      {detailView && !pluginsOpen ? (
+        <aside ref={rightPanel} className={`details-panel ${rightOpen ? 'is-open' : ''}`} aria-label={t('details')}>
+          <div className="details-heading">
+            <h2>{t('details')}</h2>
+            <button
+              type="button"
+              className="icon-button drawer-close"
+              aria-label={t('close')}
+              onClick={() => {
+                setRightOpen(false)
+              }}
+            >
+              <Icon name="close" />
+            </button>
+          </div>
           <StoryDetails
             snapshot={detailView}
             language={language}
@@ -1022,83 +1108,28 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
               if (!busyRef.current) setExportOpen(true)
             }}
           />
-        ) : (
-          <div className="inspector-empty">
-            <Icon name="book" size={32} />
-            <p>{t('noWork')}</p>
-          </div>
-        )}
-      </aside>
+        </aside>
+      ) : null}
       {settings ? (
-        <Modal
-          title={t('connection')}
-          closeLabel={t('close')}
+        <SettingsDialog
+          language={language}
+          theme={theme}
+          fontSize={fontSize}
+          status={status}
+          registryOrigin={registryOrigin}
+          busy={!!busy || !api}
+          initialSection={settings}
+          models={modelOperations}
+          plugins={pluginOperations}
+          onLanguage={setLanguage}
+          onTheme={setTheme}
+          onFontSize={setFontSize}
+          onAuthorize={() => void authorize()}
           onClose={() => {
-            setSettings(false)
+            setSettings(null)
+            void refreshStatus()
           }}
-        >
-          <div className="settings-content">
-            <section>
-              <h3>{t('registry')}</h3>
-              <p className="connection-state">
-                <span className={`status-dot ${status?.registry.authorization === 'authorized' ? 'green' : 'amber'}`} />
-                {t(status?.registry.authorization === 'authorized' ? 'authorized' : 'authorizationRequired')}
-              </p>
-              {registryOrigin ? (
-                <a href={registryOrigin} target="_blank" rel="noopener noreferrer">
-                  {registryOrigin}
-                  <Icon name="external" size={14} />
-                </a>
-              ) : null}
-              <button type="button" className="secondary" disabled={!!busy || !api} onClick={() => void authorize()}>
-                {t('authorize')}
-              </button>
-            </section>
-            <section>
-              <h3>{t('model')}</h3>
-              {status ? (
-                <strong>
-                  {status.model.id} <small className="muted">{status.model.provider}</small>
-                </strong>
-              ) : null}
-              <p className="small amber-text">{t('unverified')}</p>
-              <p>{t('modelHint')}</p>
-              <p className="small muted">{t('configHint')}</p>
-            </section>
-            <section className="setting-grid">
-              <label>
-                {t('interfaceLanguage')}
-                <select
-                  value={language}
-                  onChange={(e) => {
-                    setLanguage(e.target.value === 'zh' ? 'zh' : 'en')
-                  }}
-                >
-                  <option value="zh">简体中文</option>
-                  <option value="en">English</option>
-                </select>
-                <small>{t('languageHint')}</small>
-              </label>
-              <label>
-                {t('appearance')}
-                <select
-                  value={theme}
-                  onChange={(e) => {
-                    setTheme(e.target.value === 'light' || e.target.value === 'dark' ? e.target.value : 'system')
-                  }}
-                >
-                  <option value="system">{t('system')}</option>
-                  <option value="light">{t('light')}</option>
-                  <option value="dark">{t('dark')}</option>
-                </select>
-              </label>
-            </section>
-            <button type="button" className="secondary" onClick={() => void refreshStatus()} disabled={!api}>
-              <Icon name="refresh" size={16} />
-              {t('refreshStatus')}
-            </button>
-          </div>
-        </Modal>
+        />
       ) : null}
       {exportOpen && snapshot && api ? (
         <ExportDialog
@@ -1135,7 +1166,7 @@ function ErrorBanner({
   if (!value) return null
   const t = (key: MessageKey) => translate(language, key)
   return (
-    <div className="error-banner" role="alert">
+    <div className="banner error" role="alert">
       <Icon name="alert" />
       <div>
         <strong>{t('errorTitle')}</strong>
@@ -1147,7 +1178,7 @@ function ErrorBanner({
       </div>
       <button
         type="button"
-        className="secondary compact"
+        className="button outline small"
         disabled={busy}
         onClick={value.message === 'unauthorized' || value.message === 'forbidden' ? onAuthorize : onRetry}
       >
@@ -1167,34 +1198,35 @@ function StoryDetails({
 }) {
   const t = (key: MessageKey) => translate(language, key)
   return (
-    <>
-      <div className="scene-card">
-        <div className="eyebrow">{t('scene')}</div>
+    <div className="details-body">
+      <section className="details-card">
+        <div className="details-label">{t('scene')}</div>
         <h3>{snapshot.scene?.title ?? t('noScene')}</h3>
         {snapshot.scene?.description ? <p>{snapshot.scene.description}</p> : null}
-      </div>
-      <section className="cast-section">
-        <h3>
+      </section>
+      <section className="details-cast">
+        <div className="details-label">
           {t('cast')} <span>{snapshot.participants.length}</span>
-        </h3>
-        {snapshot.participants.map((person, index) => (
-          <div className="cast-card" key={person.key}>
-            <div className={`avatar cast-avatar tone-${index % 4}`}>{Array.from(person.name)[0]}</div>
+        </div>
+        {snapshot.participants.map(person => (
+          <div className="cast-row" key={person.key}>
+            <span className={`cast-initial ${person.present ? 'present' : ''}`}>{Array.from(person.name)[0]}</span>
             <div>
               <strong>{person.name}</strong>
-              <small className={person.present ? 'present-label' : 'muted'}>
+              <small>
+                {person.role ? `${person.role} · ` : ''}
                 {t(person.present ? 'present' : 'absent')}
               </small>
               {person.goal ? <p>{person.goal}</p> : null}
             </div>
           </div>
         ))}
-        {!snapshot.participants.length ? <p className="small muted">{t('noCast')}</p> : null}
+        {!snapshot.participants.length ? <p className="muted">{t('noCast')}</p> : null}
       </section>
-      <div className="inspector-note">
-        <Icon name="info" size={16} />
-        <p>{t('noInference')}</p>
-      </div>
+      <p className="details-note">
+        <Icon name="info" size={14} />
+        <span>{t('noInference')}</span>
+      </p>
       <details className="advanced">
         <summary>{t('technicalDetails')}</summary>
         <p>{snapshot.work.source_label}</p>
@@ -1206,11 +1238,11 @@ function StoryDetails({
           )}
         </pre>
       </details>
-      <button type="button" className="secondary export-trigger" onClick={onExport}>
-        <Icon name="external" size={16} />
+      <button type="button" className="button outline full" onClick={onExport}>
+        <Icon name="external" />
         {t('exportTitle')}
       </button>
-    </>
+    </div>
   )
 }
 function ExportDialog({
@@ -1321,14 +1353,14 @@ function ExportDialog({
             invalidate()
           }}
         />
-        <button type="button" className="secondary" disabled={!ready || busy} onClick={() => void prepare()}>
+        <button type="button" className="button outline" disabled={!ready || busy} onClick={() => void prepare()}>
           {t(busy ? 'loading' : 'previewExport')}
         </button>
         {review ? (
           <section>
             <h3>{t('exportReview')}</h3>
             <pre className="export-json">{JSON.stringify(review.payload, null, 2)}</pre>
-            <button type="button" className="primary" disabled={busy} onClick={() => void download()}>
+            <button type="button" className="button primary" disabled={busy} onClick={() => void download()}>
               {t('downloadExport')}
             </button>
           </section>

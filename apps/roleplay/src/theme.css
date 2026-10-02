@@ -1,0 +1,62 @@
+/* DeepSeek Harness design tokens with the char.pub palette (char-pub/brand-assets tokens/colors.css).
+   Components read only --dsw-* aliases; this sheet rebinds the aliases the player uses. */
+@import '@deepseek-ai/dsh-client-ui-theme/src/styles/base.css';
+@import '@deepseek-ai/dsh-client-ui-theme/src/styles/design-platform.css';
+@import '@deepseek-ai/dsh-client-ui-theme/src/styles/gradient-shadow-text.css';
+@import '@deepseek-ai/dsh-client-ui-theme/src/styles/focus.css';
+@import '@deepseek-ai/dsh-client-ui-theme/src/styles/scrollbar.css';
+@import '@deepseek-ai/dsh-client-ui-theme/src/styles/corner-shape.css';
+
+:root {
+  --char-ink: #0f172a;
+  --char-orange: #ff6b3d;
+  --char-blue: #2563eb;
+  --char-purple: #8b5cf6;
+  --char-sand: #f8f7f4;
+  --char-night: #171b22;
+  --char-white: #ffffff;
+}
+
+body {
+  --dsw-alias-bg-base: var(--char-white);
+  --dsw-alias-bg-layer-1: var(--char-white);
+  --dsw-alias-bg-layer-2: var(--char-white);
+  --dsw-specific-sidebar-fill: var(--char-sand);
+  --dsw-specific-sidebar-nav-item-hover: #efede8;
+  --dsw-specific-sidebar-nav-item-active: #e9e6df;
+  --dsw-alias-label-primary: var(--char-ink);
+  --dsw-alias-brand-primary: var(--char-ink);
+  /* Orange is the accent: primary actions, focus and selection. Ink labels keep 6.6:1 contrast on the flat fill. */
+  --dsw-alias-button-primary-fill: var(--char-orange);
+  --dsw-alias-button-primary-hover: #f45c2c;
+  --dsw-alias-label-primary-foreground: var(--char-ink);
+  --dsw-alias-state-business-primary: var(--char-orange);
+  --dsw-alias-state-business-tertiary: #ffe7de;
+  --dsw-alias-link: #d94a1c;
+  --char-accent-soft: #fff1eb;
+  --char-accent-text: #c2410c;
+}
+
+body[data-ds-dark-theme] {
+  --dsw-alias-bg-base: var(--char-night);
+  --dsw-alias-bg-layer-1: #1d222b;
+  --dsw-alias-bg-layer-2: #20262f;
+  --dsw-alias-bg-layer-3: #272d37;
+  --dsw-specific-sidebar-fill: #12151b;
+  --dsw-specific-sidebar-nav-item-hover: #1d222b;
+  --dsw-specific-sidebar-nav-item-active: #262c36;
+  --dsw-specific-input-major: #1d222b;
+  --dsw-alias-button-elevated-fill: #232933;
+  --dsw-alias-button-floating-fill: #20262f;
+  --dsw-alias-button-floating-hover: #272d37;
+  --dsw-alias-label-primary: #f3f4f6;
+  --dsw-alias-brand-primary: var(--char-white);
+  --dsw-alias-button-primary-fill: var(--char-orange);
+  --dsw-alias-button-primary-hover: #ff8259;
+  --dsw-alias-label-primary-foreground: var(--char-ink);
+  --dsw-alias-state-business-primary: var(--char-orange);
+  --dsw-alias-state-business-tertiary: #3a2219;
+  --dsw-alias-link: #ff8a63;
+  --char-accent-soft: #2e1f1a;
+  --char-accent-text: #ff9a76;
+}

@@ -36,7 +36,7 @@ export function prepareDevelopmentApp(options: DevelopmentAppOptions): string {
     execFileSync('/usr/bin/ditto', [source, bundle])
     const plist = join(bundle, 'Contents', 'Info.plist')
     const values = {
-      CFBundleIdentifier: `com.deepseek.harness.dev.${createHash('sha256').update(options.appRoot).digest('hex').slice(0, 12)}`,
+      CFBundleIdentifier: `pub.char.harness.dev.${createHash('sha256').update(options.appRoot).digest('hex').slice(0, 12)}`,
       CFBundleName: 'Harness Dev',
       CFBundleDisplayName: 'Harness Dev',
       CFBundleExecutable: 'HarnessDev',

@@ -1,6 +1,7 @@
 /** Same-origin transport for the named-profile app; model and Registry credentials stay on the host. */
 import type {
-  AppCancelRequest, AppLaunchReview, AppSessionSnapshot, AppSessionsResponse,
+  AppCancelRequest, AppCredentialState, AppLaunchReview, AppModelsView, AppModelsWrite, AppPluginConfigView,
+  AppPluginsView, AppSettingsWrite, AppSessionSnapshot, AppSessionsResponse,
   AppStartRequest, AppStatus, AppTurnRequest, AppTurnResult, AppTurnStatus,
 } from '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types'
 
@@ -22,6 +23,18 @@ export interface RoleplayApi {
   turnStatus(session: string, requestId: string): Promise<AppTurnStatus>
   cancel(input: AppCancelRequest): Promise<void>
   authorize(): Promise<{ authorizationURL: string }>
+  /** Read configurable model providers with their live forms and credential states. */
+  models(): Promise<AppModelsView>
+  /** Apply one provider card: settings path edits, then an optional new API key that is never returned. */
+  saveModel(input: AppModelsWrite): Promise<AppModelsView>
+  /** Remove one provider's stored key; a read-only launching environment value remains in effect. */
+  clearModelKey(ns: string): Promise<AppModelsView>
+  /** Read the running profile's plugin entries. */
+  plugins(): Promise<AppPluginsView>
+  /** Read one plugin's live configuration form. */
+  pluginConfig(ns: string): Promise<AppPluginConfigView>
+  /** Apply path edits to one plugin's live configuration form. */
+  savePluginConfig(input: AppSettingsWrite): Promise<AppPluginConfigView>
   prepareExport(input: { session: string; history: AppSessionSnapshot['history']; bindings: AppStartRequest['bindings'] }): Promise<PreviewReview>
   exportPreview(input: { session: string; digest: string }): Promise<PreviewFile>
 }
@@ -55,10 +68,33 @@ function snapshot(value: unknown): value is AppSessionSnapshot {
     && typeof value.stopped === 'boolean' && typeof value.interrupted === 'boolean' && typeof value.can_continue === 'boolean'
     && Array.isArray(value.limitations) && value.limitations.every(string)
 }
+function credential(value: unknown): value is AppCredentialState {
+  return record(value) && typeof value.configured === 'boolean' && typeof value.writable === 'boolean'
+    && (value.source === undefined || string(value.source))
+}
+function form(value: unknown): boolean {
+  return record(value) && 'schema' in value && typeof value.revision === 'number' && typeof value.writable === 'boolean'
+}
+function models(value: unknown): value is AppModelsView {
+  return record(value) && objects(value.providers) && value.providers.every(item => string(item.provider)
+    && string(item.display_name) && string(item.ns) && Array.isArray(item.path) && item.path.every(string)
+    && string(item.credential_ref) && credential(item.credential) && typeof item.settings_writable === 'boolean'
+    && (item.form === undefined || form(item.form)))
+}
+function plugins(value: unknown): value is AppPluginsView {
+  return record(value) && objects(value.entries) && value.entries.every(item => string(item.entry_id) && string(item.ns)
+    && string(item.module_name) && typeof item.enabled === 'boolean'
+    && (item.phase === null || (string(item.phase) && ['pending', 'loading', 'active', 'failed', 'unloading'].includes(item.phase)))
+    && ['form', 'models', 'none'].includes(String(item.configurable)) && typeof item.settings_writable === 'boolean'
+    && (item.meta === undefined || record(item.meta)))
+}
+function pluginConfig(value: unknown): value is AppPluginConfigView {
+  return form(value) && record(value) && string(value.ns)
+}
 function status(value: unknown): value is AppStatus {
   return record(value) && record(value.registry) && string(value.registry.origin)
     && ['required', 'authorized'].includes(String(value.registry.authorization))
-    && record(value.model) && string(value.model.provider) && string(value.model.id) && value.model.credential === 'unverified'
+    && record(value.model) && string(value.model.provider) && string(value.model.id) && credential(value.model.credential)
     && value.model.online_verified === false && (value.operation === null || record(value.operation))
     && (value.current_session === undefined || string(value.current_session))
     && Array.isArray(value.limitations) && value.limitations.every(string)
@@ -159,6 +195,12 @@ export function createRoleplayApi(bootstrap: RoleplayBootstrap, transport: typeo
       if (target.origin !== bootstrap.registryOrigin) throw new RoleplayApiError('roleplay_app.registry_mismatch')
       return result
     },
+    models: () => call('settings/models', {}, models),
+    saveModel: input => call('settings/models/save', input, models, true),
+    clearModelKey: ns => call('settings/models/clear-key', { ns }, models, true),
+    plugins: () => call('settings/plugins', {}, plugins),
+    pluginConfig: ns => call('settings/plugin', { ns }, pluginConfig),
+    savePluginConfig: input => call('settings/plugin/save', input, pluginConfig, true),
     prepareExport: input => call('prepare-export', input, previewReview),
     exportPreview: input => call('export', input, previewFile, true),
   }

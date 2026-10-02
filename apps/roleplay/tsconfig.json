@@ -13,6 +13,12 @@
     },
     {
       "path": "../../packages/util/crypto"
+    },
+    {
+      "path": "../../packages/client/ui-primitives"
+    },
+    {
+      "path": "../../vendor/schemastery"
     }
   ]
 }
