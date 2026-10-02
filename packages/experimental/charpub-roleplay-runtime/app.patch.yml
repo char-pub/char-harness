@@ -17,8 +17,8 @@
       config:
         host: 127.0.0.1
         port: !!js Number(process.env.CHARPUB_APP_PORT)
-        registry_origin: !!js process.env.CHARPUB_REGISTRY_ORIGIN
-        issuer: !!js process.env.CHARPUB_OAUTH_ISSUER
+        registry_origin: !!js process.env.CHARPUB_REGISTRY_ORIGIN || 'https://char.pub'
+        issuer: !!js process.env.CHARPUB_OAUTH_ISSUER || 'https://char.pub/v1/auth'
         client_id: !!js process.env.CHARPUB_OAUTH_CLIENT_ID
         timeout_ms: !!js Number(process.env.CHARPUB_REQUEST_TIMEOUT_MS)
         max_request_bytes: !!js Number(process.env.CHARPUB_APP_REQUEST_BYTES)

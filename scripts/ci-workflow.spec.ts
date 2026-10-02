@@ -1283,7 +1283,7 @@ describe('Documentation site publication', () => {
     // carries unreleased work, while it retains only the most recent tags:
     // following the dispatched tag would leave every source link on a deploy
     // from an older tag unresolvable.
-    expect(workflow.env.DOCS_REPOSITORY_REF).toBe('master')
+    expect(workflow.env.DOCS_REPOSITORY_REF).toBe('main')
 
     // The environment owns the deployment tag policy and the required reviewers.
     expect(deploy.environment).toMatchObject({ name: 'github-pages' })
