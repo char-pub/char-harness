@@ -1,0 +1,19 @@
+# Bilingual-pair consistency record for 2026-10-05-roleplay-turn-transactions.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-10-05-roleplay-turn-transactions.md
+/agent-note-roleplay-turn-transactions:
+  en: 7b64565f1469ab91
+  zh: b900138e2434f4c4
+/agent-note-roleplay-turn-transactions/problem:
+  en: e01be27b0a9d7298
+  zh: ca91d5dd67e6c426
+/agent-note-roleplay-turn-transactions/decision:
+  en: 6e9bb330b31aa0eb
+  zh: 5e317410f9f98962
+/agent-note-roleplay-turn-transactions/alternatives-considered:
+  en: 1d1568a3fabfa112
+  zh: 2e0fdc4dbf184d86
+/agent-note-roleplay-turn-transactions/consequences:
+  en: 93107ab317bfbb1c
+  zh: fcead209bd03556a

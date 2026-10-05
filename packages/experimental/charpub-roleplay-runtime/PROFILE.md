@@ -1,5 +1,7 @@
 # Roleplay base profile
 
+English | [中文](PROFILE.zh.md)
+
 This private experimental package is also a Cordis bundle. It supplies reusable Session, LLM, JSONL storage and roleplay runtime services. The base bundle supplies no frontend or model adapter. The optional app overlay below adds a local browser entry and an explicitly configured provider. Loading this bundle alone does not start a game or call a model.
 
 ## Named profile manifest
@@ -56,7 +58,7 @@ A generation adapter and a caller entry can be added as later profile patches or
 
 `tests/profile.test.ts` uses a fresh temporary Harness home and the real `initProfile`, `loadProfile('roleplay', ...)` and `composeEntries` implementations. It checks the bundle's exact entry allowlist, applies explicit user configuration, then mounts the resulting entries through the real Cordis Loader. Source-plane module resolution uses each package's declared `./src` export rather than mocking its services.
 
-The test adds only an injected, network-free generation provider. It creates a real JSONL-backed Session, runs one roleplay request, and compares the provider's exact messages with the requested Session record. It also checks that the coding loop, prompt assembly and tools were not mounted. It disposes the Loader and removes its temporary storage.
+Tests use an injected offline generation provider and the official DeepSeek adapter against a local HTTP fixture. Real JSONL Sessions retain the exact dispatched messages. The adapter test verifies complete system-region text, low reasoning on the independently configured decision route and disabled reasoning on narration. Tests also check that the coding loop, prompt assembly and tools were not mounted, then dispose the Loader and remove temporary storage.
 
 ```sh
 node --import tsx/esm --test packages/experimental/charpub-roleplay-runtime/tests/profile.test.ts
@@ -85,7 +87,15 @@ When opened without a launch, the welcome page links to the configured Registry 
 
 Authorize, review the aggregate rating, licenses and capability limitations, then choose the opening/viewpoint and supply late-bound character values. Starting creates a new log and makes no model call until a reply is submitted. Reopening a different draft build asks to start a new Session; it does not upgrade the old log. The local page handles one active workspace, and old tabs fail with `stale_session` after replacement.
 
-This entry is text-only Story play with `noneSelection`; optional semantic materials are not selected and model judgments stay undetermined. The reusable Jev/Laya adapters are not enabled by this overlay. It does not provide full game navigation, a credential vault or automatic action inference. Preview export requires a separate synthetic summary and empty synthetic character fields, followed by review and confirmation.
+The local entry sends player replies through `play`: the configured LLM proposes authored actions and judgments, selects relevant context through the SDK directory, then narrates. `Story.player` supplies the controlled cast identity; content without that declaration keeps the legacy user role. A successful reply commits input and accepted actions together. The page shows projected objectives, available authored choices and settled progress, and can rewind the most recent successful turn without another model call. Preview export still requires a separate synthetic summary and empty synthetic character fields, followed by review and confirmation.
+
+A proposed ending waits for the player’s separate confirmation. Continue chatting to replace or clear it, or confirm it once to narrate and commit the ending. Hidden and on-reach endings do not reveal their titles or descriptions in this review. Failed confirmation preserves the proposal; a lost response is reconciled with the same request ID, and rewind restores the state and proposal before the confirmed turn. Ordinary dialogue and scene progress remain automatic and can still be mistaken by the model.
+
+The overlay’s `model` route controls narration through `CHARPUB_MODEL` and sets `reasoningEffort: off`. Its `play.decisions` route uses `CHARPUB_DECISION_MODEL` when set, otherwise `CHARPUB_MODEL`, with the same `deepseek-official` provider, `reasoningEffort: low`, `temperature: 0` and `maxTokens: 12288`. The decision allowance includes hidden reasoning and the required JSON; insufficient allowance can still yield no usable decision. Temperature zero applies to structural decisions and retrieval; narration keeps its independent sampling configuration. `play.limits` sets `min_confidence: 0.8`, `max_actions: 4`, `max_decision_calls: 3` and `max_decision_tokens: 64000`. These sample limits permit a larger reasoning budget at additional latency and token cost; they do not guarantee correct intent recognition. A profile replacing the app row can choose another route and limits; omitting `play` preserves the legacy explicit-input app path. Neither page loading nor opening a Session invokes a decision model.
+
+The decision call count covers the director and every progressive selector expansion; narration is separate. The token allowance reserves estimated input plus maximum output for each admitted decision and charges actual usage when supplied. Ambiguous, unavailable or over-budget decisions do not establish effects. Directory depth can exhaust the sample three-call limit: selection then uses a recorded skip Plan with required/direct material. The turn timeout covers all phases and storage completion; choose it for the configured provider's total turn latency.
+
+Optional inline fragments can be selected during a turn. Source text remains the fixed, verified snapshot acquired when the Session starts; the app does not download newly selected external Sources during play. A Plan requiring an absent Source body fails preparation without committing the turn. Use inline optional material or include required Source bodies at Session creation. Jev/Laya services are not required by this overlay; initial opening judgments remain explicit.
 
 `tests/app.test.ts` mounts the actual named profile and HTTP entry with real JSONL services, an offline model provider and a local Registry protocol fixture. It covers exact identity checks, unsupported input, cancellation, Host/Origin denial, old-tab rejection and synthetic export without private play descriptions. This is not an online model-quality test. The cross-repository browser suite separately uses the real Registry, OAuth and supported dsh launcher.
 

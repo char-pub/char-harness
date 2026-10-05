@@ -1,0 +1,134 @@
+{
+  "session_id": "ending-guidance-v1",
+  "head": "sha256:726f328c606c35095e612d53eecb2e7d4b8f4b49752547dd66a7f9f4b947cf55",
+  "revision": "sha256:4e9059839a04102cb6a59d0985f151eaa2109fafc36cb07f2fef615a760f53cb",
+  "pending_ending": {
+    "id": "sha256:d06d48ae6ba5ff76f42a63f1d2ddc51b78a21cb8f92e57fa5d9e0991986894fd",
+    "target": "ending/departure",
+    "source_turn_id": "propose",
+    "parent_head": "sha256:1c29d896005b16fd313adf348d9876ab1508919440797de5f20ad49eb7482ee8",
+    "parent_revision": "sha256:445d689617a60e4cf47c5563471756cfee791a1cbc93ae3cb603a80a02e2206f",
+    "state_digest": "sha256:2a5f76ce45e92d54d0f97b98add1417a6458b78282ec7e23602c5412c4761aac",
+    "judgments": [
+      {
+        "target": "ending/departure",
+        "path": "/when/all/1",
+        "result": "true",
+        "provider": {
+          "name": "roleplay/llm-director",
+          "version": "1"
+        }
+      }
+    ],
+    "public": {
+      "title": "PRIVATE_ENDING_TITLE",
+      "description": "PRIVATE_ENDING_DESCRIPTION",
+      "triggering_input": "I claim the token and would like to finish this stage."
+    }
+  },
+  "requests": [
+    {
+      "id": "propose",
+      "request_digest": "sha256:865312681ad27b56a04faf081d377d28582018df85059c15d8acb5cad5d87b8f",
+      "state_digest": "sha256:2a5f76ce45e92d54d0f97b98add1417a6458b78282ec7e23602c5412c4761aac",
+      "plan_digest": "sha256:d3c04593156946ff72a07378f8a34a2345580f1ac015664ced12de37be1a4c66",
+      "messages": [
+        {
+          "role": "system",
+          "content": "[Player control]\nThe player controls \"Alice\". User messages are this character's contributions. Leave this character's speech, decisions, actions and inner thoughts to the player. Portray the narrator and the other characters; do not play this character for the player.",
+          "source": [
+            "session:player-control"
+          ]
+        },
+        {
+          "role": "system",
+          "content": "（知道此事：Alice；不知道：Bob）\nALICE_ONLY_SECRET",
+          "source": [
+            "@fixture/inn#secret~root"
+          ]
+        },
+        {
+          "role": "system",
+          "content": "[Current state]\nstory-turn: {\"scene\":\"lobby\",\"accepted\":[\"beat/reward\"],\"unconfirmed_attempts\":1,\"instruction\":\"Narrate only the supplied scene and established facts. An unconfirmed attempt has no established effects; ask a natural clarification when needed. The ending is only a proposal awaiting an explicit player confirmation. Do not narrate its terminal consequences as settled, stop the story, or claim the player has chosen it.\",\"ending\":{\"status\":\"pending_confirmation\",\"target\":\"ending/departure\",\"public\":{\"title\":\"PRIVATE_ENDING_TITLE\",\"description\":\"PRIVATE_ENDING_DESCRIPTION\",\"triggering_input\":\"I claim the token and would like to finish this stage.\"}}}",
+          "source": [
+            "session:state"
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": "ようこそ、Guest。",
+          "source": [
+            "history"
+          ]
+        },
+        {
+          "role": "user",
+          "content": "Alice: I claim the token and would like to finish this stage.",
+          "source": [
+            "history"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "confirm",
+      "request_digest": "sha256:eecbc7a4bab6a1f29b4571ab77b2779b88fa175ea3583365360cddda7994d665",
+      "state_digest": "sha256:9924824a8f14e62e5b310c711c6c85f9bb8bc8e638741508a3f901b4e51e61a4",
+      "plan_digest": "sha256:1d3e688c4ba58738e1cc97485f432d09abb545a971ab45ad18bf0363eec886f8",
+      "messages": [
+        {
+          "role": "system",
+          "content": "[Player control]\nThe player controls \"Alice\". User messages are this character's contributions. Leave this character's speech, decisions, actions and inner thoughts to the player. Portray the narrator and the other characters; do not play this character for the player.",
+          "source": [
+            "session:player-control"
+          ]
+        },
+        {
+          "role": "system",
+          "content": "（知道此事：Alice、Bob；不知道：无）\nALICE_ONLY_SECRET",
+          "source": [
+            "@fixture/inn#secret~root"
+          ]
+        },
+        {
+          "role": "system",
+          "content": "[Current state]\nstory-turn: {\"scene\":\"lobby\",\"accepted\":[\"ending/departure\"],\"unconfirmed_attempts\":0,\"instruction\":\"Narrate only the supplied scene and established facts. An unconfirmed attempt has no established effects; ask a natural clarification when needed. The player explicitly confirmed this ending. Narrate only the established terminal outcome; do not choose another ending.\",\"ending\":{\"status\":\"confirmed\",\"target\":\"ending/departure\",\"public\":{\"title\":\"PRIVATE_ENDING_TITLE\",\"description\":\"PRIVATE_ENDING_DESCRIPTION\",\"triggering_input\":\"I claim the token and would like to finish this stage.\"}}}",
+          "source": [
+            "session:state"
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": "ようこそ、Guest。",
+          "source": [
+            "history"
+          ]
+        },
+        {
+          "role": "user",
+          "content": "Alice: I claim the token and would like to finish this stage.",
+          "source": [
+            "history"
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": "The choice is ready for your confirmation.",
+          "source": [
+            "history"
+          ]
+        },
+        {
+          "role": "user",
+          "content": "Alice: I confirm the displayed stage result.",
+          "source": [
+            "history"
+          ]
+        }
+      ]
+    }
+  ],
+  "file": "session.v4.jsonl",
+  "bytes": 38922,
+  "sha256": "ee54e32a3f4233d4e04e42731c4042adbbd9432a1726b0ce2059c8ff2edc9db7"
+}

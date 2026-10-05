@@ -141,6 +141,7 @@ function makeApi(overrides: Partial<RoleplayApi> = {}): TestApi {
       status: 'not_found' as const,
       snapshot: snapshot(),
     })),
+    rewind: vi.fn(async () => snapshot()),
     cancel: vi.fn(async () => {}),
     authorize: vi.fn(async () => ({ authorizationURL: 'https://registry.example/authorize' })),
     models: vi.fn(async () => providers({ configured: true, source: 'file', writable: true })),
@@ -224,6 +225,97 @@ beforeEach(() => {
 afterEach(() => {
   cleanup()
   vi.unstubAllGlobals()
+})
+
+function experience(patch: Partial<NonNullable<AppSessionSnapshot['experience']>> = {}): NonNullable<AppSessionSnapshot['experience']> {
+  return {
+    revision: 'revision-one', player: { key: 'player-cast', cast_key: 'guest', name: 'Aki', present: true, part: 'You are deciding where to stay.' },
+    known: [], choices: [{ id: 'ask-room', label: 'Ask Mira about a room' }], milestones: [], can_undo: false,
+    ...patch,
+  }
+}
+
+describe('continuous play and visible consequences', () => {
+  it('fills an editable move before sending and presents only the newly committed discoveries and milestones', async () => {
+    const before = snapshot('first', { experience: experience(), scene: { id: 'harbor', title: 'Harbor at dusk', time: 'Evening', where: 'The pier' } })
+    const after = snapshot('first', { experience: experience({ revision: 'revision-two', can_undo: true,
+      known: [{ id: 'room', title: 'A room is available', text: 'Mira can hold it until morning.' }],
+      milestones: [{ kind: 'beat', id: 'asked-room', title: 'You asked for a room' }],
+    }), history: [...before.history, { role: 'user', speaker: 'player-cast', text: 'Ask Mira about a room' }, { role: 'assistant', text: 'Mira offers to show you upstairs.' }] })
+    const api = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: before.session })), session: vi.fn(async () => before),
+      turn: vi.fn(async (input: AppTurnRequest) => ({ request_id: input.request_id, status: 'success' as const, snapshot: after })),
+    }))
+    expect(screen.getByText('Aki')).toBeTruthy()
+    expect(screen.getByText('Evening · The pier')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Ask Mira about a room' }))
+    expect(api.turn).not.toHaveBeenCalled()
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('value', 'Ask Mira about a room')
+    send()
+    expect(await screen.findByText('Mira offers to show you upstairs.')).toBeTruthy()
+    expect(vi.mocked(api.turn).mock.calls[0][0]).toMatchObject({ expected_revision: 'revision-one', choice_id: 'ask-room' })
+    expect(within(screen.getByRole('region', { name: 'Known clues for this scene' })).getByText('A room is available')).toBeTruthy()
+    expect(within(screen.getByRole('region', { name: 'Your story so far' })).getByText('You asked for a room')).toBeTruthy()
+    expect(screen.getByText('This turn')).toBeTruthy()
+    expect(screen.queryByText('Keep the culprit secret')).toBeNull()
+  })
+
+  it('adds an action suggestion without discarding an unfinished reply', async () => {
+    await active(makeApi({ status: vi.fn(async () => ({ ...status, current_session: 'handle-first' })), session: vi.fn(async () => snapshot('first', { experience: experience() })) }))
+    reply('I am not ready to agree.')
+    fireEvent.click(screen.getByRole('button', { name: 'Ask Mira about a room' }))
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('value', 'I am not ready to agree.\nAsk Mira about a room')
+  })
+
+  it('undoes explicitly without generating and sends the next move against the restored handle and revision', async () => {
+    const before = snapshot('first', { experience: experience({ can_undo: true }) })
+    const restored = snapshot('first', { session: 'handle-restored', experience: experience({ revision: 'revision-after-undo' }) })
+    const api = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: before.session })), session: vi.fn(async () => before),
+      rewind: vi.fn(async () => restored),
+    }))
+    reply('I would like to reconsider.')
+    fireEvent.click(screen.getByRole('button', { name: 'Undo last turn' }))
+    expect(await screen.findByText('Last turn undone. You can choose a different next move.')).toBeTruthy()
+    expect(api.rewind).toHaveBeenCalledWith(expect.objectContaining({ session: 'handle-first', expected_revision: 'revision-one' }))
+    expect(api.turn).not.toHaveBeenCalled()
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('value', 'I would like to reconsider.')
+    send()
+    await waitFor(() => { expect(api.turn).toHaveBeenCalledTimes(1) })
+    expect(vi.mocked(api.turn).mock.calls[0][0]).toMatchObject({ session: 'handle-restored', expected_revision: 'revision-after-undo' })
+  })
+
+  it('blocks a new move after an uncertain undo until an explicit reload reconciles the story', async () => {
+    const before = snapshot('first', { experience: experience({ can_undo: true }) })
+    const restored = snapshot('first', { session: 'handle-restored', experience: experience({ revision: 'restored' }) })
+    const api = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: before.session })), session: vi.fn(async () => before),
+      rewind: vi.fn(async () => { throw new RoleplayApiError('roleplay_app.connection_lost', true) }), resume: vi.fn(async () => restored),
+    }))
+    reply('A preserved draft')
+    fireEvent.click(screen.getByRole('button', { name: 'Undo last turn' }))
+    await screen.findByText('The undo result is uncertain. Reload this story before continuing.')
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('disabled', true)
+    expect(api.turn).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Reload story' }))
+    await waitFor(() => { expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('disabled', false) })
+    expect(api.resume).toHaveBeenCalledWith('first')
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('value', 'A preserved draft')
+  })
+
+  it('reconciles an older cached request before adding the current revision to an explicitly confirmed resend', async () => {
+    sessionStorage.setItem('charpub-roleplay-pending-requests', JSON.stringify({ first: { request: { session: 'old-handle', request_id: 'old-request', text: 'An earlier move' } } }))
+    const current = snapshot('first', { experience: experience({ revision: 'current-revision' }) })
+    const api = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: current.session })), session: vi.fn(async () => current),
+      turnStatus: vi.fn(async (_session: string, request_id: string) => ({ request_id, status: 'not_found' as const, snapshot: current })),
+    }))
+    expect(api.turn).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Check request status' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Resend the same request' }))
+    await waitFor(() => { expect(api.turn).toHaveBeenCalledTimes(1) })
+    expect(vi.mocked(api.turn).mock.calls[0][0]).toEqual({ session: current.session, request_id: 'old-request', text: 'An earlier move', expected_revision: 'current-revision' })
+  })
 })
 
 describe('story discovery and exact-version setup', () => {
@@ -676,5 +768,155 @@ describe('local controls and synthetic preview', () => {
     expect(screen.getByRole('button', { name: 'Authorize access' })).toBeTruthy()
     expect(api.review).not.toHaveBeenCalled()
     expect(screen.queryByRole('alert')).toBeNull()
+  })
+})
+
+it('explains a saved reply with unavailable story evaluation and keeps clarification and undo usable', async () => {
+  localStorage.setItem('charpub-roleplay-language', 'zh')
+  const player = experience({
+    known: [{ id: 'lamp', title: '灯还亮着', text: '旅馆的窗边有一盏灯。' }],
+  })
+  const before = snapshot('first', { experience: player })
+  const move = '我问她有没有空房。'
+  const replyText = '米拉抬起头，等你把话说完。'
+  const after = snapshot('first', { experience: { ...player, revision: 'revision-two', can_undo: true },
+    history: [...before.history, { role: 'user', speaker: 'player-cast', text: move }, { role: 'assistant', text: replyText }],
+  })
+  const api = makeApi({
+    status: vi.fn(async () => ({ ...status, current_session: before.session })), session: vi.fn(async () => before),
+    turn: vi.fn(async (input: AppTurnRequest) => ({ request_id: input.request_id, status: 'success' as const,
+      story_progress_unavailable: true as const, snapshot: after })),
+  })
+  mount(api)
+  const composer = await screen.findByRole('textbox', { name: '你的下一步' })
+  fireEvent.change(composer, { target: { value: move } })
+  fireEvent.click(screen.getByRole('button', { name: '发送' }))
+  const notice = await screen.findByText('回复已保存，但本轮剧情判断未能完成。你可以进一步说明行动，或撤回这一轮。')
+  expect(notice.getAttribute('role')).toBe('status')
+  expect(screen.getByText(replyText)).toBeTruthy()
+  expect(screen.queryByText('这一轮的变化')).toBeNull()
+  expect(within(screen.getByRole('region', { name: '当前场景的已知线索' })).getByText('灯还亮着')).toBeTruthy()
+  expect(screen.queryByText('模型没有返回故事正文。你的输入已保留，剧情没有推进。')).toBeNull()
+  expect(composer).toHaveProperty('value', '')
+  expect(composer).toHaveProperty('disabled', false)
+  expect(screen.getByRole('button', { name: '撤回上一轮' })).toHaveProperty('disabled', false)
+  expect(api.turn).toHaveBeenCalledTimes(1)
+  expect(api.rewind).not.toHaveBeenCalled()
+})
+
+describe('explicit stage result confirmation', () => {
+  function proposed() {
+    return snapshot('first', { experience: experience({ pending_ending: {
+      id: 'proposal-one', title: 'Stay until morning', description: 'Keep the room for one night.',
+      triggering_input: 'I can stay tonight, but I still want to review the arrangement.',
+    } }) })
+  }
+  function completed(before: AppSessionSnapshot) {
+    return snapshot('first', { session: before.session, experience: experience({ revision: 'after-confirm', can_undo: true,
+      milestones: [{ kind: 'ending', id: 'stay', title: 'Stay until morning' }],
+    }), history: [...before.history, { role: 'assistant', text: 'The arrangement is now recorded.' }] })
+  }
+
+  it('confirms only after the explicit button and preserves even a matching unsent draft', async () => {
+    const before = proposed()
+    const after = completed(before)
+    const operation = deferred<AppTurnResult>()
+    const api = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: before.session })), session: vi.fn(async () => before),
+      turn: vi.fn(() => operation.promise),
+    }))
+    const draft = 'I confirm the proposed stage result: Stay until morning'
+    reply(draft)
+    expect(api.turn).not.toHaveBeenCalled()
+    const panel = screen.getByRole('region', { name: 'Stage result awaiting your confirmation' })
+    expect(within(panel).getByText('Keep the room for one night.')).toBeTruthy()
+    fireEvent.click(within(panel).getByRole('button', { name: 'Confirm this stage result' }))
+    await waitFor(() => { expect(api.turn).toHaveBeenCalledTimes(1) })
+    const input = vi.mocked(api.turn).mock.calls[0][0]
+    const { request_id, ...payload } = input
+    expect(request_id).toMatch(/^[0-9a-f-]+$/)
+    expect(payload).toEqual({ session: before.session, text: draft,
+      expected_revision: 'revision-one', confirm_ending: { proposal_id: 'proposal-one' } })
+    expect(within(panel).getByRole('button', { name: 'Confirm this stage result' })).toHaveProperty('disabled', true)
+    fireEvent.click(within(panel).getByRole('button', { name: 'Confirm this stage result' }))
+    expect(api.turn).toHaveBeenCalledTimes(1)
+    await act(async () => { operation.resolve({ request_id: input.request_id, status: 'success', snapshot: after }) })
+    expect(await screen.findByText('The arrangement is now recorded.')).toBeTruthy()
+    expect(screen.queryByRole('region', { name: 'Stage result awaiting your confirmation' })).toBeNull()
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('value', draft)
+    expect(sessionStorage.getItem('charpub-roleplay-reply-drafts')).toContain(draft)
+  })
+
+  it('sends ordinary dialogue without confirming an available stage result', async () => {
+    const before = proposed()
+    const api = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: before.session })), session: vi.fn(async () => before),
+    }))
+    reply('I confirm the proposed stage result: Stay until morning')
+    send()
+    await waitFor(() => { expect(api.turn).toHaveBeenCalledTimes(1) })
+    const input = vi.mocked(api.turn).mock.calls[0][0]
+    expect(input.text).toBe('I confirm the proposed stage result: Stay until morning')
+    expect(input.expected_revision).toBe('revision-one')
+    expect(input).not.toHaveProperty('confirm_ending')
+  })
+
+  it('restores an unknown confirmation with its proposal ID and waits for status before explicit resend', async () => {
+    const before = proposed()
+    const firstApi = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: before.session })), session: vi.fn(async () => before),
+      turn: vi.fn(async () => { throw new RoleplayApiError('roleplay_app.connection_lost', true) }),
+    }))
+    reply('A private unsent question')
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm this stage result' }))
+    await screen.findByText('The reply result is not confirmed')
+    const original = vi.mocked(firstApi.turn).mock.calls[0][0]
+    expect(original.confirm_ending).toEqual({ proposal_id: 'proposal-one' })
+    expect(sessionStorage.getItem('charpub-roleplay-pending-requests')).toContain('"proposal_id":"proposal-one"')
+    cleanup()
+    const restored = { ...before, session: 'handle-restored' }
+    const after = completed(restored)
+    const api = await active(makeApi({
+      status: vi.fn(async () => ({ ...status, current_session: restored.session })), session: vi.fn(async () => restored),
+      turnStatus: vi.fn(async (_session: string, request_id: string) => ({ request_id, status: 'not_found' as const, snapshot: restored })),
+      turn: vi.fn(async (input: AppTurnRequest) => ({ request_id: input.request_id, status: 'success' as const, snapshot: after })),
+    }))
+    expect(api.turn).not.toHaveBeenCalled()
+    expect(api.turnStatus).not.toHaveBeenCalled()
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('value', 'A private unsent question')
+    expect(screen.getByRole('button', { name: 'Confirm this stage result' })).toHaveProperty('disabled', true)
+    fireEvent.click(screen.getByRole('button', { name: 'Check request status' }))
+    const resend = await screen.findByRole('button', { name: 'Resend the same request' })
+    expect(api.turnStatus).toHaveBeenCalledWith(restored.session, original.request_id)
+    expect(api.turn).not.toHaveBeenCalled()
+    fireEvent.click(resend)
+    await waitFor(() => { expect(api.turn).toHaveBeenCalledTimes(1) })
+    expect(vi.mocked(api.turn).mock.calls[0][0]).toEqual({ ...original, session: restored.session })
+    expect(await screen.findByText('The arrangement is now recorded.')).toBeTruthy()
+    expect(screen.getByRole('textbox', { name: 'Your next move' })).toHaveProperty('value', 'A private unsent question')
+    expect(firstApi.turn).toHaveBeenCalledTimes(1)
+    expect(sessionStorage.getItem('charpub-roleplay-pending-requests')).not.toContain('proposal-one')
+  })
+
+  it('resumes a pending private ending with generic public copy and no automatic confirmation', async () => {
+    localStorage.setItem('charpub-roleplay-language', 'zh')
+    const pending = snapshot('first', { experience: experience({ pending_ending: {
+      id: 'opaque-proposal', triggering_input: '我想先保留这份安排，再考虑是否采用。',
+    } }) })
+    const api = makeApi({
+      sessions: vi.fn(async () => ({ items: [{ record: 'first', created_at: '2026-10-01T00:00:00Z', work, state: 'ready' as const }] })),
+      resume: vi.fn(async () => pending),
+    })
+    mount(api)
+    fireEvent.click(await screen.findByRole('button', { name: /The Lantern House/ }))
+    const panel = await screen.findByRole('region', { name: '待你确认的阶段结果' })
+    expect(within(panel).getByText('当前阶段的一项结果')).toBeTruthy()
+    expect(within(panel).getByText('我想先保留这份安排，再考虑是否采用。')).toBeTruthy()
+    expect(within(panel).getByRole('button', { name: '确认这项阶段结果' })).toHaveProperty('disabled', false)
+    fireEvent.click(within(panel).getByRole('button', { name: '继续讨论' }))
+    expect(document.activeElement).toBe(screen.getByRole('textbox', { name: '你的下一步' }))
+    expect(api.resume).toHaveBeenCalledWith('first')
+    expect(api.turn).not.toHaveBeenCalled()
+    expect(screen.queryByText('opaque-proposal')).toBeNull()
   })
 })

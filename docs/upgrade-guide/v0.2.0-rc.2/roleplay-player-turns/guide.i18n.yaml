@@ -1,0 +1,16 @@
+# Bilingual-pair consistency record for guide.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/upgrade-guide/v0.2.0-rc.2/roleplay-player-turns/guide.md
+/:
+  en: 9e1ee404a3c62cc0
+  zh: 4f0df0a98e955ff3
+/durable-player-turns:
+  en: 6c0176fa8b12dca7
+  zh: a9a68710485ec584
+/durable-player-turns/change:
+  en: 4e6b499e58cb959f
+  zh: adae87c11066f63d
+/durable-player-turns/migration:
+  en: fa1a56caea7880f0
+  zh: 88d6ccf23ba968fc

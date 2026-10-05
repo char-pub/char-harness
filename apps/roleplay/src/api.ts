@@ -2,7 +2,7 @@
 import type {
   AppCancelRequest, AppCredentialState, AppLaunchReview, AppModelsView, AppModelsWrite, AppPluginConfigView,
   AppPluginsView, AppSettingsWrite, AppSessionSnapshot, AppSessionsResponse,
-  AppStartRequest, AppStatus, AppTurnRequest, AppTurnResult, AppTurnStatus,
+  AppStartRequest, AppStatus, AppTurnRequest, AppTurnResult, AppTurnStatus, AppRewindRequest,
 } from '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime/app-types'
 
 /** Public page configuration. The nonce authorizes this local page, not a Registry or model request. */
@@ -21,6 +21,7 @@ export interface RoleplayApi {
   resume(record: string): Promise<AppSessionSnapshot>
   turn(input: AppTurnRequest): Promise<AppTurnResult>
   turnStatus(session: string, requestId: string): Promise<AppTurnStatus>
+  rewind(input: AppRewindRequest): Promise<AppSessionSnapshot>
   cancel(input: AppCancelRequest): Promise<void>
   authorize(): Promise<{ authorizationURL: string }>
   /** Read configurable model providers with their live forms and credential states. */
@@ -63,10 +64,28 @@ function lateSlots(value: unknown): boolean {
 function snapshot(value: unknown): value is AppSessionSnapshot {
   return record(value) && string(value.session) && string(value.record) && work(value.work) && lateSlots(value.late_slots)
     && objects(value.history) && value.history.every(item => string(item.role) && string(item.text))
-    && objects(value.participants) && value.participants.every(item => string(item.key) && string(item.name) && typeof item.present === 'boolean')
-    && (value.scene === null || (record(value.scene) && string(value.scene.id) && string(value.scene.title)))
+    && objects(value.participants) && value.participants.every(item => string(item.key) && string(item.name) && typeof item.present === 'boolean'
+      && [item.role, item.goal, item.portrait].every(text => text === undefined || string(text)))
+    && (value.scene === null || (record(value.scene) && string(value.scene.id) && string(value.scene.title)
+      && [value.scene.description, value.scene.time, value.scene.where].every(text => text === undefined || string(text))))
     && typeof value.stopped === 'boolean' && typeof value.interrupted === 'boolean' && typeof value.can_continue === 'boolean'
     && Array.isArray(value.limitations) && value.limitations.every(string)
+    && (value.experience === undefined || experience(value.experience))
+}
+function experience(value: unknown): boolean {
+  return record(value) && string(value.revision) && record(value.player)
+    && string(value.player.key) && string(value.player.name)
+    && (value.player.present === null || typeof value.player.present === 'boolean')
+    && (value.player.cast_key === undefined || string(value.player.cast_key))
+    && (value.player.part === undefined || string(value.player.part))
+    && objects(value.known) && value.known.every(item => string(item.id) && string(item.title) && string(item.text))
+    && objects(value.choices) && value.choices.every(item => string(item.id) && string(item.label))
+    && objects(value.milestones) && value.milestones.every(item => string(item.id) && string(item.title)
+      && (item.kind === 'beat' || item.kind === 'ending'))
+    && (value.pending_ending === undefined || (record(value.pending_ending) && string(value.pending_ending.id)
+      && string(value.pending_ending.triggering_input)
+      && [value.pending_ending.title, value.pending_ending.description].every(text => text === undefined || string(text))))
+    && typeof value.can_undo === 'boolean'
 }
 function credential(value: unknown): value is AppCredentialState {
   return record(value) && typeof value.configured === 'boolean' && typeof value.writable === 'boolean'
@@ -124,7 +143,9 @@ function review(value: unknown): value is AppLaunchReview {
 }
 function turn(value: unknown): value is AppTurnResult {
   return record(value) && string(value.request_id) && ['success', 'cancelled', 'failed'].includes(String(value.status))
-    && (value.error_code === undefined || string(value.error_code)) && snapshot(value.snapshot)
+    && (value.error_code === undefined || string(value.error_code))
+    && (value.story_progress_unavailable === undefined || value.story_progress_unavailable === true)
+    && (value.superseded === undefined || value.superseded === true) && snapshot(value.snapshot)
 }
 function turnStatus(value: unknown): value is AppTurnStatus {
   return turn(value) || (record(value) && string(value.request_id)
@@ -188,6 +209,7 @@ export function createRoleplayApi(bootstrap: RoleplayBootstrap, transport: typeo
     resume: record => call('resume', { record, restart: true }, snapshot, true),
     turn: input => call('turn', input, turn, true),
     turnStatus: (session, requestId) => call('turn-status', { session, request_id: requestId }, turnStatus),
+    rewind: input => call('rewind', input, snapshot, true),
     cancel: async (input) => { await call('cancel', input, record, true) },
     authorize: async () => {
       const result = await call('authorize', {}, authorization)

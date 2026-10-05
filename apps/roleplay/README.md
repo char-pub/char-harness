@@ -29,10 +29,14 @@ Open the profile's browser address and follow the char.pub link. In char.pub, se
 
 Select a saved story to resume it. The sidebar shows each record's actual creation date and time; switching records keeps each unsent reply. Enter sends a reply, and Shift + Enter inserts a line break. **Settings** → **General** changes the interface language, appearance and story text size without changing the story's locale. **Models** lists each configurable provider with its key state; **Edit** opens its card for the API key and, under **Customized settings**, the API endpoint and model catalog. Keys go to the profile's local Harness credentials and endpoint or catalog changes to the profile's `cordis.patch.yml`; a key from the launching environment and an entry owned by a `--patch` overlay are shown as read-only. **Built-in plugins** lists the running plugins with their module and runtime state. **char.pub access** authorizes Registry reads. The sidebar **Plugins** page lists the same plugins; a plugin with live fields opens a generated settings form, and the model adapter opens **Models**. Narrow screens move the side panels into keyboard-accessible drawers.
 
+The story panel identifies your character, the current time and place, present characters, learned clues visible in this scene and reached milestones. Character portraits contain only outward information. Available actions add editable text to your draft; choose **Send** to act. Profiles with bounded story planning can confirm authored actions from your input. The conversation reports newly visible consequences after the reply commits. An uncertain director verdict does not advance Story state. If the reply is saved without a usable director result, the page explains that story progress could not be evaluated. Stage endings appear as a proposal requiring **Confirm this stage result**. Discussing or editing an arrangement does not confirm it. The button preserves your unsent draft; another successful ordinary reply replaces or clears the proposal. Author-listed titles and descriptions can be previewed; other ending details remain hidden until reached.
+
 <a id="recovery-and-privacy"></a>
 ## Recovery and privacy
 
 When a request result is unknown, check its status before retrying. A confirmed missing request can be explicitly resent with the same ID and original text. A persisted interrupted request must first be reconciled, then explicitly ended before a new message is sent. Cancellation requests a stop; an already completed reply may still be saved. Closing a page does not promise to cancel the host's request.
+
+**Undo last turn** restores the conversation, scene and learned information before the last successful planned turn without another model request. Undoing a confirmed stage result also restores its preceding proposal. Your unsent draft remains. If the undo result is unknown, reopen the saved story before sending again. A previous browser handle cannot write after undo; an old request remains recorded and cannot reapply its effects.
 
 Reply drafts and pending request identities use tab-local session storage, while language, appearance and text size use local storage. If browser storage is unavailable, the current page retains in-memory drafts. Session logs remain owned by the Runtime; browser preferences cannot replace their contents or authorize an operation.
 
@@ -53,12 +57,12 @@ The [repository build script](../../scripts/build-charpub-replay.mjs) builds the
 <a id="model-experience"></a>
 ## Model Experience
 
-The player sends only explicit user messages through the Runtime's generation path. It displays completed replies and a real pending status; it does not synthesize streamed text. Configured model information is marked as not verified online; a stored key does not claim connectivity. The page sends an entered key once to the host credential operation and never stores or displays it.
+The player sends only explicit user messages through the Runtime's configured planning and generation paths. Action suggestions do not dispatch a request. The host records planning, selects relevant context and commits narration with validated Story effects. The page displays completed replies and a real pending status; it does not synthesize streamed text. Configured model information is marked as not verified online; a stored key does not claim connectivity. The page sends an entered key once to the host credential operation and never stores or displays it.
 
 <a id="known-limitations-and-deferred-work"></a>
 ## Known Limitations and Deferred Work
 
-- This player does not automatically confirm inferred plot changes or endings, edit author definitions, or publish a work.
+- Automatic story progress requires the profile's `play` configuration. Other profiles retain manual progress. The player cannot edit author definitions or publish a work.
 - Saved reply drafts remain browser-tab state; they are not synchronized across devices or merged with another tab's edits.
 - Expired draft builds require a new **Try draft** handoff from char.pub. Unsupported required capabilities require a compatible Runtime.
 

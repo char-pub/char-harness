@@ -31,7 +31,7 @@ import { ReviewPanel } from './components/ReviewPanel.tsx'
 
 type Pending = { request: AppTurnRequest; phase: 'sending' | 'unknown' | 'not_found' }
 type ErrorInfo = { code: string; message: MessageKey }
-type Busy = 'bootstrap' | 'list' | 'review' | 'start' | 'resume' | 'send' | 'authorize' | 'inspect' | 'export' | null
+type Busy = 'bootstrap' | 'list' | 'review' | 'start' | 'resume' | 'send' | 'rewind' | 'authorize' | 'inspect' | 'export' | null
 const DRAFTS = 'charpub-roleplay-reply-drafts',
   REQUESTS = 'charpub-roleplay-pending-requests'
 function readText(key: string, local = false): string | null {
@@ -84,6 +84,10 @@ function storedRequests(): Record<string, Pending> {
         session: request.session,
         request_id: request.request_id,
         text: request.text,
+        ...(typeof request.expected_revision === 'string' ? { expected_revision: request.expected_revision } : {}),
+        ...(typeof request.choice_id === 'string' ? { choice_id: request.choice_id } : {}),
+        ...(object(request.confirm_ending) && typeof request.confirm_ending.proposal_id === 'string'
+          ? { confirm_ending: { proposal_id: request.confirm_ending.proposal_id } } : {}),
         ...(request.recover_interrupted === true ? { recover_interrupted: true as const } : {}),
       },
       phase: 'unknown',
@@ -97,7 +101,13 @@ const ERROR_MESSAGES: ReadonlyArray<readonly [RegExp, MessageKey]> = [
   [/settings_conflict/, 'settingsConflict'],
   [/settings_overridden/, 'settingsOverridden'],
   [/settings_not_live/, 'settingsNotLive'],
-  [/stale_session/, 'stale'],
+  [/stale_session|stale_revision|revision_required/, 'stale'],
+  [/ending_proposal|ending_confirmation/, 'endingChanged'],
+  [/empty_output/, 'emptyOutput'],
+  [/finish:max-tokens/, 'outputLimit'],
+  [/over_budget|context_window|model_output_budget/, 'contextLimit'],
+  [/timeout/, 'timedOut'],
+  [/busy/, 'hostBusy'],
   [/http_401|authorization_changed|authorization_required|unauthorized/, 'unauthorized'],
   [/http_403/, 'forbidden'],
   [/expired/, 'expired'],
@@ -174,6 +184,8 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
     [pluginsOpen, setPluginsOpen] = useState(false),
     [exportOpen, setExportOpen] = useState(false)
   const [recoveryRecord, setRecoveryRecord] = useState<string | null>(null)
+  const [rewindUnknown, setRewindUnknown] = useState<string | null>(null)
+  const [turnChanges, setTurnChanges] = useState<string[]>([])
   const navigation = useRef(0)
   const [leftOpen, setLeftOpen] = useState(false),
     [rightOpen, setRightOpen] = useState(false)
@@ -282,6 +294,8 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
   const acceptSnapshot = (value: AppSessionSnapshot) => {
     setPluginsOpen(false)
     setRecoveryRecord(null)
+    setRewindUnknown(null)
+    setTurnChanges([])
     snapshotRef.current = value
     setSnapshot(value)
     setMode('session')
@@ -444,12 +458,27 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
   const settled = async (record: string, input: AppTurnRequest, result: AppTurnResult) => {
     updatePending(record, null)
     if (snapshotRef.current?.record === record) {
+      const before = snapshotRef.current
+      const after = result.snapshot
+      const changes: string[] = []
+      if (result.status === 'success' && !result.superseded) {
+        if (before.scene?.id !== after.scene?.id && after.scene) changes.push(after.scene.title)
+        for (const item of after.experience?.known ?? []) {
+          if (!before.experience?.known.some(prior => prior.id === item.id)) changes.push(item.title)
+        }
+        for (const item of after.experience?.milestones ?? []) {
+          if (!before.experience?.milestones.some(prior => prior.kind === item.kind && prior.id === item.id)) changes.push(item.title)
+        }
+      }
+      setTurnChanges(changes)
       snapshotRef.current = result.snapshot
       setSnapshot(result.snapshot)
     }
-    if (result.status === 'success') {
-      setDrafts(previous => (previous[record] === input.text ? { ...previous, [record]: '' } : previous))
-      setNotice(null)
+    if (result.superseded) {
+      setNotice('superseded')
+    } else if (result.status === 'success') {
+      if (!input.confirm_ending) setDrafts(previous => (previous[record] === input.text ? { ...previous, [record]: '' } : previous))
+      setNotice(result.story_progress_unavailable ? 'progressUnavailable' : null)
     } else {
       setNotice(result.status === 'cancelled' ? 'cancelled' : 'failed')
       if (result.error_code) setError(errorInfo(new RoleplayApiError(result.error_code)))
@@ -483,18 +512,62 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
       !active ||
       (!active.can_continue && !(active.interrupted && recoveryRecord === active.record)) ||
       active.stopped ||
+      rewindUnknown === active.record ||
       busyRef.current ||
       pendingRef.current[active.record]
     )
       return
     const text = draftsRef.current[active.record] ?? ''
     if (!text.trim()) return
+    const choice = active.experience?.choices.find(item => item.label === text.trim())
     void dispatchTurn(active.record, {
       session: active.session,
       request_id: randomUUID(),
       text,
+      ...(active.experience ? { expected_revision: active.experience.revision } : {}),
+      ...(choice ? { choice_id: choice.id } : {}),
       ...(active.interrupted && recoveryRecord === active.record ? { recover_interrupted: true as const } : {}),
     })
+  }
+  const choose = (label: string) => {
+    const active = snapshotRef.current
+    if (!active || busyRef.current || pendingRef.current[active.record]) return
+    setDrafts(previous => ({ ...previous, [active.record]: previous[active.record]?.trim()
+      ? `${previous[active.record]}\n${label}` : label }))
+    reply.current?.focus()
+  }
+  const confirmEnding = () => {
+    const active = snapshotRef.current
+    const experience = active?.experience
+    const proposal = experience?.pending_ending
+    if (!active || !experience || !proposal || !active.can_continue || active.stopped || rewindUnknown === active.record
+      || busyRef.current || pendingRef.current[active.record]) return
+    const text = proposal.title ? `${t('confirmEndingIntent')}: ${proposal.title}` : t('confirmEndingIntent')
+    void dispatchTurn(active.record, { session: active.session, request_id: randomUUID(), text,
+      expected_revision: experience.revision, confirm_ending: { proposal_id: proposal.id } })
+  }
+  const rewind = async () => {
+    const active = snapshotRef.current
+    if (!api || !active?.experience?.can_undo || pendingRef.current[active.record] || !begin('rewind')) return
+    try {
+      const restored = await api.rewind({ session: active.session, request_id: randomUUID(),
+        expected_revision: active.experience.revision })
+      if (live.current) {
+        acceptSnapshot(restored)
+        setNotice('undone')
+        await loadRecords(undefined, true)
+      }
+    } catch (cause) {
+      if (live.current) {
+        setError(errorInfo(cause))
+        if (!(cause instanceof RoleplayApiError) || cause.unknownOutcome) {
+          setRewindUnknown(active.record)
+        }
+      }
+    } finally {
+      end('rewind')
+      void refreshStatus()
+    }
   }
   const checkRequest = async () => {
     const active = snapshotRef.current,
@@ -599,6 +672,7 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
   const canWrite =
     !!snapshot &&
     !snapshot.stopped &&
+    rewindUnknown !== snapshot.record &&
     (snapshot.can_continue || (snapshot.interrupted && recoveryRecord === snapshot.record))
   const detailView = snapshot && mode === 'session' ? snapshot : null
   return (
@@ -941,6 +1015,12 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                   <span>{t('sending')}</span>
                 </div>
               ) : null}
+              {turnChanges.length ? (
+                <section className="turn-changes" role="status" aria-live="polite">
+                  <strong>{t('turnChanges')}</strong>
+                  <ul>{turnChanges.map(change => <li key={change}>{change}</li>)}</ul>
+                </section>
+              ) : null}
               <div ref={scrollEnd} />
             </section>
           ) : null}
@@ -976,6 +1056,12 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
         </div>
         {mode === 'session' && snapshot ? (
           <div className="composer-dock">
+            {rewindUnknown === snapshot.record ? (
+              <div className="composer-notice" role="status">
+                <p>{t('undoUnknown')}</p>
+                <button type="button" className="button outline small" disabled={!!busy} onClick={() => void resume(snapshot.record)}>{t('reloadStory')}</button>
+              </div>
+            ) : null}
             {currentPending && currentPending.phase !== 'sending' ? (
               <div className="composer-notice" role="status">
                 <Icon name="alert" />
@@ -997,7 +1083,8 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
                         className="button outline small"
                         disabled={!!busy}
                         onClick={() =>
-                          void dispatchTurn(snapshot.record, { ...currentPending.request, session: snapshot.session })
+                          void dispatchTurn(snapshot.record, { ...currentPending.request, session: snapshot.session,
+                            ...(snapshot.experience ? { expected_revision: snapshot.experience.revision } : {}) })
                         }
                       >
                         {t('resend')}
@@ -1029,6 +1116,33 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
             ) : null}
             {snapshot.stopped || (!snapshot.can_continue && !snapshot.interrupted) ? (
               <p className="ended-notice">{t(snapshot.stopped ? 'endNotice' : 'cannotContinue')}</p>
+            ) : null}
+            {snapshot.experience?.pending_ending && !snapshot.stopped ? (
+              <section className="ending-confirmation" aria-label={t('pendingEnding')}>
+                <div className="ending-confirmation-copy">
+                  <span className="details-label">{t('pendingEnding')}</span>
+                  <strong>{snapshot.experience.pending_ending.title ?? t('pendingEndingPrivate')}</strong>
+                  {snapshot.experience.pending_ending.description
+                    ? <p>{snapshot.experience.pending_ending.description}</p>
+                    : <blockquote>{snapshot.experience.pending_ending.triggering_input}</blockquote>}
+                  <p className="muted">{t('endingConfirmationHint')}</p>
+                </div>
+                <div className="button-row">
+                  <button type="button" className="button primary" disabled={!canWrite || !!busy || !!currentPending}
+                    onClick={confirmEnding}>{t('confirmEnding')}</button>
+                  <button type="button" className="button outline" disabled={!canWrite || !!busy || !!currentPending}
+                    onClick={() => { reply.current?.focus() }}>{t('discussEnding')}</button>
+                </div>
+              </section>
+            ) : null}
+            {snapshot.experience && snapshot.experience.choices.length > 0 && !snapshot.stopped ? (
+              <section className="story-choices" aria-label={t('possibleActions')}>
+                <div className="choice-heading"><strong>{t('possibleActions')}</strong><span>{t('actionsHint')}</span></div>
+                <div className="choice-list">{snapshot.experience.choices.map(choice => (
+                  <button type="button" className="choice-button" key={choice.id} disabled={!canWrite || !!busy || !!currentPending}
+                    onClick={() => { choose(choice.label) }}>{choice.label}</button>
+                ))}</div>
+              </section>
             ) : null}
             <form className="composer" onSubmit={send}>
               <label className="sr-only" htmlFor="story-reply">
@@ -1104,6 +1218,8 @@ export function App(props: { api?: RoleplayApi; bootstrap?: RoleplayBootstrap })
           <StoryDetails
             snapshot={detailView}
             language={language}
+            onUndo={() => void rewind()}
+            undoDisabled={!!busy || !!currentPending || rewindUnknown === detailView.record}
             onExport={() => {
               if (!busyRef.current) setExportOpen(true)
             }}
@@ -1191,17 +1307,29 @@ function StoryDetails({
   snapshot,
   language,
   onExport,
+  onUndo,
+  undoDisabled,
 }: {
   snapshot: AppSessionSnapshot
   language: Language
   onExport: () => void
+  onUndo: () => void
+  undoDisabled: boolean
 }) {
   const t = (key: MessageKey) => translate(language, key)
   return (
     <div className="details-body">
+      {snapshot.experience ? (
+        <section className="details-card player-card">
+          <div className="details-label">{t('playerRole')}</div>
+          <h3>{snapshot.experience.player.name}</h3>
+          {snapshot.experience.player.part ? <p>{snapshot.experience.player.part}</p> : null}
+        </section>
+      ) : null}
       <section className="details-card">
         <div className="details-label">{t('scene')}</div>
         <h3>{snapshot.scene?.title ?? t('noScene')}</h3>
+        {snapshot.scene?.time || snapshot.scene?.where ? <p className="scene-location">{[snapshot.scene.time, snapshot.scene.where].filter(Boolean).join(' · ')}</p> : null}
         {snapshot.scene?.description ? <p>{snapshot.scene.description}</p> : null}
       </section>
       <section className="details-cast">
@@ -1217,15 +1345,33 @@ function StoryDetails({
                 {person.role ? `${person.role} · ` : ''}
                 {t(person.present ? 'present' : 'absent')}
               </small>
-              {person.goal ? <p>{person.goal}</p> : null}
+              {person.portrait ? <details className="character-portrait"><summary>{t('storyCharacter')}</summary><p>{person.portrait}</p></details> : null}
             </div>
           </div>
         ))}
         {!snapshot.participants.length ? <p className="muted">{t('noCast')}</p> : null}
       </section>
+      {snapshot.experience ? <>
+        <section className="details-knowledge" aria-label={t('knownClues')}>
+          <div className="details-label">{t('knownClues')} <span>{snapshot.experience.known.length}</span></div>
+          {snapshot.experience.known.map(item => <details className="knowledge-entry" key={item.id}>
+            <summary>{item.title}</summary><p>{item.text}</p>
+          </details>)}
+          {!snapshot.experience.known.length ? <p className="muted">{t('noKnownClues')}</p> : null}
+        </section>
+        <section className="details-progress" aria-label={t('storyMilestones')}>
+          <div className="details-label">{t('storyMilestones')}</div>
+          <ol>{snapshot.experience.milestones.map(item => <li key={`${item.kind}:${item.id}`}>{item.title}</li>)}</ol>
+          {!snapshot.experience.milestones.length ? <p className="muted">{t('noMilestones')}</p> : null}
+        </section>
+        {snapshot.experience.can_undo ? <div className="undo-turn">
+          <button type="button" className="button outline full" disabled={undoDisabled} onClick={onUndo}>{t('undoLast')}</button>
+          <p>{t('undoHint')}</p>
+        </div> : null}
+      </> : null}
       <p className="details-note">
         <Icon name="info" size={14} />
-        <span>{t('noInference')}</span>
+        <span>{t(snapshot.experience && !snapshot.limitations.includes('manual_story_progress') ? 'storyProgress' : 'noInference')}</span>
       </p>
       <details className="advanced">
         <summary>{t('technicalDetails')}</summary>

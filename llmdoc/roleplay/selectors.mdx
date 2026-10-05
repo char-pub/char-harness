@@ -1,11 +1,13 @@
 ---
-description: "Jev/Laya决策适配 (selectors)：Jev或Laya怎样选择资料；低置信度怎么办；模型路由与目录预算；主权、失败与变更约束"
+description: "剧情director、渐进选择与Jev/Laya适配 (selectors)：当前输入/scene opening怎样参与判定；低置信度与独立模型路由/预算"
 kind: architecture
 code:
   paths:
     - "packages/experimental/charpub-roleplay/src/jev.ts"
     - "packages/experimental/charpub-roleplay/src/laya.ts"
     - "packages/experimental/charpub-roleplay/src/noul.ts"
+    - "packages/experimental/charpub-roleplay-runtime/src/director.ts"
+    - "packages/experimental/charpub-roleplay-runtime/app.patch.yml"
     - "packages/experimental/charpub-roleplay/tests/jev.test.ts.snapshot"
     - "packages/experimental/charpub-roleplay/tests/laya.test.ts.snapshot"
     - "packages/experimental/charpub-roleplay/README.md"
@@ -14,16 +16,24 @@ relations:
     - "roleplay/replay-sdk.mdx"
   related:
     - "model/provider-requests.mdx"
+    - "roleplay/session-runtime.mdx"
 ---
 
-# Jev/Laya决策适配
+# 剧情判定与资料选择
 
 Jev 和 Laya 适配可替换的判断/选择服务，生成模型路由是另一项配置。请求只携带已获准的 View/目录信息，渐进展开受目录深度、预算与全请求限额约束，不能偷偷发送完整 Source 或 trusted index。
 
+本地 play 的 LLM director 不依赖 Jev/Laya 服务：它接收投影后的既往对白、单列的当前玩家输入、经 SDK 模板解析的场次 opening、作者目标/问题/场次关联及 Core 当前条件值，只能提出作者目标和 typed judgments，不能写任意变量或效果。Core 顺序验证动作；只准入已声明 target/path 的 judge，未知项忽略、重复项只令对应叶子 undetermined，不抹去独立有效证据。目录标题或模型自拟目标不能代替玩家行为证据。
+
 拒绝、unknown、低置信度与传输失败必须按明确 skip/undetermined 语义结算；不得补造一次肯定判断以推进 Story。取消后的迟到响应不能提交状态。
+
+资料选择在候选动作后展开 SDK 目录，只有描述与获准 interaction 进入模型，不发送候选正文、任意变量或 bindings；不可用时记录 skip Plan 并保留 required/direct。判定缺结果时仍可能保存一段成功旁白，不能据此报告剧情已推进。Source 正文保持新 Session 获得并验证的快照，游玩中不暗中抓取新 Source；缺所需正文时准备失败，不提交部分回合。
+
+判定与旁白有独立模型/思考/输出配置；随附 profile 可用 CHARPUB_DECISION_MODEL 独立选判定模型。整回合预算覆盖 director 和每次 selector 展开，按估算输入加输出预留准入，有实际 usage 时据此结算预算；输出额度也包含隐藏思考和所需 JSON。旁白不占判断调用数，但共享回合截止时间。当前数值由 profile 持有，增大额度不保证判断正确；实际 adapter 请求和语义质量分别验收。
 
 Decision record 绑定前后态和真实 Plan，重放须核精确摘要及请求身份。Mock协议和固定概率测试证明输入/失败边界，不证明模型判定质量；真实endpoint/model配置在适配器权威维护。
 
 ## 权威入口
 
 <CodeRef path="packages/experimental/charpub-roleplay/README.md" />
+<CodeRef path="packages/experimental/charpub-roleplay-runtime/PROFILE.md" />

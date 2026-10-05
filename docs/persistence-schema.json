@@ -11152,11 +11152,1213 @@
       }
     },
     {
+      "key": "event:roleplay/decision-requested",
+      "kind": "event",
+      "event": "roleplay/decision-requested",
+      "surface": false,
+      "digest": "6cae4ac270e7a3a906ea491be85cbc7ed65769ab4e19ba4b412635d1e0eca343",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 15,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 16,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "config",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "messages",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "proposed_config",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "stage",
+                "type": 12,
+                "optional": false
+              },
+              {
+                "name": "turn_id",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "maxTokens",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "model",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "reasoningEffort",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "stop",
+                "type": 5,
+                "optional": true
+              },
+              {
+                "name": "temperature",
+                "type": 3,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "array",
+            "element": 4
+          },
+          {
+            "kind": "array",
+            "element": 7
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "content",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "role",
+                "type": 8,
+                "optional": false
+              },
+              {
+                "name": "source",
+                "type": 5,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              9,
+              10,
+              11
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "system"
+          },
+          {
+            "kind": "literal",
+            "value": "user"
+          },
+          {
+            "kind": "literal",
+            "value": "assistant"
+          },
+          {
+            "kind": "union",
+            "types": [
+              13,
+              14
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "selector"
+          },
+          {
+            "kind": "literal",
+            "value": "director"
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/decision-requested"
+          }
+        ]
+      }
+    },
+    {
+      "key": "event:roleplay/decision-settled",
+      "kind": "event",
+      "event": "roleplay/decision-settled",
+      "surface": false,
+      "digest": "d16eee9f50096c74d9069b1ea1bbdc7702f966ce0ee22a01570d6053943893cf",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 30,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 79,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              2,
+              77
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "reason",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "status",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "stream",
+                "type": 8,
+                "optional": false
+              },
+              {
+                "name": "turn_id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "usage",
+                "type": 71,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "union",
+            "types": [
+              6,
+              7
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "cancelled"
+          },
+          {
+            "kind": "literal",
+            "value": "failed"
+          },
+          {
+            "kind": "array",
+            "element": 9
+          },
+          {
+            "kind": "union",
+            "types": [
+              10,
+              14,
+              73,
+              75
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "args",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "dt",
+                "type": 12,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "time0",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 13,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 4
+          },
+          {
+            "kind": "array",
+            "element": 3
+          },
+          {
+            "kind": "literal",
+            "value": "tool-call-chunks"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "chunk",
+                "type": 15,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 72,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              16,
+              18,
+              45,
+              48,
+              50,
+              52,
+              69
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "argumentsDelta",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 17,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-call-delta"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "block",
+                "type": 19,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 44,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              20,
+              22,
+              32,
+              35,
+              37,
+              39,
+              42
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "arguments",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 21,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-call"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachment",
+                "type": 23,
+                "optional": false
+              },
+              {
+                "name": "offloaded",
+                "type": 30,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 31,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachmentId",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "bytes",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "height",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "mediaType",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "originalDimensions",
+                "type": 29,
+                "optional": true
+              },
+              {
+                "name": "width",
+                "type": 3,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              25,
+              26,
+              27,
+              28
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "image/gif"
+          },
+          {
+            "kind": "literal",
+            "value": "image/jpeg"
+          },
+          {
+            "kind": "literal",
+            "value": "image/png"
+          },
+          {
+            "kind": "literal",
+            "value": "image/webp"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "height",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "width",
+                "type": 3,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "literal",
+            "value": "image"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachment",
+                "type": 33,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 34,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "attachmentId",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "bytes",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "name",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "file"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 36,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "reasoning"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 38,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "text"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "tool",
+                "type": 40,
+                "optional": true
+              },
+              {
+                "name": "toolName",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 41,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "never"
+          },
+          {
+            "kind": "literal",
+            "value": "tool-addition"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "toolName",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 43,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-removal"
+          },
+          {
+            "kind": "literal",
+            "value": "block-end"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blockType",
+                "type": 46,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 47,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              21,
+              31,
+              34,
+              36,
+              38,
+              41,
+              43
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "block-start"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 49,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "reasoning-delta"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 51,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "text-delta"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "reason",
+                "type": 53,
+                "optional": false
+              },
+              {
+                "name": "replayState",
+                "type": 65,
+                "optional": true
+              },
+              {
+                "name": "type",
+                "type": 68,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              54,
+              57,
+              59,
+              61,
+              63
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "failure",
+                "type": 55,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 56,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "code",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "message",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "offloadImages",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "providerRetryAfterMs",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "requestId",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "status",
+                "type": 3,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "aborted"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "failure",
+                "type": 55,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 58,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "error"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 60,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "max-tokens"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 62,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "stop"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 64,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "tool-calls"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "blocks",
+                "type": 66,
+                "optional": true
+              },
+              {
+                "name": "response",
+                "type": 67,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 67
+          },
+          {
+            "kind": "opaque",
+            "reason": "unknown"
+          },
+          {
+            "kind": "literal",
+            "value": "finish"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "type",
+                "type": 70,
+                "optional": false
+              },
+              {
+                "name": "usage",
+                "type": 71,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "usage"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "cacheReadTokens",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "cacheWriteTokens",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "inputTokens",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "outputTokens",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "reasoningTokens",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "totalTokens",
+                "type": 3,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "chunk"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "dt",
+                "type": 12,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "texts",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "time0",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 74,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "reasoning-chunks"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "dt",
+                "type": 12,
+                "optional": false
+              },
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "texts",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "time0",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 76,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "text-chunks"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "index",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "status",
+                "type": 78,
+                "optional": false
+              },
+              {
+                "name": "stream",
+                "type": 8,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "turn_id",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "usage",
+                "type": 71,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "success"
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/decision-settled"
+          }
+        ]
+      }
+    },
+    {
       "key": "event:roleplay/opened",
       "kind": "event",
       "event": "roleplay/opened",
       "surface": false,
-      "digest": "c5069d032188c2d638fae7b35f54d85d6645aa3d63a73890425cb499bbccca81",
+      "digest": "e224e23fc6488b4ec422884c3a1f6bd1ae9aee4f7e9a8ec0fd47b050ce7485b6",
       "schema": {
         "root": 0,
         "nodes": [
@@ -14374,6 +15576,11 @@
                 "optional": true
               },
               {
+                "name": "player",
+                "type": 2,
+                "optional": true
+              },
+              {
                 "name": "plotlines",
                 "type": 313,
                 "optional": true
@@ -17170,6 +18377,96 @@
       }
     },
     {
+      "key": "event:roleplay/rewound",
+      "kind": "event",
+      "event": "roleplay/rewound",
+      "surface": false,
+      "digest": "1ff8ac69735da91a644ea71fd33e39bfca274783bb71184a757e9863e314e588",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 5,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "parent_revision",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "target_head",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "turn_id",
+                "type": 2,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/rewound"
+          }
+        ]
+      }
+    },
+    {
       "key": "event:roleplay/settled",
       "kind": "event",
       "event": "roleplay/settled",
@@ -18678,6 +19975,1511 @@
           {
             "kind": "literal",
             "value": "roleplay/settled"
+          }
+        ]
+      }
+    },
+    {
+      "key": "event:roleplay/turn-aborted",
+      "kind": "event",
+      "event": "roleplay/turn-aborted",
+      "surface": false,
+      "digest": "46e5038549e044a20354a7810275826471232daef93713194b159ce98b665c61",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 8,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "reason",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "status",
+                "type": 3,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "union",
+            "types": [
+              4,
+              5
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "cancelled"
+          },
+          {
+            "kind": "literal",
+            "value": "failed"
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/turn-aborted"
+          }
+        ]
+      }
+    },
+    {
+      "key": "event:roleplay/turn-requested",
+      "kind": "event",
+      "event": "roleplay/turn-requested",
+      "surface": false,
+      "digest": "4423cf724108d910961087ac89fd1b2005e09a1511750bd2158fcf145e135b96",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 90,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 16,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 16,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 91,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "command",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 83,
+                "optional": false
+              },
+              {
+                "name": "id",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "messages",
+                "type": 84,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "plan_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "proposed_config",
+                "type": 83,
+                "optional": false
+              },
+              {
+                "name": "request_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "state_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "turn_digest",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "evidence",
+                "type": 3,
+                "optional": true
+              },
+              {
+                "name": "for_participant",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "judgments",
+                "type": 22,
+                "optional": true
+              },
+              {
+                "name": "operation",
+                "type": 43,
+                "optional": false
+              },
+              {
+                "name": "plan",
+                "type": 56,
+                "optional": true
+              },
+              {
+                "name": "selection",
+                "type": 82,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 4
+          },
+          {
+            "kind": "union",
+            "types": [
+              5,
+              37,
+              40
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "binding",
+                "type": 6,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 30,
+                "optional": false
+              },
+              {
+                "name": "digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "input",
+                "type": 35,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 36,
+                "optional": false
+              },
+              {
+                "name": "request",
+                "type": 31,
+                "optional": false
+              },
+              {
+                "name": "response",
+                "type": 31,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "actions",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "assessments",
+                "type": 14,
+                "optional": false
+              },
+              {
+                "name": "ending_proposal",
+                "type": 20,
+                "optional": true
+              },
+              {
+                "name": "judgments",
+                "type": 22,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 8
+          },
+          {
+            "kind": "union",
+            "types": [
+              9,
+              12
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 10,
+                "optional": false
+              },
+              {
+                "name": "scene",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "enter-scene"
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 13,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "confirm"
+          },
+          {
+            "kind": "array",
+            "element": 15
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "confidence",
+                "type": 16,
+                "optional": true
+              },
+              {
+                "name": "reason",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "status",
+                "type": 17,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "union",
+            "types": [
+              18,
+              19
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "skipped"
+          },
+          {
+            "kind": "literal",
+            "value": "accepted"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "guidance_version",
+                "type": 21,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "judgments",
+                "type": 22,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "parent_revision",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "public",
+                "type": 29,
+                "optional": false
+              },
+              {
+                "name": "source_turn_id",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "state_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": 2
+          },
+          {
+            "kind": "array",
+            "element": 23
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "path",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "result",
+                "type": 25,
+                "optional": false
+              },
+              {
+                "name": "target",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "name",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              26,
+              27,
+              28
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "true"
+          },
+          {
+            "kind": "literal",
+            "value": "undetermined"
+          },
+          {
+            "kind": "literal",
+            "value": "false"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "description",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "title",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "triggering_input",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [],
+            "indices": [
+              {
+                "key": 11,
+                "value": 31
+              }
+            ]
+          },
+          {
+            "kind": "union",
+            "types": [
+              11,
+              16,
+              30,
+              32,
+              33,
+              34
+            ]
+          },
+          {
+            "kind": "array",
+            "element": 31
+          },
+          {
+            "kind": "primitive",
+            "type": "boolean"
+          },
+          {
+            "kind": "primitive",
+            "type": "null"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "artifact_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "catalog_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "lock_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "policy_digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "turn_digest",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "director"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "binding",
+                "type": 38,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 30,
+                "optional": false
+              },
+              {
+                "name": "digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "input",
+                "type": 35,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 39,
+                "optional": false
+              },
+              {
+                "name": "request",
+                "type": 31,
+                "optional": false
+              },
+              {
+                "name": "response",
+                "type": 31,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "judgments",
+                "type": 22,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "judge"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "binding",
+                "type": 41,
+                "optional": false
+              },
+              {
+                "name": "config",
+                "type": 30,
+                "optional": false
+              },
+              {
+                "name": "digest",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "input",
+                "type": 35,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 42,
+                "optional": false
+              },
+              {
+                "name": "request",
+                "type": 31,
+                "optional": false
+              },
+              {
+                "name": "response",
+                "type": 31,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "plan_digest",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "selector"
+          },
+          {
+            "kind": "union",
+            "types": [
+              9,
+              12,
+              44,
+              47,
+              50,
+              52,
+              54
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "actions",
+                "type": 7,
+                "optional": false
+              },
+              {
+                "name": "assessments",
+                "type": 14,
+                "optional": false
+              },
+              {
+                "name": "ending_confirmation",
+                "type": 20,
+                "optional": true
+              },
+              {
+                "name": "ending_proposal",
+                "type": 20,
+                "optional": true
+              },
+              {
+                "name": "input",
+                "type": 45,
+                "optional": false
+              },
+              {
+                "name": "kind",
+                "type": 46,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "choice_id",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "speaker",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "turn"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 48,
+                "optional": false
+              },
+              {
+                "name": "present",
+                "type": 49,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "set-present"
+          },
+          {
+            "kind": "array",
+            "element": 11
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 51,
+                "optional": false
+              },
+              {
+                "name": "speaker",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "response"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 53,
+                "optional": false
+              },
+              {
+                "name": "text",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "input"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "kind",
+                "type": 55,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "prepare"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "decisions",
+                "type": 57,
+                "optional": false
+              },
+              {
+                "name": "discovery",
+                "type": 33,
+                "optional": false
+              },
+              {
+                "name": "fallback",
+                "type": 75,
+                "optional": true
+              },
+              {
+                "name": "input",
+                "type": 35,
+                "optional": false
+              },
+              {
+                "name": "selected",
+                "type": 76,
+                "optional": false
+              },
+              {
+                "name": "selector",
+                "type": 81,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 58
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "action",
+                "type": 59,
+                "optional": false
+              },
+              {
+                "name": "confidence",
+                "type": 16,
+                "optional": true
+              },
+              {
+                "name": "note",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "ref",
+                "type": 63,
+                "optional": false
+              },
+              {
+                "name": "score",
+                "type": 16,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              60,
+              61,
+              62
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "select"
+          },
+          {
+            "kind": "literal",
+            "value": "reject"
+          },
+          {
+            "kind": "literal",
+            "value": "expand"
+          },
+          {
+            "kind": "union",
+            "types": [
+              64,
+              65,
+              66,
+              73,
+              74
+            ]
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "fragment",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "group",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "id",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "story",
+                "type": 67,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              68,
+              69,
+              70,
+              71,
+              72
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "beat"
+          },
+          {
+            "kind": "literal",
+            "value": "part"
+          },
+          {
+            "kind": "literal",
+            "value": "ending"
+          },
+          {
+            "kind": "literal",
+            "value": "scene"
+          },
+          {
+            "kind": "literal",
+            "value": "goal"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "section",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "source",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "work",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": "skip"
+          },
+          {
+            "kind": "array",
+            "element": 77
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "form",
+                "type": 78,
+                "optional": false
+              },
+              {
+                "name": "rank",
+                "type": 16,
+                "optional": false
+              },
+              {
+                "name": "ref",
+                "type": 63,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              79,
+              80
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "section"
+          },
+          {
+            "kind": "literal",
+            "value": "body"
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "config_digest",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "name",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "version",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 63
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "maxTokens",
+                "type": 16,
+                "optional": true
+              },
+              {
+                "name": "model",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "reasoningEffort",
+                "type": 11,
+                "optional": true
+              },
+              {
+                "name": "stop",
+                "type": 49,
+                "optional": true
+              },
+              {
+                "name": "temperature",
+                "type": 16,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "array",
+            "element": 85
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "content",
+                "type": 11,
+                "optional": false
+              },
+              {
+                "name": "role",
+                "type": 86,
+                "optional": false
+              },
+              {
+                "name": "source",
+                "type": 49,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "union",
+            "types": [
+              87,
+              88,
+              89
+            ]
+          },
+          {
+            "kind": "literal",
+            "value": "assistant"
+          },
+          {
+            "kind": "literal",
+            "value": "system"
+          },
+          {
+            "kind": "literal",
+            "value": "user"
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/turn-requested"
+          }
+        ]
+      }
+    },
+    {
+      "key": "event:roleplay/turn-started",
+      "kind": "event",
+      "event": "roleplay/turn-started",
+      "surface": false,
+      "digest": "92438df3901fe691f0cc84c57f3d0c65846d8defc2138310981f75529976031b",
+      "schema": {
+        "root": 0,
+        "nodes": [
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "data",
+                "type": 1,
+                "optional": false
+              },
+              {
+                "name": "ignorable",
+                "type": 10,
+                "optional": true
+              },
+              {
+                "name": "seq",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "time",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "type",
+                "type": 11,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "config",
+                "type": 2,
+                "optional": false
+              },
+              {
+                "name": "digest",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "intent",
+                "type": 8,
+                "optional": false
+              },
+              {
+                "name": "parent_head",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "parent_revision",
+                "type": 5,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "decisions",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "generation",
+                "type": 3,
+                "optional": false
+              },
+              {
+                "name": "limits",
+                "type": 7,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "maxTokens",
+                "type": 4,
+                "optional": true
+              },
+              {
+                "name": "model",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "provider",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "reasoningEffort",
+                "type": 5,
+                "optional": true
+              },
+              {
+                "name": "stop",
+                "type": 6,
+                "optional": true
+              },
+              {
+                "name": "temperature",
+                "type": 4,
+                "optional": true
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "primitive",
+            "type": "number"
+          },
+          {
+            "kind": "primitive",
+            "type": "string"
+          },
+          {
+            "kind": "array",
+            "element": 5
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "max_actions",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "max_decision_calls",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "max_decision_tokens",
+                "type": 4,
+                "optional": false
+              },
+              {
+                "name": "min_confidence",
+                "type": 4,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "choice_id",
+                "type": 5,
+                "optional": true
+              },
+              {
+                "name": "confirm_ending",
+                "type": 9,
+                "optional": true
+              },
+              {
+                "name": "expected_revision",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "for_participant",
+                "type": 5,
+                "optional": true
+              },
+              {
+                "name": "id",
+                "type": 5,
+                "optional": false
+              },
+              {
+                "name": "recover_interrupted",
+                "type": 10,
+                "optional": true
+              },
+              {
+                "name": "speaker",
+                "type": 5,
+                "optional": true
+              },
+              {
+                "name": "text",
+                "type": 5,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "object",
+            "properties": [
+              {
+                "name": "proposal_id",
+                "type": 5,
+                "optional": false
+              }
+            ],
+            "indices": []
+          },
+          {
+            "kind": "literal",
+            "value": true
+          },
+          {
+            "kind": "literal",
+            "value": "roleplay/turn-started"
           }
         ]
       }
@@ -29388,11 +32190,6 @@
       ]
     },
     {
-      "digest": "027ca52f8e3d9f476ade315d5d73aa933141d5129939aa57c9cbf28f12b6161f",
-      "names": [],
-      "sources": []
-    },
-    {
       "digest": "02894c05a8e8d19177db387fd88ac0f515213bfbe5320534ae30a703f7aa8ee0",
       "names": [],
       "sources": []
@@ -29421,11 +32218,6 @@
     },
     {
       "digest": "03c8d4a641f4072af5c7fc271e75e2eee8bd5b5420f5a6cca2b5ed4b13184464",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "03e014c8473f619a3aaa7e66afc5cab548910ca4f6f60d5eabb8077d544c8f7d",
       "names": [],
       "sources": []
     },
@@ -29597,6 +32389,15 @@
       "digest": "0b18806794cc831d3a3807dc49c42172ec450ce8914c9ec07f6a0aafdab9ef52",
       "names": [],
       "sources": []
+    },
+    {
+      "digest": "0b2d8c4d30cced0b5f71d7e18e6f3d1c0f23046550888061be67c756ccbdee83",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayDecisionSettled"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:155"
+      ]
     },
     {
       "digest": "0b6d718c693fdf7f06dcccb0bcbbabe78cc63514eafc62d6b2a3899735279d6f",
@@ -29819,6 +32620,11 @@
       "sources": []
     },
     {
+      "digest": "13c155323e764c60f8126de5dc62f44c8ee02f2cfd6a8777774240514a1132d4",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "13d3d180f977bf78081d487ffa0ecb75857349bcab29a5a3fb48189fca2a6176",
       "names": [],
       "sources": []
@@ -29840,6 +32646,11 @@
     },
     {
       "digest": "142c37d302aa22a0a57915b5255939d3ca91c1811ca13fddcf84cf76ea00758a",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "144217837c368c2566a188c6d72c7b5e6d9e1e5f56d9005d7b5a836da389caaf",
       "names": [],
       "sources": []
     },
@@ -29894,6 +32705,11 @@
     },
     {
       "digest": "15f2327b1539922999c65b73ebb7e1c89289795e92669032eda28315ed5bc18b",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "16710cf39b2b86223d466e0716e93559784124fd32902fa941df91085ce960cd",
       "names": [],
       "sources": []
     },
@@ -30059,6 +32875,11 @@
       "sources": []
     },
     {
+      "digest": "1c86d282d351a67be852accf50b291d30eb7786fb7382b301c2516a89ba9bc09",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "1ccb56061942f5ccb0d30c9e4f2883b9d115ff906560029de637b61d3cde896d",
       "names": [],
       "sources": [
@@ -30076,6 +32897,11 @@
     },
     {
       "digest": "1d5f04a03ea75fc8eeece544129eba0f49f0c82046e9c404461920390135c7b2",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "1d6d86aa2a2c1bed6a2ea9e1db9715c0b1d9cd41be04c600f218d652690856a8",
       "names": [],
       "sources": []
     },
@@ -30184,6 +33010,11 @@
       "sources": []
     },
     {
+      "digest": "1ff8ac69735da91a644ea71fd33e39bfca274783bb71184a757e9863e314e588",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "20a57544bbf204dacd1ae6beb2ab29444365c3c869f2afdf489dcdcbc3d9c8c5",
       "names": [],
       "sources": [
@@ -30235,7 +33066,7 @@
         "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplaySettled"
       ],
       "sources": [
-        "packages/experimental/charpub-roleplay-runtime/src/events.ts:75"
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:82"
       ]
     },
     {
@@ -30298,6 +33129,11 @@
       "sources": []
     },
     {
+      "digest": "25fc5e4cb47d06f4a260bd3b29b679bd8569876a6151f37e52738112012db94f",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "260523b412c19ad8c2bb00093b07f64245ff8ba6b2f76c5b545303772ac9704c",
       "names": [],
       "sources": []
@@ -30343,11 +33179,6 @@
     },
     {
       "digest": "27e4db8d014b0542ab9467460922b78495588d340997d4822d81d3d34d057f57",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "285ba5c05f7c67bda2681ed47bafa7edf5b705ef2090d2fa2d1ea7bb11c029ba",
       "names": [],
       "sources": []
     },
@@ -30590,6 +33421,11 @@
       ]
     },
     {
+      "digest": "3355e613f90f1358c15a11b28c0ea8adf0e8f844755b6323fef81b4157193ff4",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "335e242de1fcc17b6ca920fc420d71bec2d76e53e37955c00948b65ab77f05c5",
       "names": [
         "packages/core/session/src/types.ts#SurfaceOp"
@@ -30605,6 +33441,11 @@
     },
     {
       "digest": "34d1ab5c5df378186d6054b1a1beea9a41e41965d6f336f0bc0025c441a82e66",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "34d7b97fccc96f6da5447e67ca43d16f3d3b506098d35d0f854141ff0c208b76",
       "names": [],
       "sources": []
     },
@@ -30742,6 +33583,11 @@
       "sources": []
     },
     {
+      "digest": "3b39a7c9fa2c4b044b95b14a5d1a2ec6c6c5d1b07c5f9dfd02d46fcbd8e528b3",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "3b4f2c9ef2c1217eac596c7b070173cb7896e2fae09e729bc7c56c801e56bb29",
       "names": [],
       "sources": []
@@ -30784,11 +33630,6 @@
     },
     {
       "digest": "3c805e3cc7e9fad5aa082d263cb1c643855226ccacc0c4e9b43a65cc085e2ddf",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "3cb868af907a0c5a1a6b03781f383b66c7fea6c26a2b4bd79ccef6c8f5547391",
       "names": [],
       "sources": []
     },
@@ -30906,6 +33747,11 @@
       ]
     },
     {
+      "digest": "4423cf724108d910961087ac89fd1b2005e09a1511750bd2158fcf145e135b96",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "445cd7d9f53ee26b769abb1b00d15dcec78437fd2640242b964b911e41c7cae3",
       "names": [],
       "sources": []
@@ -30964,6 +33810,11 @@
     },
     {
       "digest": "4646f41c5e8e88fd7b0ab795446f17ab3108a2400672ee0f3d957e4f1f30a935",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "46e5038549e044a20354a7810275826471232daef93713194b159ce98b665c61",
       "names": [],
       "sources": []
     },
@@ -31027,6 +33878,11 @@
     },
     {
       "digest": "49dab019d00e8c26f27ad2ccff7b604d69e323ae4d17e0d2a7b6b8a830b1ade2",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "4a86e8a2a0cbeb9cfdd71d377e7122c7121f22c4e0255779cbe2c2e43b2416af",
       "names": [],
       "sources": []
     },
@@ -31147,7 +34003,7 @@
         "packages/experimental/agent-team/src/types.ts:32",
         "packages/experimental/agent-team/src/types.ts:8",
         "packages/experimental/charpub-roleplay-runtime/src/events.ts:9",
-        "packages/experimental/charpub-roleplay/src/index.ts:24",
+        "packages/experimental/charpub-roleplay/src/index.ts:28",
         "packages/feedback/message-feedback/src/types.ts:14",
         "packages/goal/goal/src/types.ts:17",
         "packages/interaction/commands/src/brand.ts:31",
@@ -31384,6 +34240,11 @@
       "sources": []
     },
     {
+      "digest": "57462a03d4918bf4b25538bb54b1ccad177665450b97ff55141720381363c55b",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "576a2de8355eb09850963ff5953420b172e274d9283666eb7d889097db120796",
       "names": [],
       "sources": []
@@ -31434,6 +34295,25 @@
     },
     {
       "digest": "598b2d3c897f189b138faa359ef0b018d7ec6713e74823bb40bf3c1086d061ce",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "59c29275ea79aff6bcd46732dfe65dfba61f14e992174b53f7d33babbe6511c9",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "59da55011391e3d4b8128481c41d3255f686b4a4e042add814b5d4dc18612591",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayRewound"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:159"
+      ]
+    },
+    {
+      "digest": "5a2718a058964f186a2c7fcd6e5faa54d301820ce1e090f0288a80849e81eec4",
       "names": [],
       "sources": []
     },
@@ -31595,12 +34475,26 @@
       "sources": []
     },
     {
+      "digest": "6163a5b11f280d010969aac2bf62da7b80903eb8eed6af1affbbe7fd6be48536",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayOpened"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:74"
+      ]
+    },
+    {
       "digest": "616f93a5047de668e1c30d57b1786abd76beeb4123599637ec1dc5290320ede5",
       "names": [],
       "sources": []
     },
     {
       "digest": "6178f1edcb23f361f2a6cb2c859b1c2187220d5695ece4a3400e0d92845a7178",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "61bf96e167b47eb10951e587d2aac83104603c4ab0991b30a4c5d938f8addf9a",
       "names": [],
       "sources": []
     },
@@ -31798,6 +34692,11 @@
       "sources": []
     },
     {
+      "digest": "6b245ca5a2aa4eccf205412d4801d0b783953f00b09577a9d9271ed77e5c4188",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "6b95b23dbe92aa2717cbcbde30c4461cac2b2f36a363c99d9cee52d2dea813b9",
       "names": [],
       "sources": []
@@ -31854,6 +34753,11 @@
     },
     {
       "digest": "6c73651c065be9e058126d159308b620fdcde4dd4342bfaf4cf2f871bf2a8b09",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "6cae4ac270e7a3a906ea491be85cbc7ed65769ab4e19ba4b412635d1e0eca343",
       "names": [],
       "sources": []
     },
@@ -31939,6 +34843,11 @@
       ]
     },
     {
+      "digest": "6f3bfcb7b43ce84e0bd8603e4cc81d3d8b1f0a193f8ddc710a08fdec8b0e560d",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "6f44f32be9bcd9a8bf075c3b575b06c8ed63446386e5b0995c7b73762e68ddae",
       "names": [],
       "sources": []
@@ -31959,6 +34868,11 @@
     },
     {
       "digest": "6f9e00383836275e46c0a9915767f9bb561be5fc30aae490174908a93e99a912",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "6fe0e8828bffc1964796b530f823be4b61ad37c9c3804a7bc39db1ffd8ed19b1",
       "names": [],
       "sources": []
     },
@@ -32040,6 +34954,11 @@
     },
     {
       "digest": "7382c4fc95fe8c5db65ca4d9da572b115d0dbb818b7f32c22ab040318ffbb4bc",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "7397ae809393c153fb9b4089f4d86295df3d567eae87a93fc1db069d94a10f3d",
       "names": [],
       "sources": []
     },
@@ -32254,7 +35173,17 @@
       "sources": []
     },
     {
+      "digest": "7eaf6a9e967dd36d4cdd7d874a656cc68fb221bd3112a57f0e9398d40ce34466",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "7eb03c6283162cc2c721a6feab3b6ef4433d03ba591ceaa08721a9785a03a0eb",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "7ee86fdca8ed90c2e04989d487dc814a12f4dd254298cc90cf7b951553d18187",
       "names": [],
       "sources": []
     },
@@ -32307,6 +35236,11 @@
     },
     {
       "digest": "8067b0d232c350f189738e60ee3c9939d46ca3b32b45db5525237b077893f649",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "806e6e8cfcc9ed41dec065dce3fb7cdf72c54caea143a414537b08a28e84d973",
       "names": [],
       "sources": []
     },
@@ -32395,6 +35329,24 @@
       ]
     },
     {
+      "digest": "847b8b30d8ae10b85f6020e032888b17b8d9fecb1a8d578266211bfb12a7937d",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayTurnStarted"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:151"
+      ]
+    },
+    {
+      "digest": "84823fdc7983c10d165fd23859ba460df94a3cc5a538993566661ed8d575cb4d",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayDecisionRequested"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:153"
+      ]
+    },
+    {
       "digest": "84ac8c1a66ffc697262e181f42e851259eae14038c113ca329fb4700ccdb1f7c",
       "names": [
         "packages/goal/goal/src/types.ts#GoalBlockReason"
@@ -32432,6 +35384,15 @@
       "digest": "8592e39bb87d7c1d2f627355b826d637bc5f03ec189fa096ff79c0230ce763ac",
       "names": [],
       "sources": []
+    },
+    {
+      "digest": "859f899ece5ec99c7f30218138c09e2dee7496b140c099679f23345a11646a21",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayTurnRequested"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:78"
+      ]
     },
     {
       "digest": "85b73bfd43d0971050dea35fd67989b492327d756bb96a41ea5ff9528f3b57ce",
@@ -32514,6 +35475,11 @@
       ]
     },
     {
+      "digest": "88b0fe329fbc370e082b975130cf6b37057b15d114f004937fb80f899b4ddc2d",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "895fb0639a3fe0c90632008541179dc42a18550169f9087a3b3f2d37b8f96730",
       "names": [],
       "sources": []
@@ -32551,6 +35517,15 @@
       "digest": "8af841fc9b265ade3441caf9fe40dd24db24226befba48150e6d0eeccc1389c3",
       "names": [],
       "sources": []
+    },
+    {
+      "digest": "8b740982b07b46e305979c30d2a492d35e28c8b28d2dd019318a7e136cd0935e",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayTurnAborted"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:157"
+      ]
     },
     {
       "digest": "8baac761bf9a580514bf43d1845aeeff37f9a7e0d3de93997eb484f975bcf3d2",
@@ -32610,6 +35585,11 @@
       "sources": [
         "packages/llm/llm/src/types.ts:160"
       ]
+    },
+    {
+      "digest": "8e60c495da6c0dcdc440f3ba014fe94555c22721ce2eeb90622e2247632637ba",
+      "names": [],
+      "sources": []
     },
     {
       "digest": "8e611bf46821e5003a1605a73560a6f56388295149d449dfe2142d5ec335f29c",
@@ -32723,6 +35703,11 @@
     },
     {
       "digest": "9223710ef77db1eb4b8b65987a26c6582ced9378132615454660c7d0cb04c7bd",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "92438df3901fe691f0cc84c57f3d0c65846d8defc2138310981f75529976031b",
       "names": [],
       "sources": []
     },
@@ -32872,6 +35857,11 @@
     },
     {
       "digest": "97cf3aa9cc8bfd7efae25cc4f1bcd43bf3bc23918f94aac3a389256607397263",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "97f157817b429e113825bc4855e9e620ac0ebda7f7d89b54790bd0fca286b933",
       "names": [],
       "sources": []
     },
@@ -33113,6 +36103,11 @@
       "sources": []
     },
     {
+      "digest": "a21d3c2c61c770856f998d1ea276894b8e95f7bfdd1c4caee01b292a36987ad4",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "a2b49331716ba0a7078b026d145306a70eae64b7313c3e6204bd931e75ec3bb1",
       "names": [],
       "sources": [
@@ -33295,12 +36290,22 @@
       ]
     },
     {
+      "digest": "a9b7631e074c6436687ac6f9474f952daf5af6ccd0c5a4552cb05d817fbcf28e",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "aa0957eca50aeb28bcd2e6930b95809926edacb550c8c340ba526ba6b861b3d8",
       "names": [],
       "sources": []
     },
     {
       "digest": "aa1400acc41c062e84a4d2012996c762f547a7da393798fb5d0a768faedd77bb",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "aa1dacded49da46ad6fc7a00d60813dde5b6d2c9319eceb7fc4e09129ee39acc",
       "names": [],
       "sources": []
     },
@@ -33373,6 +36378,11 @@
     },
     {
       "digest": "aba175fb20ffc71112c55efe70458ff5d7dbfb83501892b4ba8d077f0ea5d7ba",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "abd1dd7b54764ca13048642c7f1b0925c43af41afa9b056054a95aebda9fbecf",
       "names": [],
       "sources": []
     },
@@ -33501,6 +36511,11 @@
     },
     {
       "digest": "b1664fa89f8eab49a14e7e3168d8bc4da4aa9fd76332f6c4a053d839e5276ae7",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "b194a35f477a5460573327edbce0dcc643acfcbc01579e749477043519a91368",
       "names": [],
       "sources": []
     },
@@ -33651,6 +36666,11 @@
       ]
     },
     {
+      "digest": "b6f55de0fdcf3161b376e63dc95b01fd58c6b9986f41ad52a64ae4592326c902",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "b6f94c17dd9bbd7cd57015198b7c7c88407f0e3b89faab176ca3c11c3d864d3e",
       "names": [],
       "sources": []
@@ -33762,6 +36782,11 @@
     },
     {
       "digest": "babf9ee4d1af62bf6c3a8103737f7a5e4e78ce179be835ce05a38803e15884b7",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "bac26ab15fdfe7aa26e1474c8f0cb221802d4613fffd24ff9f962afd00c63215",
       "names": [],
       "sources": []
     },
@@ -33950,11 +36975,6 @@
     },
     {
       "digest": "c43b119ce579b3e9983a0d3adc4ba402ebb9ba773d89738a2dab01ecf5813943",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "c5069d032188c2d638fae7b35f54d85d6645aa3d63a73890425cb499bbccca81",
       "names": [],
       "sources": []
     },
@@ -34156,12 +37176,22 @@
       "sources": []
     },
     {
+      "digest": "d16eee9f50096c74d9069b1ea1bbdc7702f966ce0ee22a01570d6053943893cf",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "d28765f87d6b6ab408e0b2f3e7e297791b004b806d8e302c49903ebae815feb2",
       "names": [],
       "sources": []
     },
     {
       "digest": "d2a2c18404ae1314bdd5159f8167bd00e55fe1662c37404d6f438448db737ac2",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "d3618eae43a5a88c48f3b5a08f28fcdaebab9d69ad65f880795bca8c18fa3f7b",
       "names": [],
       "sources": []
     },
@@ -34344,6 +37374,11 @@
       "sources": []
     },
     {
+      "digest": "dee52eabfd27fde09fb473a12b5a193299c17c6b4fdd705d9b012d97ca2e9a05",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "df5d9709b7db2a72510dc52052a23f0c38f39730af1504bab8bccabc14fae528",
       "names": [],
       "sources": []
@@ -34394,6 +37429,11 @@
     },
     {
       "digest": "e219b724785b403f6de5b3e8fa7e193db6ce5b1dd72fbce6a9f15194ddf5e1bf",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "e224e23fc6488b4ec422884c3a1f6bd1ae9aee4f7e9a8ec0fd47b050ce7485b6",
       "names": [],
       "sources": []
     },
@@ -34463,6 +37503,11 @@
       "sources": []
     },
     {
+      "digest": "e479de5bf00c4f95dbe18327f509d054e41906f3f208c460d7687d2472c52e11",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "e481c46af3813e0010558e93f578b2986acd658404cec2d1679e3ac2a6c48654",
       "names": [],
       "sources": [
@@ -34507,6 +37552,11 @@
     },
     {
       "digest": "e6411b09c1d982f789bf741ca74e2bea69df56029847f86a6148e722039ee732",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "e66296e5d62436a0f2773d13a28f4ac509671dde05278a0a739d915318d81ff3",
       "names": [],
       "sources": []
     },
@@ -34671,6 +37721,11 @@
       ]
     },
     {
+      "digest": "ef22920bd5b5ad4adb175ecf3d956ef84922f175e91cdee0cc1a9a3810d02ed3",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "ef2bb78c4fe5ffa8cca10018fec93b3e60d957701f3a324d38c99f55a5ea46e3",
       "names": [],
       "sources": []
@@ -34726,6 +37781,11 @@
     },
     {
       "digest": "f230c0b583e23b25ee0a61dbe4c05e95c1e2ae44b27939501eb9e03696f0c278",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "f2511d79be05bc19fa8c960ef480056a2bbc8b7cf4911dca388173d51ea0d63f",
       "names": [],
       "sources": []
     },
@@ -34872,16 +37932,7 @@
         "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayRequested"
       ],
       "sources": [
-        "packages/experimental/charpub-roleplay-runtime/src/events.ts:73"
-      ]
-    },
-    {
-      "digest": "f8be2bebc6d14074630fd912fe9e43e92e21e44367dbca8780c679436f16a927",
-      "names": [
-        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayOpened"
-      ],
-      "sources": [
-        "packages/experimental/charpub-roleplay-runtime/src/events.ts:71"
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:76"
       ]
     },
     {

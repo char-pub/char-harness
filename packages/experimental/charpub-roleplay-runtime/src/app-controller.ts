@@ -1,22 +1,21 @@
 /** Local launch review, readable player projections and Session ownership for the browser entry. */
 import { randomUUID } from 'node:crypto'
 import { RuntimeLaunchRequestSchema, MAX_RUNTIME_LAUNCH_BYTES } from '@char-pub/contracts'
-import { checkCapabilitySupport, digestExactJSON, SessionSchema, RuntimeProfileSchema, type RuntimeProfile, type CreationArtifact } from '@char-pub/core'
-import { createPreparationCatalog, estimateCounter, noneSelection, startSession, viewOf } from '@char-pub/assembler'
+import { CharError, checkCapabilitySupport, digestExactJSON, resolveStoryPlayer, SessionSchema, RuntimeProfileSchema, type RuntimeProfile, type CreationArtifact } from '@char-pub/core'
+import { createPreparationCatalog, estimateCounter, noneSelection, projectPlayerView, startSession } from '@char-pub/assembler'
 import { commandId, type ReplayInput } from '@deepseek-ai/dsh-experimental-charpub-roleplay'
 import { SessionId } from '@deepseek-ai/dsh-session'
 import type { LlmCallConfig } from '@deepseek-ai/dsh-llm'
 import { z } from 'zod'
 import type RoleplayRuntime from './index.ts'
-import type { RoleplayProjection } from './projection.ts'
+import { canRewind, lookupPlay, type RoleplayProjection } from './projection.ts'
+import type { RoleplayPlayConfig } from './events.ts'
 import type { LoadedContent, RegistryClient } from './registry/client.ts'
 import { createRuntimePreviewExports, type RuntimePreviewExportResult, type RuntimePreviewExportReview } from './preview-export.ts'
 import type { AppCredentialState, AppLaunchReview, AppSessionSnapshot, AppSessionsResponse, AppStatus, AppTurnResult, AppTurnStatus, AppWork } from './app-types.ts'
 export type { AppLaunchReview } from './app-types.ts'
 
-const supported = ['catalog.v1', 'sources.v1', 'perspective.v1', 'story.v1', 'cast.override', 'view.outward', 'style.scope', 'policy.1-draft', 'story.conditions', 'story.knowing', 'story.items', 'story.events']
-const support = { supported, degraded: [{ id: 'story.judge', reason: 'This entry leaves model judgments undetermined; it does not infer story transitions from chat.' }] }
-const limitations = ['text_only', 'required_direct_context', 'manual_story_progress', 'model_judgments_undetermined']
+const supported = ['catalog.v1', 'sources.v1', 'perspective.v1', 'story.v1', 'story.player-control', 'cast.override', 'view.outward', 'style.scope', 'policy.1-draft', 'story.conditions', 'story.knowing', 'story.items', 'story.events']
 const RequestID = z.string().min(1).max(100).regex(/^[a-zA-Z0-9_-]+$/)
 const SessionRequest = z.strictObject({ session: z.string().min(1) })
 const RequestIdentity = SessionRequest.extend({ request_id: RequestID })
@@ -24,7 +23,9 @@ const Start = z.strictObject({
   review: z.string(), bindings: SessionSchema.shape.bindings, start: z.string().optional(),
   for_participant: z.string().optional(), restart: z.boolean(),
 })
-const Turn = RequestIdentity.extend({ text: z.string().min(1).max(100_000), recover_interrupted: z.literal(true).optional() })
+const Turn = RequestIdentity.extend({ text: z.string().min(1).max(100_000), expected_revision: z.string().optional(),
+  choice_id: z.string().min(1).optional(), confirm_ending: z.strictObject({ proposal_id: z.string().min(1) }).optional(),
+  recover_interrupted: z.literal(true).optional() })
 const Synthetic = SessionRequest.extend({ history: SessionSchema.shape.history, bindings: SessionSchema.shape.bindings })
 function fail(code: string): never { throw new Error(`roleplay_app.${code}`) }
 function available(value: LoadedContent) {
@@ -51,13 +52,14 @@ export interface AppStoredRecord { id: SessionId; createdAt: number; projection?
 export interface AppControllerOptions {
   registry: Pick<RegistryClient, 'release' | 'draftBuild' | 'sourceTexts' | 'authorizationVersion' | 'authorizationStatus'>
   registryOrigin: string
-  runtime: Pick<RoleplayRuntime, 'create' | 'submit' | 'inspect'>
+  runtime: Pick<RoleplayRuntime, 'create' | 'submit' | 'inspect' | 'play' | 'rewind'>
   listRecords(options: { limit: number; after?: SessionId; signal: AbortSignal }): Promise<{
     records: AppStoredRecord[]
     after?: SessionId
   }>
   profile: RuntimeProfile
   model: LlmCallConfig
+  play?: Omit<RoleplayPlayConfig, 'generation'>
   timeout_ms: number
 }
 /** Same-origin operations; Session state stays in its durable log and browser handles are process-local. */
@@ -71,6 +73,7 @@ export interface AppController {
   start(raw: unknown): Promise<AppSessionSnapshot>
   turn(raw: unknown): Promise<AppTurnResult>
   turnStatus(raw: unknown): Promise<AppTurnStatus>
+  rewind(raw: unknown): Promise<AppSessionSnapshot>
   cancel(raw: unknown): void
   prepareExport(raw: unknown): Promise<Pick<RuntimePreviewExportReview, 'digest' | 'payload'>>
   export(raw: unknown): Promise<RuntimePreviewExportResult>
@@ -82,9 +85,15 @@ export interface AppController {
  * @returns Validated player operations and bounded local record discovery.
  */
 export function createAppController(options: AppControllerOptions): AppController {
-  const { registry, runtime, registryOrigin, listRecords } = options
+  const { registry, runtime, registryOrigin } = options
+  const listRecords: AppControllerOptions['listRecords'] = request => options.listRecords(request)
   const deploymentProfile = RuntimeProfileSchema.parse(options.profile)
   const model = structuredClone(options.model)
+  const play = options.play ? { ...structuredClone(options.play), generation: model } : undefined
+  const support = play ? { supported: [...supported, 'story.judge'], degraded: [] }
+    : { supported, degraded: [{ id: 'story.judge', reason: 'This entry leaves model judgments undetermined; it does not infer story transitions from chat.' }] }
+  const limitations = play ? ['text_only', 'shared_scene_dialogue']
+    : ['text_only', 'required_direct_context', 'manual_story_progress', 'model_judgments_undetermined']
   let launch: z.infer<typeof RuntimeLaunchRequestSchema> | undefined
   let loaded: LoadedContent | undefined
   let review: string | undefined
@@ -111,7 +120,7 @@ export function createAppController(options: AppControllerOptions): AppControlle
     if (active) fail('busy')
     const controller = new AbortController(); active = controller
     activity = { kind, ...(session ? { session } : {}), ...(requestID ? { request_id: requestID } : {}) }
-    const timer = setTimeout(() => { controller.abort(new Error('roleplay_app.timeout')) }, options.timeout_ms)
+    const timer = setTimeout(() => { controller.abort(new CharError({ code: 'roleplay_runtime.timeout', subject: 'app-operation' })) }, options.timeout_ms)
     const result = fn(controller.signal).finally(() => { clearTimeout(timer); active = undefined; activity = null; pending = undefined })
     pending = result
     return result
@@ -142,30 +151,38 @@ export function createAppController(options: AppControllerOptions): AppControlle
     if (artifact.kind !== 'content' || !artifact.story) fail('story_required')
     const turn = projection.current.turn
     const locale = turn.locale ?? input.profile.locale ?? artifact.meta.default_locale
-    const catalog = createPreparationCatalog({ artifact, profile: input.profile, turn }, false)
-    const scene = artifact.story.scenes.find(item => item.id === projection.current.state.scene)
-    const participants = artifact.ir.participants.map((participant) => {
-      const binding = participant.late ? turn.bindings[participant.late] : undefined
-      const role = viewOf({ kind: 'story', role: 'part', participant: participant.key }, catalog.context).status === 'visible' ? display(participant.part, locale, artifact.meta.default_locale) : ''
-      const localRole = Object.entries(catalog.context.participants).find(([, key]) => key === participant.key)?.[0]
-      const goal = viewOf({ kind: 'story', role: 'goal', participant: participant.key }, catalog.context).status === 'visible'
-        ? [participant.goal, localRole ? scene?.goals?.[localRole] : undefined]
-          .map(value => display(value, locale, artifact.meta.default_locale)).filter(Boolean).join('\n\n') : ''
-      return { key: participant.key,
-        name: binding?.display_name ?? display(participant.display_name, locale, artifact.meta.default_locale),
-        present: catalog.context.present.includes(participant.key), ...(role ? { role } : {}), ...(goal ? { goal } : {}),
-      }
-    })
+    const visible = projectPlayerView({ artifact, turn })
+    const participants = visible.participants.map(participant => ({ key: participant.key, name: participant.name,
+      present: participant.present, ...(participant.part ? { role: participant.part } : {}),
+      ...(participant.portrait ? { portrait: participant.portrait } : {}),
+    }))
     const expired = 'origin' in artifact.root && (artifact.root.origin.kind !== 'draft-build' || Date.parse(artifact.root.origin.expires_at) <= Date.now())
     return { session: selected.handle, record: opaque(selected.id, recordHandles, records), work: work(artifact, locale, 'label' in selected.loaded.receipt ? selected.loaded.receipt.label : undefined), history: structuredClone(turn.history), participants, late_slots: structuredClone(artifact.ir.late_slots),
-      scene: scene ? { id: scene.id, title: display(scene.title, locale, artifact.meta.default_locale),
-        ...(scene.description ? { description: display(scene.description, locale, artifact.meta.default_locale) } : {}),
-      } : null,
-      stopped: projection.current.state.stopped, interrupted: projection.pending !== null,
-      can_continue: !expired && !projection.current.state.stopped && projection.pending === null, limitations: [...limitations],
+      scene: visible.scene ?? null,
+      experience: { revision: projection.revision, player: visible.player, known: visible.known,
+        choices: visible.choices, milestones: visible.milestones, can_undo: !!play && canRewind(projection),
+        ...(projection.pending_ending ? { pending_ending: { id: projection.pending_ending.id,
+          triggering_input: projection.pending_ending.public.triggering_input,
+          ...(projection.pending_ending.public.title === undefined ? {} : { title: projection.pending_ending.public.title }),
+          ...(projection.pending_ending.public.description === undefined ? {}
+            : { description: projection.pending_ending.public.description }),
+        } } : {}),
+      },
+      stopped: projection.current.state.stopped, interrupted: projection.pending !== null || projection.pending_turn !== null,
+      can_continue: !expired && !projection.current.state.stopped && projection.pending === null && projection.pending_turn === null,
+      limitations: [...limitations],
     }
   }
   function result(selected: NonNullable<typeof current>, projection: RoleplayProjection, requestID: string): AppTurnStatus {
+    const planned = lookupPlay(projection, commandId(`app-input:${requestID}`))
+    if (planned.status === 'pending') return { request_id: requestID, status: 'failed', error_code: 'interrupted', snapshot: snapshot(selected, projection) }
+    if (planned.status === 'settled') {
+      const { settlement, superseded, resolution } = planned.result
+      const unavailable = settlement.status === 'success' && resolution.actions.some(action => action.target === 'turn')
+      return { request_id: requestID, status: settlement.status, ...('reason' in settlement ? { error_code: settlement.reason } : {}),
+        ...(superseded ? { superseded: true as const } : {}),
+        ...(unavailable ? { story_progress_unavailable: true as const } : {}), snapshot: snapshot(selected, projection) }
+    }
     const requested = [...projection.requests.values()].find(item => item.command.id === commandId(`app-input:${requestID}`))
     const state = snapshot(selected, projection)
     if (!requested) return { request_id: requestID, status: 'not_found', snapshot: state }
@@ -189,7 +206,7 @@ export function createAppController(options: AppControllerOptions): AppControlle
         const page = await listRecords({ limit: input.limit, ...(after ? { after } : {}), signal }); signal.throwIfAborted()
         return { items: page.records.map((record) => {
           const projection = record.projection
-          const state = record.error ? 'unreadable' as const : projection?.pending ? 'interrupted' as const : projection?.current.state.stopped ? 'stopped' as const : 'ready' as const
+          const state = record.error ? 'unreadable' as const : projection?.pending || projection?.pending_turn ? 'interrupted' as const : projection?.current.state.stopped ? 'stopped' as const : 'ready' as const
           return { record: opaque(record.id, recordHandles, records), created_at: new Date(record.createdAt).toISOString(), state,
             ...(projection ? { work: work(projection.log.input.artifact,
               projection.current.turn.locale ?? projection.log.input.profile.locale
@@ -315,9 +332,23 @@ export function createAppController(options: AppControllerOptions): AppControlle
       const promise = operation('turn', async (signal) => {
         available(selected.loaded)
         const before = await runtime.inspect(selected.id); signal.throwIfAborted(); checkedSession(input.session)
-        if (before.pending && !input.recover_interrupted) fail('interrupted_request')
+        if ((before.pending || before.pending_turn) && !input.recover_interrupted) fail('interrupted_request')
         if (before.pending?.command.id === commandId(`app-input:${input.request_id}`)) fail('interrupted_retry_forbidden')
-        await runtime.submit(selected.id, { id: commandId(`app-input:${input.request_id}`), operation: { kind: 'input', text: input.text }, ...(selected.for_participant === undefined ? {} : { for_participant: selected.for_participant }) }, model, signal)
+        if (play) {
+          if (!input.expected_revision) fail('revision_required')
+          const player = resolveStoryPlayer(before.log.input.artifact)
+          await runtime.play(selected.id, { id: commandId(`app-input:${input.request_id}`), text: input.text,
+            expected_revision: input.expected_revision,
+            ...(input.choice_id ? { choice_id: input.choice_id } : {}),
+            ...(input.confirm_ending ? { confirm_ending: input.confirm_ending } : {}),
+            ...(input.recover_interrupted ? { recover_interrupted: true as const } : {}),
+            ...(player ? { speaker: player.participant } : {}),
+            ...(selected.for_participant === undefined ? {} : { for_participant: selected.for_participant }),
+          }, play, signal)
+        } else {
+          if (input.confirm_ending) fail('ending_confirmation_unavailable')
+          await runtime.submit(selected.id, { id: commandId(`app-input:${input.request_id}`), operation: { kind: 'input', text: input.text }, ...(selected.for_participant === undefined ? {} : { for_participant: selected.for_participant }) }, model, signal)
+        }
         const projection = await runtime.inspect(selected.id); checkedSession(input.session); exportReview = undefined
         const outcome = result(selected, projection, input.request_id)
         if (outcome.status === 'sending' || outcome.status === 'not_found') fail('request_missing')
@@ -330,6 +361,20 @@ export function createAppController(options: AppControllerOptions): AppControlle
       const input = RequestIdentity.parse(raw); const selected = checkedSession(input.session)
       if (turnPending?.session === input.session && turnPending.id === input.request_id) return { request_id: input.request_id, status: 'sending' }
       return operation('resume', async (signal) => { const projection = await runtime.inspect(selected.id); signal.throwIfAborted(); checkedSession(input.session); return result(selected, projection, input.request_id) }, input.session)
+    },
+    async rewind(raw) {
+      const input = RequestIdentity.extend({ expected_revision: z.string().min(1) }).parse(raw)
+      const selected = checkedSession(input.session)
+      if (!play) fail('rewind_unavailable')
+      return operation('rewind', async (signal) => {
+        available(selected.loaded)
+        await runtime.rewind(selected.id, { id: commandId(`app-rewind:${input.request_id}`), expected_revision: input.expected_revision }, signal)
+        checkedSession(input.session)
+        const restored = await runtime.inspect(selected.id)
+        const next = { ...selected, handle: randomUUID() }
+        current = next; exportReview = undefined
+        return snapshot(next, restored)
+      }, input.session, input.request_id)
     },
     cancel(raw) {
       const input = z.strictObject({ session: z.string().optional(), request_id: RequestID.optional() }).parse(raw)

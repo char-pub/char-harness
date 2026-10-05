@@ -7,6 +7,7 @@ char-harness 是 [char.pub](https://char.pub) 的本地剧情扮演运行时，�
 本项目基于 DeepSeek AI 开发、由 Cordis 驱动的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)。上游源码历史、许可和扩展规则均予保留。char.pub 负责静态创作与发布；本仓库负责游玩、模型请求和本地会话记录。
 
 <a id="run"></a>
+
 <a id="run-from-source"></a>
 
 ## 启动游玩工作区

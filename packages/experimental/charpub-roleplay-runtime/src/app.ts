@@ -7,6 +7,8 @@ import { RuntimeProfileSchema } from '@char-pub/core'
 import { isCredentialRefName } from '@deepseek-ai/dsh-credentials'
 import { createRegistryClient } from './registry/client.ts'
 import { createAppController } from './app-controller.ts'
+import { RoleplayCallConfigSchema, RoleplayPlayConfigSchema } from './events.ts'
+import { roleplayCallConfig } from './projection.ts'
 import { appRecordReader } from './app-records.ts'
 import { appHTML } from './app-ui.ts'
 import { loadAppAssets } from './app-assets.ts'
@@ -21,7 +23,10 @@ export const Config = z.strictObject({
   max_request_bytes: z.number().int().positive(), max_response_bytes: z.number().int().positive(),
   max_artifact_bytes: z.number().int().positive(),
   profile: RuntimeProfileSchema,
-  model: z.strictObject({ provider: z.string().min(1), model: z.string().min(1), maxTokens: z.number().int().positive() }),
+  model: RoleplayCallConfigSchema.pick({ provider: true, model: true, reasoningEffort: true })
+    .extend({ maxTokens: z.number().int().positive() }),
+  /** Optional bounded planning route. Generation continues to use the single model field above. */
+  play: RoleplayPlayConfigSchema.omit({ generation: true }).optional(),
   /** Credential reference the configured model adapter resolves when its own settings name none. */
   credential_ref: z.string().refine(isCredentialRefName),
 })
@@ -65,7 +70,8 @@ export async function apply(ctx: Context, raw: z.input<typeof Config>) {
         return { registry: client, app: createAppController({
           registry: client, registryOrigin: config.registry_origin,
           runtime: ctx.roleplayRuntime, listRecords: appRecordReader(ctx.sessionPersistence, ctx.roleplayRuntime),
-          profile: config.profile, model: config.model, timeout_ms: config.timeout_ms,
+          profile: config.profile, model: roleplayCallConfig(config.model), timeout_ms: config.timeout_ms,
+          ...(config.play ? { play: config.play } : {}),
         }) }
       })
       connection = next
@@ -127,15 +133,16 @@ export async function apply(ctx: Context, raw: z.input<typeof Config>) {
                   : url.pathname === '/api/review' ? await app.review(input)
                     : url.pathname === '/api/start' ? await app.start(input)
                       : url.pathname === '/api/turn' ? await app.turn(input)
-                        : url.pathname === '/api/cancel' ? (app.cancel(input), {})
-                          : url.pathname === '/api/prepare-export' ? await app.prepareExport(input)
-                            : url.pathname === '/api/export' ? await app.export(input) : undefined
+                        : url.pathname === '/api/rewind' ? await app.rewind(input)
+                          : url.pathname === '/api/cancel' ? (app.cancel(input), {})
+                            : url.pathname === '/api/prepare-export' ? await app.prepareExport(input)
+                              : url.pathname === '/api/export' ? await app.export(input) : undefined
       if (result === undefined) respond(res, 404, { error: 'roleplay_app.not_found' }); else respond(res, 200, result)
     } catch (error) {
       const machine = error instanceof Error && 'code' in error && typeof error.code === 'string' ? error.code
         : error instanceof Error ? error.message : ''
       const safeCode =
-        /^(roleplay_app|registry|roleplay_preview|roleplay|roleplay_runtime|story|catalog|session|source|capability)\.[a-z_0-9]+$/
+        /^(roleplay(?:_app|_preview|_runtime)?|registry|story|catalog|assemble|selection|session|source|capability)\.[a-z_0-9]+$/
       const code = safeCode.test(machine)
         ? machine : error instanceof z.ZodError ? 'roleplay_app.invalid_input' : 'roleplay_app.operation_failed'
       if (!res.destroyed) respond(res, 400, { error: code })

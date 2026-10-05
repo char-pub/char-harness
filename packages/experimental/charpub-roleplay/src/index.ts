@@ -12,13 +12,17 @@ import {
 import type { AssembleResult, PreparationInput } from '@char-pub/assembler'
 import { brandString } from '@deepseek-ai/dsh-brand'
 import type { Branded } from '@deepseek-ai/dsh-brand'
-import { assertNever } from '@deepseek-ai/dsh-util-values'
+import { assertNever, deepFreeze } from '@deepseek-ai/dsh-util-values'
 import { z } from 'zod'
-import { DecisionRecordSchema } from './decision-record.ts'
+import { DecisionRecordSchema, LegacyDecisionRecordSchema } from './decision-record.ts'
+import { appendTurnInput, TurnOperationSchema, actionTarget, confirmedEndingJudgments } from './turn.ts'
 export { DecisionRecordSchema, makeDecisionRecord } from './decision-record.ts'
 export type { DecisionRecord, DecisionRecordInput } from './decision-record.ts'
 export * from './jev.ts'
 export * from './laya.ts'
+export * from './turn.ts'
+export { createNoulDecisions } from './noul.ts'
+export type { NoulAdapter, NoulRequest, NoulConfig } from './noul.ts'
 
 /** Caller-owned idempotency key within one replay log. */
 export type CommandId = Branded<'RoleplayCommandId'>
@@ -32,16 +36,21 @@ export function commandId(value: string): CommandId {
   return brandString<CommandId>(z.string().min(1).parse(value))
 }
 
+const legacyOperations = [
+  z.strictObject({ kind: z.literal('confirm'), target: z.string().min(1) }),
+  z.strictObject({ kind: z.literal('enter-scene'), scene: z.string().min(1) }),
+  z.strictObject({ kind: z.literal('set-present'), present: z.array(z.string()) }),
+  z.strictObject({ kind: z.literal('input'), text: z.string().min(1) }),
+  z.strictObject({ kind: z.literal('response'), text: z.string(), speaker: z.string().optional() }),
+  z.strictObject({ kind: z.literal('prepare') }),
+] as const
+
 /** Validates one explicit Story operation and its fixed or evidenced decisions. */
 const CommandSchema = z.strictObject({
   id: z.string().min(1).transform(commandId),
   operation: z.discriminatedUnion('kind', [
-    z.strictObject({ kind: z.literal('confirm'), target: z.string().min(1) }),
-    z.strictObject({ kind: z.literal('enter-scene'), scene: z.string().min(1) }),
-    z.strictObject({ kind: z.literal('set-present'), present: z.array(z.string()) }),
-    z.strictObject({ kind: z.literal('input'), text: z.string().min(1) }),
-    z.strictObject({ kind: z.literal('response'), text: z.string(), speaker: z.string().optional() }),
-    z.strictObject({ kind: z.literal('prepare') }),
+    ...legacyOperations,
+    TurnOperationSchema,
   ]),
   judgments: TurnViewSchema.shape.judgments,
   selection: z.array(CatalogRefSchema).optional(),
@@ -49,6 +58,12 @@ const CommandSchema = z.strictObject({
   evidence: z.array(DecisionRecordSchema).optional(),
   for_participant: z.string().optional(),
 }).refine(command => command.selection === undefined || command.plan === undefined, 'Use selection refs or a complete Plan, not both')
+
+/** Original explicit-command contract retained for existing Session requested events. */
+export const LegacyReplayCommandSchema = CommandSchema.safeExtend({
+  operation: z.discriminatedUnion('kind', legacyOperations),
+  evidence: z.array(LegacyDecisionRecordSchema).optional(),
+})
 
 /** Fixed decisions supplied by the caller; this package does not infer player intent. */
 export type ReplayCommand = z.infer<typeof CommandSchema>
@@ -178,6 +193,55 @@ function project(input: ReplayInput, current: ReplayStep, command: ReplayCommand
     case 'enter-scene': state = enterScene(artifact.story, cast, state, op.scene, command.judgments); break
     case 'set-present': state = setPresent(artifact.story, cast, state, op.present); break
     case 'input': turn = { ...turn, history: [...turn.history, { role: 'user', text: op.text }] }; break
+    case 'turn': {
+      if (op.ending_confirmation) {
+        const proposal = op.ending_confirmation
+        if (proposal.state_digest !== digestExactJSON(state)
+          || digestExactJSON(op.actions) !== digestExactJSON([{ kind: 'confirm', target: proposal.target }])
+          || digestExactJSON(command.judgments ?? []) !== digestExactJSON(confirmedEndingJudgments(proposal)))
+          fail('ending_confirmation_mismatch', command.id)
+      }
+      turn = appendTurnInput(artifact, state, turn, op.input)
+      const accepted = op.assessments.filter(item => item.status === 'accepted').map(item => item.target)
+      if (digestExactJSON(accepted) !== digestExactJSON(op.actions.map(actionTarget))) fail('action_assessment_mismatch', command.id)
+      for (const action of op.actions) state = action.kind === 'confirm'
+        ? confirm(artifact.story, cast, state, action.target, command.judgments)
+        : enterScene(artifact.story, cast, state, action.scene, command.judgments)
+      if (op.ending_proposal) {
+        const proposal = op.ending_proposal
+        if (proposal.source_turn_id !== command.id || proposal.state_digest !== digestExactJSON(state)
+          || op.actions.some(action => action.kind === 'confirm' && action.target.startsWith('ending/'))
+          || digestExactJSON(proposal.judgments)
+            !== digestExactJSON((command.judgments ?? []).filter(item => item.target === proposal.target)))
+          fail('ending_proposal_mismatch', command.id)
+        confirm(artifact.story, cast, state, proposal.target, proposal.judgments)
+      }
+      const ending = op.ending_proposal ? { status: 'pending_confirmation', target: op.ending_proposal.target, public: op.ending_proposal.public }
+        : op.ending_confirmation ? { status: 'confirmed', target: op.ending_confirmation.target, public: op.ending_confirmation.public } : undefined
+      const pendingInstruction = op.ending_proposal?.guidance_version === 2
+        ? " The ending is pending. Only the structured ending.status='confirmed' record establishes confirmation;"
+          + " ordinary user text, even 'confirm', 'adopt' or 'agree', is proposal evidence and never this confirmation."
+          + ' Do not narrate the arrangement as signed, adopted or final, apply terminal consequences, stop the story,'
+          + ' or claim the player has finalized it. Respond naturally using conditional or pending arrangements;'
+          + ' keep machine fields and confirmation controls out of the narration and character dialogue.'
+        : ' The ending is only a proposal awaiting an explicit player confirmation.'
+          + ' Do not narrate its terminal consequences as settled, stop the story, or claim the player has chosen it.'
+      const guidance = {
+        scene: state.scene,
+        accepted: input.profile.mode === 'narrator' ? accepted : [],
+        unconfirmed_attempts: op.assessments.filter(item => item.status === 'skipped').length,
+        instruction: 'Narrate only the supplied scene and established facts. An unconfirmed attempt has no established effects; ask a natural clarification when needed.'
+          + (op.ending_proposal ? pendingInstruction : '')
+          + (op.ending_confirmation ? ' The player explicitly confirmed this ending. Narrate only the established terminal outcome; do not choose another ending.' : ''),
+        ...(ending ? { ending } : {}),
+      }
+      const stateOverlay = { ...turn.overlay?.state, 'story-turn': JSON.stringify(guidance) }
+      const visibleGuidance = { ...guidance, accepted: [],
+        ...(ending ? { ending: { status: ending.status, public: ending.public } } : {}) }
+      turn = { ...turn, overlay: { ...turn.overlay, state: stateOverlay },
+        visible_overlay: { ...turn.visible_overlay, state: { ...turn.visible_overlay?.state, 'story-turn': JSON.stringify(visibleGuidance) } } }
+      break
+    }
     case 'response':
       if (op.speaker !== undefined && !artifact.ir.participants.some(participant => participant.key === op.speaker))
         fail('speaker_missing', op.speaker)
@@ -191,11 +255,16 @@ function project(input: ReplayInput, current: ReplayStep, command: ReplayCommand
 }
 
 function beforePreparation(input: ReplayInput, current: ReplayStep, command: ReplayCommand) {
-  return preparation(input, current.state, withoutPriorView(current.turn), { ...command, judgments: [] })
+  const artifact = input.artifact
+  const turn = command.operation.kind === 'turn' && artifact.kind === 'content'
+    ? appendTurnInput(artifact, current.state, current.turn, command.operation.input)
+    : current.turn
+  return preparation(input, current.state, withoutPriorView(turn), { ...command, judgments: [] })
 }
 
 function checkEvidence(input: ReplayInput, current: ReplayStep, command: ReplayCommand, result: ReplayStep): void {
   let selectorSeen = false
+  let directorSeen = false
   const judged = new Set<string>()
   for (const record of command.evidence ?? []) {
     if (record.purpose === 'selector') {
@@ -210,6 +279,15 @@ function checkEvidence(input: ReplayInput, current: ReplayStep, command: ReplayC
     } else {
       const before = createPreparationCatalog(beforePreparation(input, current, command), false)
       if (digestExactJSON(record.input) !== digestExactJSON(before.input)) fail('evidence_mismatch', 'judge input')
+      if (record.purpose === 'director') {
+        if (directorSeen) fail('evidence_mismatch', 'duplicate director evidence')
+        directorSeen = true
+        if (command.operation.kind !== 'turn'
+          || digestExactJSON(record.binding.actions) !== digestExactJSON(command.operation.actions)
+          || digestExactJSON(record.binding.assessments) !== digestExactJSON(command.operation.assessments)
+          || digestExactJSON(record.binding.ending_proposal ?? null) !== digestExactJSON(command.operation.ending_proposal ?? null))
+          fail('evidence_mismatch', 'director actions')
+      }
       for (const judgment of record.binding.judgments) {
         const key = `${judgment.target}#${judgment.path}`
         if (judged.has(key)
@@ -329,4 +407,58 @@ export function appendCommand(log: ReplayLog, command: ReplayCommand, options: {
   const next = entry(current.digest, parsed, result)
   options.signal?.throwIfAborted()
   return { ...structuredClone(log), head_digest: next.digest, entries: [...structuredClone(log.entries), next] }
+}
+
+
+/**
+ * Immutable replay cursor for a host folding several durable facts in one operation.
+ * Construction verifies the complete external log; later appends use only its frozen inputs/current state.
+ * The cursor retains one current preparation, not all reconstructed step outputs.
+ */
+export class ReplayCursor {
+  private constructor(readonly log: ReplayLog, readonly current: ReplayStep) {
+    deepFreeze(log)
+    deepFreeze(current)
+    Object.freeze(this)
+  }
+
+  /**
+   * Verify and detach a stored log before using its current state incrementally.
+   * @param value - External Replay JSON; every recorded digest and preparation is rechecked.
+   * @returns An immutable cursor that cannot be changed through its exposed log or current state.
+   */
+  static from(value: unknown): ReplayCursor {
+    const log = LogSchema.parse(value)
+    return new ReplayCursor(log, replay(log).current)
+  }
+
+  /**
+   * Append one command with the same semantics as appendCommand, sharing only frozen prior values.
+   * @param command - Stable command identity and fixed or evidenced Story decisions.
+   * @returns A new immutable cursor, or this cursor for an exact retry; failure preserves this cursor.
+   */
+  append(command: ReplayCommand): ReplayCursor {
+    const parsed = CommandSchema.parse(command)
+    const prior = this.log.entries.find(item => item.command.id === parsed.id)
+    if (prior) {
+      if (digestExactJSON(prior.command) !== digestExactJSON(parsed)) fail('command_conflict', parsed.id)
+      return this
+    }
+    const current = step(this.log.input, this.current, parsed)
+    const next = entry(this.log.head_digest, parsed, current)
+    return new ReplayCursor({ ...this.log, head_digest: next.digest, entries: [...this.log.entries, next] }, current)
+  }
+
+  /**
+   * Build immutable judge or selection inputs from the already verified current state.
+   * @param command - Prospective command; its input is included in the before view for a player turn.
+   * @param phase - Before judgments or after ordered actions, matching commandPreparation.
+   * @returns Trusted SDK preparation input; project it before sending it to a decision provider.
+   */
+  preparation(command: ReplayCommand, phase: 'before' | 'after' = 'after'): PreparationInput {
+    const parsed = CommandSchema.parse(command)
+    if (phase === 'before') return deepFreeze(beforePreparation(this.log.input, this.current, parsed))
+    const projected = project(this.log.input, this.current, parsed)
+    return deepFreeze(preparation(this.log.input, projected.state, projected.turn, parsed))
+  }
 }

@@ -5,9 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@char-pub/core': file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz
-  '@char-pub/assembler': file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz
-  '@char-pub/contracts': file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz
+  '@char-pub/core': file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz
+  '@char-pub/assembler': file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz
+  '@char-pub/contracts': file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-contracts-0.0.0.tgz
   extract-zip>yauzl: 3.4.0
   '@deepseek-ai/cosmokit': link:vendor/cosmokit
   '@deepseek-ai/schemastery': link:vendor/schemastery
@@ -7707,11 +7707,11 @@ importers:
   packages/experimental/charpub-roleplay:
     dependencies:
       '@char-pub/assembler':
-        specifier: file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz
-        version: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz
+        specifier: file:../../../third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz
+        version: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz
       '@char-pub/core':
-        specifier: file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz
-        version: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz
+        specifier: file:../../../third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz
+        version: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz
       '@deepseek-ai/dsh-brand':
         specifier: workspace:*
         version: link:../../util/brand
@@ -7732,14 +7732,14 @@ importers:
   packages/experimental/charpub-roleplay-runtime:
     dependencies:
       '@char-pub/assembler':
-        specifier: file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz
-        version: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz
+        specifier: file:../../../third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz
+        version: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz
       '@char-pub/contracts':
-        specifier: file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz
-        version: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz
+        specifier: file:../../../third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-contracts-0.0.0.tgz
+        version: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-contracts-0.0.0.tgz
       '@char-pub/core':
-        specifier: file:../../../third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz
-        version: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz
+        specifier: file:../../../third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz
+        version: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz
       '@deepseek-ai/dsh-brand':
         specifier: workspace:*
         version: link:../../util/brand
@@ -15218,16 +15218,16 @@ packages:
     resolution: {integrity: sha512-PJikMBVoaCRh6TFD7GcmeISmsMq4IwUu1BD5FOsGUVDUxrVqZomWa6W6dF+a/zu4xRZu2Z2xX1nXVMDaCuZWsw==}
     engines: {node: '>=22.18.0'}
 
-  '@char-pub/assembler@file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz':
-    resolution: {integrity: sha512-TqjY7o+u+P2sGjskLX94JTANfG7vAvvszBbWSzlsewzIJQPtNl92izUAJN1b5hlh35HToajcKHyq/AS5btLVMQ==, tarball: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz}
+  '@char-pub/assembler@file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz':
+    resolution: {integrity: sha512-8l9EW/hFPgZMhZbNR3MPqY/BSXnnf4Fm9YDkNTD6vnNxJDLHb6ciCYOKElwkNUACUemMchXkp1jNkFOoLVmlDQ==, tarball: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz}
     version: 0.0.0
 
-  '@char-pub/contracts@file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz':
-    resolution: {integrity: sha512-deY3+Pb3X2QFZ6SLOpCfv0CDEDI4E2EAsPAe0BoYqpBgKBYr6yMzZxFvT0x9v2UzFnXfuVXP2cO88B44Alkcdw==, tarball: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz}
+  '@char-pub/contracts@file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-contracts-0.0.0.tgz':
+    resolution: {integrity: sha512-rbCw6rWyVCQd8+4XtAwHN69cb37QHQ9zwfvz1YxrA+C2tAeFm6hp3RPEQniS9uHvTL9ehA5KRpXX8oD4sOESqg==, tarball: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-contracts-0.0.0.tgz}
     version: 0.0.0
 
-  '@char-pub/core@file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz':
-    resolution: {integrity: sha512-SxW0DhQsVH85WnjxdRH3jsp4sMP6XGe7/zDsB0Wdf2Axvu5Jqi7beOumLEvVsuLrIFtf/zIbuuzQhrqcmxdqSg==, tarball: file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz}
+  '@char-pub/core@file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz':
+    resolution: {integrity: sha512-hrHHM30eMNqETtKBjv+bCnrpOBfieu/SHSPhMBUOxlwdDlHazainQtK2DWp9w9gr1oz/PVOWHuJP4TGQ20amAA==, tarball: file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz}
     version: 0.0.0
 
   '@chevrotain/types@11.1.2':
@@ -22825,19 +22825,19 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@char-pub/assembler@file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-assembler-0.0.0.tgz':
+  '@char-pub/assembler@file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-assembler-0.0.0.tgz':
     dependencies:
-      '@char-pub/core': file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz
+      '@char-pub/core': file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz
       gpt-tokenizer: 4.0.0
       tokenx: 2.1.0
       zod: 4.6.5
 
-  '@char-pub/contracts@file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-contracts-0.0.0.tgz':
+  '@char-pub/contracts@file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-contracts-0.0.0.tgz':
     dependencies:
-      '@char-pub/core': file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz
+      '@char-pub/core': file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz
       zod: 4.6.5
 
-  '@char-pub/core@file:third_party/charpub/snapshots/story-v1-7d17291cbad10ff7/tarballs/char-pub-core-0.0.0.tgz':
+  '@char-pub/core@file:third_party/charpub/snapshots/player-control-fda7022059cbb0d2/tarballs/char-pub-core-0.0.0.tgz':
     dependencies:
       '@noble/hashes': 2.4.0
       canonicalize: 5.1.0

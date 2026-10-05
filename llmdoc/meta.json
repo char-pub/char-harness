@@ -63,7 +63,7 @@
       "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "engineering/upstream-dependencies.mdx": {
-      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
+      "validatedRevision": "0a0d9ce4beb5a40ebf4c9f52373df42ca3442a64"
     },
     "engineering/verification.mdx": {
       "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
@@ -108,22 +108,22 @@
       "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
     },
     "roleplay/author-return.mdx": {
-      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
+      "validatedRevision": "c5036159e21b096fe2b5709283c085791db8d419"
     },
     "roleplay/local-player.mdx": {
-      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
+      "validatedRevision": "c5036159e21b096fe2b5709283c085791db8d419"
     },
     "roleplay/registry-access.mdx": {
-      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
+      "validatedRevision": "a123e503d86f20f8bc5385396105fc77f5863ba7"
     },
     "roleplay/replay-sdk.mdx": {
-      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
+      "validatedRevision": "cdea5382da9814b84afbaaac8e373c8764362fc8"
     },
     "roleplay/selectors.mdx": {
-      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
+      "validatedRevision": "cdea5382da9814b84afbaaac8e373c8764362fc8"
     },
     "roleplay/session-runtime.mdx": {
-      "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"
+      "validatedRevision": "c5036159e21b096fe2b5709283c085791db8d419"
     },
     "security/credentials-accounts.mdx": {
       "validatedRevision": "875a822efc58bbcdb557cec99e5aded3756a7f25"

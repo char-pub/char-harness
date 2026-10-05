@@ -1844,6 +1844,18 @@ export const SERVICE_API: readonly ServiceApiEntry[] = [
         parameters: [{ name: 'id', description: 'Existing Session; concurrent submissions fail before dispatch.' }, { name: 'command', description: 'Fixed or evidenced decisions for the prospective request.' }, { name: 'config', description: 'Explicit model route and output limit within the profile\'s reserved budget.' }, { name: 'signal', description: 'Cancels preparation or generation. Once settlement storage starts, its outcome must be reconciled.' }],
         returns: 'Durable settlement. Exact retries return the stored outcome without another model call.',
       },
+      {
+        signature: 'play(id: SessionId, rawIntent: PlayIntent, rawConfig: PlayConfig, signal?: AbortSignal): Promise<PlayResult>',
+        description: 'Plan and narrate one fenced player turn using only configured LLM routes.',
+        parameters: [{ name: 'id', description: 'Existing durable roleplay Session.' }, { name: 'rawIntent', description: 'Stable request identity, current revision, player input, and explicit ending confirmation or recovery choice.' }, { name: 'rawConfig', description: 'Separate decision/narration routes and aggregate planning limits.' }, { name: 'signal', description: 'Cancels preparation and generation; completed writes remain authoritative.' }],
+        returns: 'The stored outcome; retries never reapply a rewound or already settled turn.',
+      },
+      {
+        signature: 'rewind(id: SessionId, intent: { id: ReplayCommand[\'id\']; expected_revision: string }, signal?: AbortSignal): Promise<{ head: string; revision: string; rewound_turn_id: string }>',
+        description: 'Append a rewind of the latest successful play without changing historical requests.',
+        parameters: [{ name: 'id', description: 'Existing durable roleplay Session.' }, { name: 'intent', description: 'Replay command identity for this rewind and the observed revision of the complete event log.' }, { name: 'signal', description: 'Cancels before the append/flush commit interval.' }],
+        returns: 'The restored logical head and its new durable revision.',
+      },
     ],
   },
   {
@@ -5948,6 +5960,18 @@ export const TYPE_API: readonly TypeApiEntry[] = [
     declaration: 'export interface PlatformSession {\n    readonly origin: string;\n    readonly token: string;\n    readonly userId: AccountUserId | null;\n    readonly embeddedPageDist?: string;\n    readonly requestHeaders?: Readonly<Record<string, string>>;\n}',
   },
   {
+    name: 'PlayConfig',
+    declaration: 'export type PlayConfig = z.infer<typeof PlayConfigSchema>;',
+  },
+  {
+    name: 'PlayIntent',
+    declaration: 'export type PlayIntent = z.infer<typeof PlayIntentSchema>;',
+  },
+  {
+    name: 'PlayResult',
+    declaration: 'export interface PlayResult {\n    settlement: RoleplaySettled | RoleplayTurnAborted;\n    resolution: TurnResolution;\n    superseded: boolean;\n    revision: string;\n}',
+  },
+  {
     name: 'PluginChange',
     declaration: 'export interface PluginChange {\n    readonly reason: \'plugin\' | \'bundle\' | \'install\' | \'remove\';\n}',
   },
@@ -6309,15 +6333,31 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   },
   {
     name: 'RoleplayProjection',
-    declaration: 'export interface RoleplayProjection {\n    log: ReplayLog;\n    current: ReplayStep;\n    head: string;\n    pending: RoleplayRequested | null;\n    requests: Map<RequestId, RoleplayRequested>;\n    settlements: Map<RequestId, RoleplaySettled>;\n}',
+    declaration: 'export interface RoleplayProjection {\n    log: ReplayLog;\n    current: ReplayStep;\n    head: string;\n    revision: string;\n    pending: RoleplayRequest | null;\n    pending_turn: TurnRecord | null;\n    pending_ending: TurnEndingProposal | null;\n    requests: Map<RequestId, RoleplayRequest>;\n    settlements: Map<RequestId, RoleplaySettled>;\n    turns: Map<CommandId, TurnRecord>;\n    rewinds: Map<CommandId, RoleplayRewound>;\n}',
+  },
+  {
+    name: 'RoleplayRequest',
+    declaration: 'export type RoleplayRequest = RoleplayRequested | RoleplayTurnRequested;',
   },
   {
     name: 'RoleplayRequested',
     declaration: 'export type RoleplayRequested = z.infer<typeof RoleplayRequestedSchema>;',
   },
   {
+    name: 'RoleplayRewound',
+    declaration: 'export type RoleplayRewound = z.infer<typeof RoleplayRewoundSchema>;',
+  },
+  {
     name: 'RoleplaySettled',
     declaration: 'export type RoleplaySettled = z.infer<typeof RoleplaySettledSchema>;',
+  },
+  {
+    name: 'RoleplayTurnAborted',
+    declaration: 'export type RoleplayTurnAborted = z.infer<typeof RoleplayTurnAbortedSchema>;',
+  },
+  {
+    name: 'RoleplayTurnRequested',
+    declaration: 'export type RoleplayTurnRequested = z.infer<typeof RoleplayTurnRequestedSchema>;',
   },
   {
     name: 'RpcId',
@@ -7776,12 +7816,20 @@ export const TYPE_API: readonly TypeApiEntry[] = [
     declaration: 'export type TurnEndCancelCause = AgentCancelCause | {\n    readonly kind: \'legacy\';\n};',
   },
   {
+    name: 'TurnEndingProposal',
+    declaration: 'export type TurnEndingProposal = z.infer<typeof TurnEndingProposalSchema>;',
+  },
+  {
     name: 'TurnEndReason',
     declaration: 'export type TurnEndReason = TurnEndReasonMap[keyof TurnEndReasonMap];',
   },
   {
     name: 'TurnEndReasonMap',
     declaration: 'export interface TurnEndReasonMap {\n    completed: {\n        kind: \'completed\';\n    };\n    aborted: {\n        kind: \'aborted\';\n        reason: TurnEndCancelCause;\n    };\n    blocked: {\n        kind: \'blocked\';\n    };\n    error: {\n        kind: \'error\';\n        error: LlmFailure;\n    };\n    \'max-tokens\': {\n        kind: \'max-tokens\';\n    };\n    interrupted: {\n        kind: \'interrupted\';\n    };\n    forked: {\n        kind: \'forked\';\n    };\n}',
+  },
+  {
+    name: 'TurnResolution',
+    declaration: 'export type TurnResolution = z.infer<typeof TurnResolutionSchema>;',
   },
   {
     name: 'TypertCodec',
