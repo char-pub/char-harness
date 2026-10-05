@@ -24,9 +24,11 @@ relations:
 
 Roleplay driver 使用现有 Session store，却不挂编码 AgentLoop/system prompt。Opened 固定输入，requested 在派发前持久化实际有序消息与有效模型配置，settled 记录成功结果或失败尝试；pending 不是已经提交的剧情。
 
+SDK 的多段 system 共同组成上下文，DeepSeek adapter 的后续 system 则替换完整快照。随附 DeepSeek profile 声明 multiple_system_messages=false，让 SDK 在 requested 持久化前合并相邻片段；跨 history 分隔的多段 system 被拒绝，不能在 adapter 中任意拼接。既有 Opened 输入与 artifact 锁定的 profile 保留原能力声明，本地默认变更只影响没有锁定 profile 的新 Session。
+
 只成功结算推进 Story，失败与取消保留尝试证据。恢复 pending 请求不会自动重发模型；重复命令需匹配原身份与输入。开始持久提交后取消可能与结果不确定相遇，应重读日志而不是自信回滚。
 
-投影重建和流终止检查都属于恢复契约，成功流不能在终止后继续输出。改动必须验证实际 Loader、JSONL、请求与日志对账；纯回放通过不足以证明持久层或模型派发正确。
+投影重建和流终止检查都属于恢复契约，成功流不能在终止后继续输出。改动必须验证实际 Loader、JSONL、请求与日志对账，并核对 adapter 最终发送的 system 内容与顺序；纯回放通过或成功回复不足以证明持久层、上下文保留或模型派发正确。
 
 ## 权威入口
 
