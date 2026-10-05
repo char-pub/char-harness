@@ -35,5 +35,19 @@
         model:
           provider: deepseek-official
           model: !!js process.env.CHARPUB_MODEL
+          reasoningEffort: off
           maxTokens: !!js Number(process.env.CHARPUB_OUTPUT_TOKENS)
+        play:
+          decisions:
+            provider: deepseek-official
+            model: !!js process.env.CHARPUB_DECISION_MODEL ?? process.env.CHARPUB_MODEL
+            # The bounded decision output includes reasoning and the structured result.
+            reasoningEffort: low
+            temperature: 0
+            maxTokens: 12288
+          limits:
+            min_confidence: 0.8
+            max_actions: 4
+            max_decision_calls: 3
+            max_decision_tokens: 64000
         credential_ref: DEEPSEEK_API_KEY

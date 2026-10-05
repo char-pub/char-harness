@@ -8,7 +8,7 @@ import { join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { test } from 'node:test'
 import { Context } from '@deepseek-ai/cordis'
-import Loader from '@deepseek-ai/cordis-plugin-loader'
+import Loader, { interpolate } from '@deepseek-ai/cordis-plugin-loader'
 import Include from '@deepseek-ai/cordis-plugin-include'
 import { loadOverlayPatches } from '@deepseek-ai/dsh-app-boot/src/index.ts'
 import { composeEntries, initProfile, loadProfile, resolveProfileDir } from '@deepseek-ai/dsh-app-boot/src/profile.ts'
@@ -16,9 +16,9 @@ import { credentialRef } from '@deepseek-ai/dsh-credentials'
 import { SessionId } from '@deepseek-ai/dsh-session'
 import { RuntimeProfileSchema } from '@char-pub/core'
 import { z } from 'zod'
-import { requestMessages } from '../src/index.ts'
+import { requestMessages, RoleplayPlayConfigSchema } from '../src/index.ts'
 import { replayInput, command } from '../../charpub-roleplay/tests/fixtures.ts'
-import { appendCommand, createReplay, replay } from '../../charpub-roleplay/src/index.ts'
+import { appendCommand, commandId, createReplay, replay } from '../../charpub-roleplay/src/index.ts'
 import type {} from './fixtures/provider.ts'
 
 const bundle = '@deepseek-ai/dsh-experimental-charpub-roleplay-runtime'
@@ -83,7 +83,11 @@ void test('named roleplay profile composes its allowlisted bundle and mounts rea
 void test('shipped app capabilities preserve all SDK system regions on the DeepSeek Messages wire', async (context) => {
   const home = await mkdtemp(join(tmpdir(), 'charpub-deepseek-wire-'))
   const previousHome = process.env.DSH_HOME
+  const previousModel = process.env.CHARPUB_MODEL
+  const previousDecisionModel = process.env.CHARPUB_DECISION_MODEL
   process.env.DSH_HOME = home
+  process.env.CHARPUB_MODEL = 'deepseek-flash'
+  process.env.CHARPUB_DECISION_MODEL = 'deepseek-v4-pro'
   const ctx = new Context()
   const requests: unknown[] = []
   const events = [
@@ -98,9 +102,27 @@ void test('shipped app capabilities preserve all SDK system regions on the DeepS
     const chunks: Buffer[] = []
     request.on('data', (chunk: Buffer) => { chunks.push(chunk) })
     request.on('end', () => {
-      requests.push(JSON.parse(Buffer.concat(chunks).toString('utf8')))
+      const body: unknown = JSON.parse(Buffer.concat(chunks).toString('utf8'))
+      requests.push(body)
+      const requestBody = z.looseObject({ system: z.string(), messages: z.array(z.object({
+        content: z.array(z.object({ type: z.string(), text: z.string().optional() })),
+      })) }).parse(body)
+      let text = 'The innkeeper nods.'
+      if (requestBody.system.includes('"actions":[')) text = JSON.stringify({
+        actions: [{ target: 'beat/reward', confidence: 0.95 }], judgments: [],
+      })
+      else if (requestBody.system.startsWith('Score the relevance')) {
+        const query = z.object({ questions: z.record(z.string(), z.unknown()) }).parse(JSON.parse(
+          requestBody.messages.at(-1)?.content[0]?.text ?? '{}',
+        ))
+        text = JSON.stringify({ answers: Object.fromEntries(Object.keys(query.questions).map(key =>
+          [key, { type: 'noul', noul: 0.1, confidence: 0.95 }])) })
+      }
       response.setHeader('content-type', 'text/event-stream')
-      response.end(events.map(event => `event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`).join(''))
+      response.end(events.map((event) => {
+        const payload = event.type === 'content_block_delta' ? { ...event, delta: { type: 'text_delta', text } } : event
+        return `event: ${event.type}\ndata: ${JSON.stringify(payload)}\n\n`
+      }).join(''))
     })
   })
   context.after(async () => {
@@ -109,6 +131,10 @@ void test('shipped app capabilities preserve all SDK system regions on the DeepS
     await new Promise<void>(resolve => server.close(() => { resolve() }))
     if (previousHome === undefined) delete process.env.DSH_HOME
     else process.env.DSH_HOME = previousHome
+    if (previousModel === undefined) delete process.env.CHARPUB_MODEL
+    else process.env.CHARPUB_MODEL = previousModel
+    if (previousDecisionModel === undefined) delete process.env.CHARPUB_DECISION_MODEL
+    else process.env.CHARPUB_DECISION_MODEL = previousDecisionModel
     await rm(home, { recursive: true, force: true })
   })
   server.listen(0, '127.0.0.1')
@@ -118,9 +144,15 @@ void test('shipped app capabilities preserve all SDK system regions on the DeepS
 
   const overlay = loadOverlayPatches('test-dsh', fileURLToPath(new URL('../app.patch.yml', import.meta.url)))
   const app = composeEntries([overlay]).find(entry => entry.id === 'roleplay-app')
+  const appConfig: unknown = interpolate(ctx, app?.config)
+  delete process.env.CHARPUB_DECISION_MODEL
+  const fallbackOverlay = loadOverlayPatches('test-dsh', fileURLToPath(new URL('../app.patch.yml', import.meta.url)))
+  const fallbackApp = composeEntries([fallbackOverlay]).find(entry => entry.id === 'roleplay-app')
+  assert.equal(z.object({ play: z.object({ decisions: z.object({ model: z.string() }) }) }).parse(interpolate(ctx, fallbackApp?.config)).play.decisions.model, 'deepseek-flash')
+  process.env.CHARPUB_DECISION_MODEL = 'deepseek-v4-pro'
   const { profile: { capabilities } } = z.object({
     profile: z.object({ capabilities: RuntimeProfileSchema.shape.capabilities }),
-  }).parse(app?.config)
+  }).parse(appConfig)
   const dir = resolveProfileDir('roleplay', home)
   initProfile(dir, [bundle])
   await writeFile(join(dir, 'cordis.patch.yml'), JSON.stringify([
@@ -179,4 +211,45 @@ void test('shipped app capabilities preserve all SDK system regions on the DeepS
   split.artifact.default_policy.policy.blocks.push({ id: 'after-dialogue', text: 'Late policy.', position: 'after-history' })
   await assert.rejects(ctx.roleplayRuntime.create(SessionId('split-system-story'), split), { code: 'assemble.preset_incompatible' })
   assert.equal(requests.length, 1)
+
+  const appRoutes = z.object({
+    model: z.object({ provider: z.literal('deepseek-official'), model: z.literal('deepseek-flash'), reasoningEffort: z.literal('off') }),
+    play: z.object({
+      decisions: z.object({ provider: z.literal('deepseek-official'), model: z.literal('deepseek-v4-pro'),
+        reasoningEffort: z.literal('low'), maxTokens: z.literal(12288), temperature: z.literal(0) }),
+      limits: RoleplayPlayConfigSchema.shape.limits,
+    }) }).parse(appConfig)
+  const settings = appRoutes.play
+  const playConfig = RoleplayPlayConfigSchema.parse({ ...settings,
+    generation: { ...appRoutes.model, model: 'deepseek-flash', maxTokens: 256 },
+    decisions: settings.decisions,
+  })
+  assert.equal(playConfig.limits.max_decision_tokens, 64000)
+  const played = await ctx.roleplayRuntime.play(id, {
+    id: commandId('wire-play'), expected_revision: projection.revision, text: 'I claim the token.',
+  }, playConfig)
+  assert.equal(played.settlement.status, 'success')
+  const finished = await ctx.roleplayRuntime.inspect(id)
+  assert.equal(finished.current.state.vars.count, 1)
+  const turnRecord = finished.turns.get(commandId('wire-play'))
+  assert.ok(turnRecord)
+  assert.equal(turnRecord.decisions.size, 2)
+  assert.equal(requests.length, 4)
+  const decisionWire = requests.slice(1, 3).map(value => z.looseObject({
+    system: z.string(), model: z.literal('deepseek-v4-pro'), thinking: z.object({ type: z.literal('enabled') }),
+    output_config: z.object({ effort: z.literal('low') }), max_tokens: z.literal(12288), temperature: z.literal(0),
+    messages: z.array(z.object({ role: z.literal('user'), content: z.array(z.object({ type: z.literal('text'), text: z.string() })) })),
+  }).parse(value))
+  assert.deepEqual(decisionWire.map(value => value.system), [...turnRecord.decisions.values()].map(value =>
+    value.requested.messages.find(message => message.role === 'system')?.content))
+  assert.ok([...turnRecord.decisions.values()].every(value => value.settled?.status === 'success'))
+  for (const { requested } of turnRecord.decisions.values()) {
+    assert.equal(requested.proposed_config.temperature, 0)
+    assert.equal(requested.config.temperature, 0)
+    assert.equal(requested.proposed_config.reasoningEffort, 'low')
+    assert.equal(requested.config.reasoningEffort, 'low')
+    assert.equal(requested.config.model, 'deepseek-v4-pro')
+  }
+  const generationWire = z.object({ model: z.literal('deepseek-flash'), thinking: z.object({ type: z.literal('disabled') }), max_tokens: z.literal(256) }).parse(requests[3])
+  context.assert.snapshot({ decisionWire, generationWire, resolution: played.resolution })
 })

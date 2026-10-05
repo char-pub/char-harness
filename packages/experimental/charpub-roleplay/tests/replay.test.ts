@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { digestOf } from '@char-pub/core'
 import { digestAssemblyMessages, createPreparationCatalog, fixedSelection, selectorCatalog, selectorView, prepareContext } from '@char-pub/assembler'
-import { appendCommand, createReplay, replay, commandPreparation, makeDecisionRecord } from '../src/index.ts'
+import { appendCommand, createReplay, replay, ReplayCursor, commandPreparation, makeDecisionRecord } from '../src/index.ts'
 import { replayInput as input, command, SOURCE } from './fixtures.ts'
 
 await test('imports char.pub from packed dist exports, without cross-repository source aliases', () => {
@@ -234,4 +234,34 @@ for (const origin of ['local', 'draft'] as const) await test(`replays ${origin} 
   assert.throws(() => appendCommand(badSource, command(`${origin}-bad-source`, { kind: 'prepare' }, {
     selection: [{ source: source.id }],
   })), { code: 'source.asset_mismatch' })
+})
+
+
+await test('immutable cursors match full replay and reject external mutation without retaining every step', () => {
+  let cursor = ReplayCursor.from(createReplay(input('narrator', { player: true })))
+  for (let index = 0; index < 5; index++) {
+    const next = command(`cursor-${index}`, { kind: 'turn', input: { text: `I watch the rain ${index}.` }, actions: [], assessments: [] })
+    assert.deepEqual(cursor.preparation(next, 'before'), commandPreparation(cursor.log, next, 'before'))
+    const before = cursor
+    cursor = cursor.append(next)
+    assert.deepEqual(cursor.log, appendCommand(before.log, next))
+    assert.deepEqual(cursor.current, replay(cursor.log).current)
+    assert.equal(cursor.append(next), cursor)
+  }
+  assert.throws(() => { cursor.log.input.profile.context_window = 1 }, TypeError)
+  assert.throws(() => { cursor.current.state.scene = 'corrupted' }, TypeError)
+  const changed = structuredClone(cursor.log)
+  changed.entries[0]!.command.operation = { kind: 'input', text: 'different' }
+  assert.throws(() => ReplayCursor.from(changed))
+})
+
+
+await test('a new turn cannot authorize its own unavailable choice through current action judgments', () => {
+  const log = createReplay(input('narrator', { choices: true, choiceJudge: true }))
+  const attempt = command('self-authorized-choice', {
+    kind: 'turn', input: { text: '', choice_id: 'claim' }, actions: [], assessments: [],
+  }, { judgments: [{ target: 'choice/claim', path: '/when', result: 'true', provider: { name: 'manual', version: '1' } }] })
+  assert.throws(() => appendCommand(log, attempt), { code: 'roleplay.choice_unavailable' })
+  assert.throws(() => ReplayCursor.from(log).append(attempt), { code: 'roleplay.choice_unavailable' })
+  assert.equal(log.entries.length, 0)
 })

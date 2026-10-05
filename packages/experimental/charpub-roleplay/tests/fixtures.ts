@@ -5,7 +5,7 @@ import { commandId } from '../src/index.ts'
 import type { ReplayCommand, ReplayInput } from '../src/index.ts'
 
 export const SOURCE = 'A hidden service tunnel connects the inn to the river.'
-export function replayInput(mode: 'narrator' | 'per-agent' = 'narrator', options: { catalog?: boolean; origin?: 'local' | 'draft' } = {}): ReplayInput {
+export function replayInput(mode: 'narrator' | 'per-agent' = 'narrator', options: { catalog?: boolean; phaseScene?: boolean; judgePairs?: boolean; player?: boolean; choices?: boolean; choiceJudge?: boolean; ending?: 'hidden' | 'on-reach' | 'listed'; origin?: 'local' | 'draft' } = {}): ReplayInput {
   const policy = canonicalizeCreation({
     id: 'cr_01j00000000000000000000001', ref: '@fixture/policy', type: 'preset', display_name: 'Fixture policy',
     meta: { default_locale: 'en', rating: 'general', rights: 'original', license: 'CC0-1.0' },
@@ -18,7 +18,7 @@ export function replayInput(mode: 'narrator' | 'per-agent' = 'narrator', options
       creation: {
         id: 'cr_01j00000000000000000000000', ref: '@fixture/inn', type: 'scenario', display_name: 'Rainy Inn',
         meta: { default_locale: 'en', rating: 'general', rights: 'original', license: 'CC0-1.0' },
-        cast: [{ key: 'alice', who: { late: 'character' } }, { key: 'bob', who: { late: 'character' } }],
+        cast: [{ key: 'alice', who: { late: 'character' }, ...(options.player ? { role: 'user' as const } : {}) }, { key: 'bob', who: { late: 'character' } }],
         fragments: [
           { id: 'secret', kind: 'knowledge', stable: true, content: { type: 'text', text: 'ALICE_ONLY_SECRET' } },
           ...(options.catalog ? ['tunnel', 'market'].map(id => ({
@@ -35,13 +35,27 @@ export function replayInput(mode: 'narrator' | 'per-agent' = 'narrator', options
         assets: [{ slot: 'guide', role: 'context', variants: [{ id: 'default', media_type: 'text/plain', blob: { digest: `sha256:${sha256Hex(SOURCE)}`, size: new TextEncoder().encode(SOURCE).byteLength, availability: 'mirrored' } }] }],
         story: {
           version: 1,
+          ...(options.player ? { player: 'alice' } : {}),
+          ...(options.choices ? { choices: [{ id: 'claim', label: 'Claim token', intent: 'I claim the token.',
+            ...(options.choiceJudge ? { when: { judge: 'Is the token offer available?' } } : {}),
+          }] } : {}),
           vars: { count: { type: 'int', min: 0, max: 3, init: 0, description: 'Confirmed rewards' } },
-          scenes: [{ id: 'lobby', title: 'Lobby' }, { id: 'garden', title: 'Garden', cast: ['alice'] }],
+          scenes: [{ id: 'lobby', title: 'Lobby', ...(options.choices ? { choices: ['claim'] } : {}) }, { id: 'garden', title: 'Garden', cast: ['alice'], ...(options.phaseScene ? {
+            opening: '{{user}} and Alice compare what is known with what still needs checking; they stay at the same table.',
+            beats: ['reward'], when: { reached: 'beat/refusal' },
+          } : {}) }],
           starts: [{ id: 'arrival', scene: 'lobby', greeting: { en: 'Welcome, {{user}}.', ja: 'ようこそ、{{user}}。' } }],
           beats: [
-            { id: 'reward', title: 'Reward', description: 'Gain one token', effects: [{ add: ['var/count', 1] }] },
+            { id: 'reward', title: 'Reward', description: 'Gain one token', ...(options.judgePairs ? { when: options.phaseScene
+              ? { all: [{ in: 'scene/garden' }, { judge: 'Did the player explicitly claim the token?' }] }
+              : { judge: 'Did the player explicitly claim the token?' } }
+              : options.phaseScene ? { when: { in: 'scene/garden' } } : {}), effects: [{ add: ['var/count', 1] }] },
             { id: 'refusal', title: 'Refusal', description: 'The guest refuses', when: { not: { judge: 'Did the guest agree?' } }, effects: [{ add: ['var/count', 1] }] },
           ],
+          ...(options.ending ? { endings: [{ id: 'departure', title: 'PRIVATE_ENDING_TITLE', description: 'PRIVATE_ENDING_DESCRIPTION',
+            reveal: options.ending, when: { all: [{ reached: 'beat/reward' }, { judge: 'Has the player decided to finish this stage?' }] },
+            effects: [{ add: ['var/count', 1] }, { learn: { who: 'bob', info: '#secret' } }], after: 'stop' as const,
+          }] } : {}),
           knowing: { '#secret': { start: { knows: ['alice'], not: ['bob'] } } },
         },
       },

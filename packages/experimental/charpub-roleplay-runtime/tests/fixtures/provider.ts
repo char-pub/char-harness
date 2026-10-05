@@ -12,6 +12,7 @@ export class Probe extends Service {
   calls: GenerateOptions[] = []
   mode: 'success' | 'cancel' | 'failure' | 'tool' = 'success'
   onRequest: (() => void) | undefined
+  replies: { text?: string; mode?: 'success' | 'cancel' | 'failure' | 'tool' }[] = []
   constructor(ctx: Context) { super(ctx, 'roleplayTestProvider') }
 }
 class Adapter extends LlmAdapter {
@@ -19,20 +20,25 @@ class Adapter extends LlmAdapter {
   async *stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
     this.probe.calls.push(options)
     this.probe.onRequest?.()
-    if (this.probe.mode === 'cancel') {
+    const reply = this.probe.replies.shift()
+    const mode = reply?.mode ?? this.probe.mode
+    if (mode === 'cancel') {
       await new Promise<void>((resolve, reject) => {
         if (options.signal?.aborted) { reject(new Error('cancelled')); return }
         options.signal?.addEventListener('abort', () => { resolve() }, { once: true })
       })
       throw new Error('cancelled during generation')
     }
-    if (this.probe.mode === 'failure') throw new Error('synthetic failure')
-    if (this.probe.mode === 'tool') {
+    if (mode === 'failure') throw new Error('synthetic failure')
+    if (mode === 'tool') {
       yield { type: 'block-start', index: 0, blockType: 'tool-call' }
       return
     }
-    yield { type: 'text-delta', index: 0, text: 'The innkeeper ' }
-    yield { type: 'text-delta', index: 0, text: 'nods.' }
+    if (reply?.text !== undefined) yield { type: 'text-delta', index: 0, text: reply.text }
+    else {
+      yield { type: 'text-delta', index: 0, text: 'The innkeeper ' }
+      yield { type: 'text-delta', index: 0, text: 'nods.' }
+    }
     yield { type: 'usage', usage: { inputTokens: 200, outputTokens: 8, totalTokens: 208 } }
     yield { type: 'finish', reason: { kind: 'stop' } }
   }

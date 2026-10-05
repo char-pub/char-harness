@@ -16,6 +16,18 @@ export interface AppParticipant {
   present: boolean
   role?: string
   goal?: string
+  portrait?: string
+}
+/** Player-visible facts derived from committed Story state, never the narrator's complete view. */
+export interface AppPlayerExperience {
+  revision: string
+  player: { key: string; cast_key?: string; name: string; present: boolean | null; part?: string }
+  known: Array<{ id: string; title: string; text: string }>
+  choices: Array<{ id: string; label: string }>
+  milestones: Array<{ kind: 'beat' | 'ending'; id: string; title: string }>
+  /** A proposed stage result; private target identifiers and judge evidence stay on the host. */
+  pending_ending?: { id: string; title?: string; description?: string; triggering_input: string }
+  can_undo: boolean
 }
 /** Authoritative committed view after a local operation; no OAuth token or filesystem path. */
 export interface AppSessionSnapshot {
@@ -25,7 +37,8 @@ export interface AppSessionSnapshot {
   history: HistoryMessage[]
   participants: AppParticipant[]
   late_slots: ContextIR['late_slots']
-  scene: { id: string; title: string; description?: string } | null
+  scene: { id: string; title: string; description?: string; time?: string; where?: string } | null
+  experience?: AppPlayerExperience
   stopped: boolean
   interrupted: boolean
   can_continue: boolean
@@ -103,7 +116,7 @@ export interface AppPluginConfigView extends AppSettingsForm { ns: string }
 export interface AppStatus {
   registry: { origin: string; authorization: 'required' | 'authorized' }
   model: { provider: string; id: string; credential: AppCredentialState; online_verified: false }
-  operation: { kind: 'review' | 'start' | 'resume' | 'turn' | 'export'; session?: string; request_id?: string } | null
+  operation: { kind: 'review' | 'start' | 'resume' | 'turn' | 'rewind' | 'export'; session?: string; request_id?: string } | null
   current_session?: string
   limitations: string[]
 }
@@ -118,12 +131,27 @@ export interface AppSessionRecord {
 /** Bounded event-log reads; a cursor may lead to an empty page when unrelated local logs were filtered. */
 export interface AppSessionsResponse { items: AppSessionRecord[]; next_cursor?: string }
 /** Stable request identity generated once per user submission, including retries after an unknown response. */
-export interface AppTurnRequest { session: string; request_id: string; text: string; recover_interrupted?: true }
+export interface AppTurnRequest {
+  session: string
+  request_id: string
+  text: string
+  choice_id?: string
+  /** Only an explicit player confirmation may commit the currently saved stage proposal. */
+  confirm_ending?: { proposal_id: string }
+  /** Required for a new planned turn; omitted only by an older stored request being reconciled. */
+  expected_revision?: string
+  recover_interrupted?: true
+}
+/** Explicitly restore the state before the latest successful play turn; old log facts remain intact. */
+export interface AppRewindRequest { session: string; request_id: string; expected_revision: string }
 /** A completed reply or failure, read from the same durable Session request. */
 export interface AppTurnResult {
   request_id: string
   status: 'success' | 'cancelled' | 'failed'
   error_code?: string
+  superseded?: true
+  /** The reply committed, but no reliable director result was available to update Story state. */
+  story_progress_unavailable?: true
   snapshot: AppSessionSnapshot
 }
 /** Inspect a request without dispatching it again. */

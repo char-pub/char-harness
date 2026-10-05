@@ -1,6 +1,7 @@
 /** Replay evidence for sanitized decision-provider requests; transport credentials are never fields. */
 import { DigestSchema, SelectionPlanSchema, TurnViewSchema, digestExactJSON } from '@char-pub/core'
 import { z } from 'zod'
+import { ActionAssessmentSchema, StoryActionSchema, TurnEndingProposalSchema } from './turn.ts'
 
 const fields = {
   provider: z.strictObject({ name: z.string().min(1), version: z.string().min(1) }),
@@ -12,6 +13,10 @@ const fields = {
 const variants = [
   z.strictObject({ ...fields, purpose: z.literal('selector'), binding: z.strictObject({ plan_digest: DigestSchema }) }),
   z.strictObject({ ...fields, purpose: z.literal('judge'), binding: z.strictObject({ judgments: TurnViewSchema.shape.judgments.unwrap().min(1) }) }),
+  z.strictObject({ ...fields, purpose: z.literal('director'), binding: z.strictObject({
+    actions: z.array(StoryActionSchema), assessments: z.array(ActionAssessmentSchema),
+    judgments: TurnViewSchema.shape.judgments.unwrap(), ending_proposal: TurnEndingProposalSchema.optional(),
+  }) }),
 ] as const
 const PayloadSchema = z.discriminatedUnion('purpose', variants)
 const transportKeys = new Set([
@@ -25,10 +30,12 @@ type InputBodies<T> = T extends object ? Omit<T, 'request' | 'response'> & { req
 export type DecisionRecordInput = InputBodies<z.infer<typeof PayloadSchema>>
 
 /** Validates JSON evidence, its hash, and omission of credential/transport configuration fields. */
-export const DecisionRecordSchema = z.discriminatedUnion('purpose', [
+const RecordSchema = z.discriminatedUnion('purpose', [
   variants[0].extend({ digest: DigestSchema }),
   variants[1].extend({ digest: DigestSchema }),
-]).superRefine((record, ctx) => {
+  variants[2].extend({ digest: DigestSchema }),
+])
+function checkRecord(record: z.infer<typeof RecordSchema>, ctx: z.RefinementCtx) {
   const pending: { value: z.infer<ReturnType<typeof z.json>>; path: (string | number)[] }[] = [
     { value: record.config, path: ['config'] }, { value: record.request, path: ['request'] },
     { value: record.response, path: ['response'] },
@@ -45,7 +52,14 @@ export const DecisionRecordSchema = z.discriminatedUnion('purpose', [
   }
   const { digest, ...payload } = record
   if (digestExactJSON(payload) !== digest) ctx.addIssue({ code: 'custom', path: ['digest'], message: 'Decision evidence digest mismatch' })
-})
+}
+
+/** Validated evidence for the original selector/judge event contract. */
+export const LegacyDecisionRecordSchema = z.discriminatedUnion('purpose', [
+  variants[0].extend({ digest: DigestSchema }), variants[1].extend({ digest: DigestSchema }),
+]).superRefine(checkRecord)
+/** Validates complete director, selector and judge evidence. */
+export const DecisionRecordSchema = RecordSchema.superRefine(checkRecord)
 
 /** Hashed sanitized provider input/output and the decision it produced. */
 export type DecisionRecord = z.infer<typeof DecisionRecordSchema>

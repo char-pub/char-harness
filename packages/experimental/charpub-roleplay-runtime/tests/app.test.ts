@@ -212,7 +212,8 @@ void test('launch review fails closed for altered identity, unknown openings, un
   const app = createAppController({ listRecords: async () => ({ records: [] }), registryOrigin: 'https://registry.example',
     registry: { authorizationStatus: () => 'required', authorizationVersion: () => epoch, release: () => read(), draftBuild: () => read(), sourceTexts: async () => ({}) },
     profile: input.profile, model: { provider: 'fixed', model: 'fixed', maxTokens: 256 }, timeout_ms: 1000,
-    runtime: { create: async () => { creates++; throw new Error('unexpected create') }, submit: async () => { throw new Error('unexpected model') }, inspect: async () => { throw new Error('unexpected inspect') } } })
+    runtime: { create: async () => { creates++; throw new Error('unexpected create') }, submit: async () => { throw new Error('unexpected model') }, inspect: async () => { throw new Error('unexpected inspect') },
+      play: async () => { throw new Error('unexpected play') }, rewind: async () => { throw new Error('unexpected rewind') } } })
   const launch = { format: 'char.pub/runtime-launch', version: 1, registry_origin: 'https://registry.example', source: root, lock_digest: artifact.lock_digest, locale: 'ja', view: { mode: 'narrator' } }
   await assert.rejects(app.review({ ...launch, registry_origin: 'https://attacker.example' }), /registry_mismatch/)
   await assert.rejects(app.review({ ...launch, lock_digest: `sha256:${'0'.repeat(64)}` }), /source_mismatch/)
@@ -244,7 +245,8 @@ void test('cancelling a pending Registry read cannot create a Session or accept 
   const app = createAppController({ listRecords: async () => ({ records: [] }), registryOrigin: 'https://registry.example',
     registry: { authorizationStatus: () => 'required', authorizationVersion: () => 0, release: () => read.promise, draftBuild: () => read.promise, sourceTexts: async () => ({}) },
     profile: input.profile, model: { provider: 'fixed', model: 'fixed', maxTokens: 256 }, timeout_ms: 1000,
-    runtime: { create: async () => { throw new Error('unexpected create') }, submit: async () => { throw new Error('unexpected model') }, inspect: async () => { throw new Error('unexpected inspect') } } })
+    runtime: { create: async () => { throw new Error('unexpected create') }, submit: async () => { throw new Error('unexpected model') }, inspect: async () => { throw new Error('unexpected inspect') },
+      play: async () => { throw new Error('unexpected play') }, rewind: async () => { throw new Error('unexpected rewind') } } })
   const pending = app.review({ format: 'char.pub/runtime-launch', version: 1, registry_origin: 'https://registry.example', source: root, lock_digest: artifact.lock_digest, locale: 'ja', view: { mode: 'narrator' } })
   app.cancel({}); read.resolve({ artifact, receipt })
   await assert.rejects(pending, /cancelled/)
@@ -283,7 +285,8 @@ void test('player snapshots use actual role visibility and resume checks source 
   const createApp = () => createAppController({ registryOrigin: 'https://registry.example',
     registry: { authorizationStatus: () => 'authorized', authorizationVersion: () => epoch, release: read, draftBuild: read, sourceTexts: async () => ({}) },
     listRecords: async () => ({ records: [{ id: SessionId('persisted-player'), createdAt: 1, projection }] }),
-    runtime: { create: async () => { throw new Error('no create on resume') }, submit: async () => { throw new Error('no model on resume') }, inspect: async () => { if (inspectChange) epoch++; return projection } },
+    runtime: { create: async () => { throw new Error('no create on resume') }, submit: async () => { throw new Error('no model on resume') }, inspect: async () => { if (inspectChange) epoch++; return projection },
+      play: async () => { throw new Error('no play on resume') }, rewind: async () => { throw new Error('no rewind on resume') } },
     profile: input.profile, model: { provider: 'fixed', model: 'fixed', maxTokens: 256 }, timeout_ms: 1000 })
   const app = createApp()
   const listing = await app.sessions({}); const record = listing.items[0]?.record; assert.ok(record)

@@ -46,6 +46,20 @@ requested 事件在派发前刷入存储。驱动只发送 `requestMessages(requ
 
 `inspect(id)` 通过明确的异步存储读取重建当前已提交状态和待处理请求。服务没有独立可写的 Story 缓存。dispose（资源释放）会取消活动操作，并等待其存储句柄关闭。
 
+### 玩家回合与撤回
+
+`play(session, intent, config, signal?)` 接收原始文本或当前可用的 `choice_id`、稳定命令 ID 与 `expected_revision`。`config` 指定 `generation`、`decisions`，以及最低置信度、动作数、决策调用数和决策总 token 限额。两条 LLM 路由由本地 profile 决定，Registry 内容不能替换。派发前校验作者声明的受控玩家、选项和输出预留。`submit` 保留为现有调用者使用的显式命令 API。两条 API 共用已消费的命令身份；经一条 API 使用的 ID 不能通过另一条成为新尝试，包括规划中止后的 ID。
+
+Director 接收本次输入、投影后的对话、本地化场景开场与目标描述及 judge 问题、已声明的场次关联、条件表达式及 Core 当前真值，以及已达成目标，只返回目标 ID、类型化判定和置信度。本次已解析的玩家消息单列为最后的 `latest_input` 字段；`interaction.history` 完整保留此前对话作为背景。Core 按顺序校验提议动作。只有已声明的 judge target/path 对能成为证据；未声明条目被忽略，重复条目只让对应叶子变成未确定，不丢弃其他独立有效判定。未知目标、缺少证据、低置信度和无效响应不产生效果。随后选材依据投影描述逐步展开 SDK 目录，不接收候选正文、任意变量或绑定。选材不可用时记录 skip Plan，保留 required/direct 上下文。只有生成成功后，叙述、动作和玩家对话才一起提交。
+
+符合条件的结局在叙述成功后成为 `pending_ending`；提出结局不会应用结局效果或设置 stopped。多个符合条件的结局保持含糊。提案保留私有目标/证据与公开展示字段：只有作者声明为 `listed` 的结局会在确认前展示标题/描述，hidden 和 on-reach 结局仅展示玩家的触发输入。叙述收到明确的待确认结局指令，可以继续当前场景，不得声称终局后果已发生。
+
+确认使用新的 `play` 意图，包含 `confirm_ending: { proposal_id }`、普通确认文本和最新 `expected_revision`，不能同时包含 `choice_id`。服务端校验自己保存的待确认提案和状态，把已记录判定值作为玩家手动确认，跳过导演/选择器调用并准备一次叙述。只有成功结算才应用结局。失败或中断保留提案，重试已消费 ID 永远不会再次派发。另一条成功普通回合会替换或清除提案；撤回连同 Story 状态恢复此前的待确认提案。没有提案元数据的历史命令保留原有自动结局行为。
+
+每条决策请求都在派发前追加并刷盘，响应保留私有流证据。`max_decision_tokens` 按整回合累计估算输入与预留输出，取得实际用量后改按报告值计费；tokenizer 估算与模型置信度不构成校准保证。`max_decision_calls` 限制 director 与 selector 的总尝试次数。决策限额可以抑制后续调用，不包含叙述调用。取消会结束本次尝试而不发布待提交事实。
+
+`inspect().revision` 绑定包括失败和撤回在内的全部保留事件，`head` 则标识当前逻辑 Replay。相同的已结算请求 ID 返回原结果，不再派发。未完成 ID 需先通过 `lookupPlay` 检查，再以新请求和 `recover_interrupted: true` 恢复；恢复只结束旧尝试，不重发旧请求。`rewind(session, { id, expected_revision })` 追加记录，恢复上一条成功玩家回合之前的状态，不调用模型。旧结果仍可查询，并带 `superseded: true`；旧 ID 永远不会在新分支重新应用。返回的 resolution 含私有动作代码与状态差异，客户端展示前必须做玩家视图投影。
+
 <a id="registry-access"></a>
 ## Registry 访问
 
@@ -86,9 +100,9 @@ requested 事件在派发前刷入存储。驱动只发送 `requestMessages(requ
 
 ## 存储与恢复
 
-`roleplay/opened` 只保存一次固定 SDK 输入。`roleplay/requested` 包含命令、原始与解析后的调用配置、原准备消息，以及校验后的状态/Plan/请求摘要。`roleplay/settled` 绑定请求并保留紧凑的模型流、用量和结果。纯回放会重新校验全部内容。这些必需事件登记在生成的持久化目录中；不认识事件的读取器会拒绝日志。[持久化变更记录](../../../docs/persistence-changes/2026-09-30-charpub-roleplay-events.zh.md) 说明兼容性。[客户端来源扩展](../../../docs/persistence-changes/2026-10-01-charpub-client-origin.zh.md) 在固定产物的贡献者元数据中保留可选外部客户端 ID；这些标签不能认证 Registry 请求。[前一 SDK 恢复样本](tests/fixtures/pre-registry-sdk/README.zh.md) 保留原始字节，并验证 pending 请求被中断且不派发。
+`roleplay/opened` 只保存一次固定 SDK 输入。`roleplay/requested` 包含命令、原始与解析后的调用配置、原准备消息，以及校验后的状态/Plan/请求摘要。`roleplay/settled` 绑定请求并保留紧凑的模型流、用量和结果。纯回放会重新校验全部内容。回合规划和撤回还保留 `roleplay/turn-started`、`roleplay/turn-requested`、决策请求与结果、回合中止及只追加的撤回记录。旧运行时读取这些日志前，请先查看[回合升级指南](../../../docs/upgrade-guide/v0.2.0-rc.2/roleplay-player-turns/guide.zh.md)。这些必需事件登记在生成的持久化目录中；不认识事件的读取器会拒绝日志。[持久化变更记录](../../../docs/persistence-changes/2026-09-30-charpub-roleplay-events.zh.md) 说明兼容性。[客户端来源扩展](../../../docs/persistence-changes/2026-10-01-charpub-client-origin.zh.md) 在固定产物的贡献者元数据中保留可选外部客户端 ID；这些标签不能认证 Registry 请求。[前一 SDK 恢复样本](tests/fixtures/pre-registry-sdk/README.zh.md) 保留原始字节，并验证 pending 请求被中断且不派发。
 
-追加和刷盘构成提交区间。开始写入后，取消不能保证回滚。存储失败可能已将请求或成功结算写入磁盘；操作会拒绝，调用者必须检查状态或用相同命令 ID 重试，以核对持久化结果。驱动不会将存储错误变成自动第二次模型调用。JSONL 的现有写入所有权排除其他进程。
+每个候选事件转换都在追加前通过回放校验，因此被拒绝的写入方操作不会在磁盘留下不可读事实。追加和刷盘构成提交区间。开始写入后，取消不能保证回滚。存储失败可能已将请求或成功结算写入磁盘；操作会拒绝，调用者必须检查状态或用相同命令 ID 重试，以核对持久化结果。驱动不会将存储错误变成自动第二次模型调用。JSONL 的现有写入所有权排除其他进程。
 
 Session 日志是唯一持久记录。投影返回的 `ReplayLog` 是临时重建值。这些日志包含产物、资料正文和私有决策证据，不能整体发送给参与者模型。
 
@@ -108,7 +122,7 @@ Session 日志是唯一持久记录。投影返回的 `ReplayLog` 是临时重�
 
 [roleplay profile 指南](PROFILE.md) 说明显式启用的 `./app` 插件与 `app.patch.yml`。通过 `dsh --profile roleplay` 启动；基础 bundle 本身仍没有前端。本地回环欢迎页链接到已配置的 Registry 供用户选择作品；手动 JSON 入口位于高级区域。页面审阅 Registry 精确启动请求、独立授权，再由用户选择开局、视角和运行时角色绑定后创建持久 Session。Registry、OAuth 回调与模型路由仅来自本地 profile 配置，启动请求不能替换它们，也不能携带凭据或对话。
 
-页面支持带 Story 的内容与 estimate tokenizer。它使用配置的生成适配器、required/direct 上下文和 `noneSelection`；不运行 Jev/Laya、不推断 Story 动作，也不判定开局 judge。新构建需要确认新建会话。旧标签页保留本地不透明句柄，不能把回复发入后来创建的 Session。角色的私密描述与公开 outward 描述分别填写。
+页面支持带 Story 的内容与 estimate tokenizer。它使用配置的 LLM 做受约束的回合决策、渐进选材与叙述；开局判定仍需显式提供。新构建需要确认新建会话。旧标签页保留本地不透明句柄，不能把回复发入后来创建的 Session。角色的私密描述与公开 outward 描述分别填写。
 
 随附的 DeepSeek profile 声明 `multiple_system_messages: false`。SDK 在记录请求前合并相邻的 system 区域，使它们的完整正文保留在适配器实际生效的 system 提示词中。此 profile 不兼容用对话历史分隔 system 消息的 Preset。已有 Session 和锁定组装 profile 的产物保留各自的能力声明；本地 profile 的修改只适用于未锁定产物 profile 的新 Session。
 
@@ -132,7 +146,7 @@ Session 日志是唯一持久记录。投影返回的 `ReplayLog` 是临时重�
 
 #### 模型看到什么
 
-模型看到的恰好是 requested 事件中保存的 SDK 准备角色与文本。驱动不添加提示词或编程工具。Source ID 和回执留在私有日志中。DSH 要求 assistant 角色消息带模型元数据，因此传输把准备后的历史映射到明确合成的 `char.pub` / `prepared-history` 来源；原 SDK 来源 ID 与实际新解析的模型路由另行保留。
+叙述完整采用 requested 事件里记录的 SDK 准备角色和文本，包括回合 overlay。Director 与 selector 调用接收各自记录的单条 system 指令与投影 JSON 输入。不提供编码工具。Source ID 和回执留在私有日志中。DSH 要求 assistant 角色消息带模型元数据，因此传输把准备后的历史映射到明确合成的 `char.pub` / `prepared-history` 来源；原 SDK 来源 ID 与实际新解析的模型路由另行保留。
 
 #### Token 影响
 
@@ -150,7 +164,7 @@ SDK 执行声明的上下文预算和输出预留预算。追加成功助手回�
 - 这是独立驱动，不是 `AgentRegistry` 实现。默认 Web/SDK transcript（文本记录）、coding-loop 恢复和通用 Agent 工具不解释其请求。
 - 对话历史属于共享场景对话。切换参与者只过滤受控设定资料，不按受众过滤此前发言；私聊需要明确的受众投影之后才能使用该路径。
 - 准备后的助手历史带合成传输元数据，不保留原提供方回放状态。实际新生成的配置和流仍会记录。
-- 自动动作推断和模型开场回执仍由调用者负责。Jev 判定/选材可通过带证据的命令 API 提供；驱动不从自由文本推断 Story 动作。
+- 初始开场判定和模型开场回执仍由调用者负责。配置的回合模型可能误解意图；置信度阈值与 Core 校验约束其效果，撤回允许玩家修正已结算回合。在线模型质量仍需单独评估。
 - Registry 客户端仅在进程内存中保存凭据。持久凭据库、多进程刷新协调、在线模型质量和高级游戏自动化仍是独立工作。固定 Session 已取得的 Source 正文作为私有输入保留；此客户端不会在服务端撤权后追溯擦除这些正文。
 - 原型每次操作都重建历史。大 Session 检查点和归档分页尚未实现；事件和流字节上限不限制 Session 总长度。
 

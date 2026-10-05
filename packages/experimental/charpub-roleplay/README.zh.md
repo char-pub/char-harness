@@ -31,7 +31,11 @@ kind: "package-library"
 
 `createReplay(input)` 接收完整的 CreationArtifact，包含明确的 Release、Registry draft-build 或 local-build 来源，以及明确的 RuntimeProfile、角色绑定、能力支持声明和以 SDK 资产 ID 为键的资料正文。多个开局的 Story 必须指定 `start`。开场语言依次取 `locale`、profile 语言、产物默认语言。参与者 profile 要求初始输入和每条命令都指定 `for_participant`，不会继承前一条命令的视角。
 
-`appendCommand(log, command, { signal })` 接收带品牌类型的 `commandId`、一个操作，以及固定 `selection` 引用或完整 `plan`，二者不能同时提供。完整 Plan 保留提供方身份、展开顺序、排序、分数和回退状态；回放会按重建输入校验它，不会换成固定选择器。操作包括 `input`、`confirm`、`enter-scene`、`set-present`、`prepare`，以及只修改历史的 `response`。response 追加助手历史，不准备另一次模型请求，也不占用下一次输入预算。`ReplayStep.turn` 是最新历史；`prepared_turn`、`plan` 和 `assembly` 对应最近一次实际准备。把旧 Plan 用于新历史会被拒绝；下一次请求应使用 `commandPreparation`。Runtime 请求事件将 response 命令保留给成功结算。玩家文本只追加用户历史，本身不能确认事实或切换场景。SDK 校验所有状态变化、可见性和选择。判定属于单条命令并记录其提供方身份，回放不会推断判定。缺少判定时保持未知，取反也不改变这一点。
+`appendCommand(log, command, { signal })` 接收带品牌类型的 `commandId`、一个操作，以及固定 `selection` 引用或完整 `plan`，二者不能同时提供。完整 Plan 保留提供方身份、展开顺序、排序、分数和回退状态；回放会按重建输入校验它，不会换成固定选择器。操作包括 `input`、`confirm`、`enter-scene`、`set-present`、`prepare`、原子的 `turn`，以及只修改历史的 `response`。response 追加助手历史，不准备另一次模型请求，也不占用下一次输入预算。`ReplayStep.turn` 是最新历史；`prepared_turn`、`plan` 和 `assembly` 对应最近一次实际准备。把旧 Plan 用于新历史会被拒绝；下一次请求应使用 `commandPreparation`。Runtime 请求事件将 response 命令保留给成功结算。玩家文本只追加用户历史，本身不能确认事实或切换场景。SDK 校验所有状态变化、可见性和选择。判定属于单条命令并记录其提供方身份，回放不会推断判定。缺少判定时保持未知，取反也不改变这一点。
+
+`turn` 包含一条原始输入、可选的作者声明 `choice_id`、有序的确认或场景切换，以及与动作匹配的接受/跳过评估。SDK 通过 `playerInputMessage` 解析 `Story.player`；显式说话人与其冲突会被拒绝，不按姓名或 `user` 绑定猜测受控人物。选项意图成为对话证据，不直接产生效果。`commandPreparation(..., "before")` 在判定前加入本次玩家消息；随后动作按顺序交由 Core 校验，最终 Plan 绑定其待提交状态。回放要么应用整条操作，要么不返回新日志。后续叙述会收到简短状态 overlay，区分已确定效果与未确认尝试。
+
+选项可用性使用已提交回合的判定，与展示的选项一致；为新动作提供的判定不能授权同一次输入。可选 `ending_proposal` 元数据记录符合条件的结局，但不应用它。提案绑定来源回合、父 head/revision、待提交状态和原提供方判定；只有 `public` 字段可以进入玩家视图。后续 `ending_confirmation` 将原提案绑定到一个结局动作，并把同一组叶子值标记为手动确认。叙述 overlay 区分待确认与已确认结局。没有这些可选字段的回合保留其已记录动作语义。
 
 完全相同的重复命令 ID 返回原日志，不重复施加效果。同一 ID 携带不同数据会抛出 `roleplay.command_conflict`。操作失败或调用取消时不返回新日志，也不修改参数。取消在回放前和返回新值前检查；同步计算不能被之后的事件循环任务中断。
 
@@ -52,7 +56,7 @@ kind: "package-library"
 
 除共用概率与操作限额外，Laya 必须显式配置 `max_questions`（最多 64）、`max_state_chars`（紧凑 JSON 的 Unicode 码点数，最多 50,000）、`max_request_bytes`（最多 2 MiB）、`max_response_bytes`、`max_len`、`head_max_len`（两者最多 8192）及 `min_confidence`。每次请求均发送并记录窗口和置信度控制。服务端可施加更紧的限额，其序列化状态的计数方式也不同。HTTP 端点只进行单窗口推理：这些限额和 SDK 估算计数器不能证明模型分词器覆盖了全部目录说明或历史消息。本地问题数、状态及字节限额会给出有记录的 skip/未确定结果，不丢问题或发送未记录的隐式批次。传输必须使用 HTTPS，显式启用的回环 HTTP 除外；`apiKey: null` 明确选择无认证的服务。响应字节、取消和超时限制涵盖正文传输，清理不会延迟已经中止的操作。
 
-`makeDecisionRecord` 记录完整的去敏请求、已校验的类型化结果、公开配置、适配器身份和 SDK 输入摘要。两个适配器也会在可用时保存原始 JSON 响应摘要；格式错误的非 JSON 响应保留失败状态。配置包含请求的模型，成功响应保留实际模型身份。选择器证据绑定最终 Plan 摘要及其 selector/config/input。判定证据绑定关闭 discovery 的命令执行前输入，以及提供的提供方判定，包括 target、path 和 provider。多份判定记录可分别覆盖结果，但重复或没有证据覆盖的提供方结果会被拒绝。所有非 fixed/none Plan 都要求选择器证据，所有 fixed/manual 之外的判定都要求匹配的判定证据。fixed/manual 决策仍是明确的作者输入。这些记录属于命令元数据，不插入模型消息。
+`makeDecisionRecord` 记录完整的去敏请求、已校验的类型化结果、公开配置、适配器身份和 SDK 输入摘要。两个适配器也会在可用时保存原始 JSON 响应摘要；格式错误的非 JSON 响应保留失败状态。配置包含请求的模型，成功响应保留实际模型身份。选择器证据绑定最终 Plan 摘要及其 selector/config/input。Director 证据还绑定有序动作与评估。判定证据绑定关闭 discovery 的命令执行前输入，以及提供的提供方判定，包括 target、path 和 provider。多份判定记录可分别覆盖结果，但重复或没有证据覆盖的提供方结果会被拒绝。所有非 fixed/none Plan 都要求选择器证据，所有 fixed/manual 之外的判定都要求匹配的判定证据。fixed/manual 决策仍是明确的作者输入。这些记录属于命令元数据，不插入模型消息。
 
 回放格式版本 2 包含完整 Plan 和证据，不接受版本 1 演练数据。记录的结构化数据会递归拒绝传输头、凭据字段和原始基础 URL。这不是文本脱敏：作者说明或历史本身可能包含敏感文本。日志仍属于私有演练数据。哈希校验回放一致性，不验证提供方概率是否校准良好或远端回答是否真实。
 
@@ -72,7 +76,7 @@ Jev 请求快照位于 `tests/jev.test.ts.snapshot`；协议测试使用注入�
 <a id="understand-the-implementation"></a>
 ## 理解实现
 
-输入由已安装的 char.pub SDK schema 解析。来源字段标识构建输入；这个离线库不校验 Registry 权限、草稿过期或签名下载授权。资料正文必须显式提供，并按资产摘要校验。Trace 保留根身份和语义摘要。`startSession` 恰好提供一次开场；`confirm`、`enterScene`、`setPresent` 和 `toTurnStory` 负责状态语义。`createPreparationCatalog`、`fixedSelection` 和 `prepareContext` 负责选材及最终消息。本包不复制内容 schema、条件求值器或提示词组装器。每次追加先回放原日志，再构造独立条目，因此没有需要对账的可变会话缓存。
+输入由已安装的 char.pub SDK schema 解析。来源字段标识构建输入；这个离线库不校验 Registry 权限、草稿过期或签名下载授权。资料正文必须显式提供，并按资产摘要校验。Trace 保留根身份和语义摘要。`startSession` 恰好提供一次开场；`confirm`、`enterScene`、`setPresent` 和 `toTurnStory` 负责状态语义。`createPreparationCatalog`、`fixedSelection` 和 `prepareContext` 负责选材及最终消息。本包不复制内容 schema、条件求值器或提示词组装器。独立追加 API 会先回放现有日志，再构造独立条目。`ReplayCursor.from(log)` 完整校验一次外部数据并公开冻结的 `log` 和 `current`；其 `append` 与 `preparation` 从不可变状态前进，不保留每一步的重建结果。持久运行时在折叠事件时使用此游标，没有需要对账的可变会话缓存。
 
 本库不发布运行时不变量配套入口，因为没有可能发生偏离的注册表或共享运行时观测。回放比较和包内测试检查返回的演练数据。
 
