@@ -1,5 +1,5 @@
 ---
-description: "Roleplay持久请求与Story提交 (session-runtime)：pending模型请求会推进Story吗；重复命令怎样恢复；stop后还能对话吗；主权、失败与变更约束"
+description: "Roleplay原子玩家回合与阶段确认 (session-runtime)：pending ending怎样确认；revision/幂等/rewind恢复；旧Session兼容与Story提交"
 kind: architecture
 code:
   paths:
@@ -7,6 +7,7 @@ code:
     - "packages/experimental/charpub-roleplay-runtime/src/projection.ts"
     - "packages/experimental/charpub-roleplay-runtime/src/index.ts"
     - "packages/experimental/charpub-roleplay-runtime/cordis.patch.yml"
+    - "packages/experimental/charpub-roleplay-runtime/app.patch.yml"
     - "packages/experimental/charpub-roleplay-runtime/tests/composition.test.ts"
     - "packages/experimental/charpub-roleplay-runtime/README.md"
     - "docs/subsystems/charpub-roleplay.md"
@@ -16,17 +17,22 @@ relations:
     - "sessions/event-log.mdx"
     - "sessions/durability-migrations.mdx"
   related:
+    - "roleplay/selectors.mdx"
     - "roleplay/author-return.mdx"
     - "roleplay/local-player.mdx"
 ---
 
 # Roleplay持久请求与Story提交
 
-Roleplay driver 使用现有 Session store，却不挂编码 AgentLoop/system prompt。Opened 固定输入，requested 在派发前持久化实际有序消息与有效模型配置，settled 记录成功结果或失败尝试；pending 不是已经提交的剧情。
+Roleplay driver 使用现有 Session store，却不挂编码 AgentLoop/system prompt。Opened 固定输入；submit 保留显式命令入口，play 把当前玩家输入、Core 逐项接受的动作和一次旁白作为原子回合。意图和每次判断请求先持久化再派发，判断结果与旁白请求分别留存；只有旁白成功结算才一起发布输入、动作与回复，规划中的状态不等于已提交剧情。
 
 SDK 的多段 system 共同组成上下文，DeepSeek adapter 的后续 system 则替换完整快照。随附 DeepSeek profile 声明 multiple_system_messages=false，让 SDK 在 requested 持久化前合并相邻片段；跨 history 分隔的多段 system 被拒绝，不能在 adapter 中任意拼接。既有 Opened 输入与 artifact 锁定的 profile 保留原能力声明，本地默认变更只影响没有锁定 profile 的新 Session。
 
-只成功结算推进 Story，失败与取消保留尝试证据。恢复 pending 请求不会自动重发模型；重复命令需匹配原身份与输入。开始持久提交后取消可能与结果不确定相遇，应重读日志而不是自信回滚。
+普通 play 的合法 ending 只形成 pending_ending，不执行结局效果或停止 Story；多个合法 ending 不替玩家择一。显式确认以新请求绑定当前 proposal ID、revision 和服务器持有的状态/证据，复用原判断值并标记为人工确认，不再调用 director/selector，只生成一次旁白后原子提交。失败或中断保留先前提案；成功的下一次普通回合替换或清除提案，rewind 同时恢复先前状态与提案。旁白上下文标记待确认和已确认结果，并要求模型不抢先叙述终局；这不替代输出质量验收。
+
+revision 绑定包括失败和撤回在内的完整事件前缀，head 只标识当前逻辑 Replay；撤回回到旧 head 不会复用旧 revision。play 与 submit 共用已消耗的命令身份，完全相同的已结算请求只返回记录，改参复用失败；被撤回结果标记 superseded，不能再次应用。未完成的 play 先查询，再用新 ID 和显式恢复结束旧尝试，不自动重发模型。rewind 追加恢复上一成功回合的事实，不删除历史或调用模型；开始持久写入后取消不能保证回滚，结果不确定须重读对账。
+
+原子回合使用独立的必需 turn-requested 等事件，不拓宽旧 requested 的已发布命令类型；旧 reader 不认识新必需事件时拒绝日志。旧 Opened、历史事件和无提案元数据的自动 ending 命令保留原语义，不为新确认流程改写或迁移旧字节。
 
 投影重建和流终止检查都属于恢复契约，成功流不能在终止后继续输出。改动必须验证实际 Loader、JSONL、请求与日志对账，并核对 adapter 最终发送的 system 内容与顺序；纯回放通过或成功回复不足以证明持久层、上下文保留或模型派发正确。
 

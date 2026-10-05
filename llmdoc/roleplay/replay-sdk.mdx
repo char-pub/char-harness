@@ -1,10 +1,11 @@
 ---
-description: "char.pub纯回放与SDK字节来源 (replay-sdk)：Context Engine在哪；能否从主仓源码import；Replay记录摘要如何核；主权、失败与变更约束"
+description: "char.pub纯回放与SDK字节来源 (replay-sdk)：原子turn与玩家speaker；不可变ReplayCursor怎样提速且保留外部日志校验；旧字节兼容"
 kind: architecture
 code:
   paths:
     - "packages/experimental/charpub-roleplay/src/index.ts"
     - "packages/experimental/charpub-roleplay/src/decision-record.ts"
+    - "packages/experimental/charpub-roleplay/src/turn.ts"
     - "third_party/charpub/current.json"
     - "scripts/verify-charpub-sdk.mjs"
     - "packages/experimental/charpub-roleplay/tests/sdk-refresh.test.ts"
@@ -24,6 +25,10 @@ relations:
 char.pub Context Engine 由不可变 tarball SDK 提供，Harness 使用真实已安装 public entry。Current pointer、manifest hashes、依赖声明和解析到的 dist 必须一致；跨仓源码 alias 会绕过这一消费证明。
 
 Replay 保存精确输入、决策记录与输出身份；消息/运行态原字符串需要按其精确摘要契约处理，不能借 prose 规范化改变 CRLF、Unicode 或尾空白。Plan、receipt、artifact digest 各证明不同绑定，不代替授权。
+
+原子 turn 先按 Story.player 解析当前输入的 speaker，再向判断提供含该输入的 before 视图；合法 Choice 只补充行动意图，不直接产生效果。动作按顺序经过 Core，最终 Plan 绑定动作后的候选状态；任一失败不返回部分日志。Choice 可用性取已提交判断，新动作的判断不能反过来授权同次 Choice。待确认与已确认 ending 元数据分别校验原提案和证据，控制提示进入受预算约束的旁白准备；无这些字段的历史命令保持原有语义。
+
+ReplayCursor 先完整验证外部日志并冻结输入/当前准备，再以相同语义增量追加；只保留当前准备，不缓存每一步的展开结果。Runtime 同次折叠仅通过自身不可变日志的弱关联复用 cursor，外部可变对象不成为可信缓存键，重新读取持久事件仍完整校验。消除重复 canonical/hash 不等于免除校验或提供持久状态缓存，也不构成未测会话规模的性能承诺。
 
 刷新 SDK 保留旧快照与历史 fixture 原字节；先核实际解析的新 dist，再分别验证新行为和旧日志恢复。几个历史样本通过不承诺全部历史兼容。当前版本、hash及包文件清单只从manifest/verifier恢复。
 

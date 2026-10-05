@@ -1,5 +1,5 @@
 ---
-description: "独立游玩页面与launch交接 (local-player)：从char.pub怎么打开Runtime；旧页签会回错Session吗；深色宿主文字看不见；主权、失败与变更约束"
+description: "独立游玩页面与launch交接 (local-player)：玩家安全视图、阶段提案确认与草稿保留、部分成功提示、旧页签/revision与撤回恢复"
 kind: architecture
 code:
   paths:
@@ -47,7 +47,11 @@ relations:
 
 列表经持久化公共接口按页识别roleplay日志，unreadable条目保留可诊断状态，不把存储路径发给页面；record handle用于选择本地记录，active session handle用于实际操作，两者不互换。Resume重新读取精确Registry来源、核产物与授权后恢复已提交投影，不重新开场。旧页签、旧授权或另一个活跃Session的handle不能把输入转投新会话。
 
-每次用户发送固定request_id和原文本；结果未知先查询该请求，不立即换ID重发。确认not_found后才允许用户显式按原ID重试；持久pending必须明确处理，不能由刷新页面自动重发模型。取消只请求停止，已结算的回复仍可能被保存。配置中的模型名不证明凭据或在线模型已验证。
+启用 play 时，每次用户发送固定 request_id、原文本与当前 expected_revision，普通对白和场景可自动规划，省略 play 的 profile 保留旧显式输入入口。结果未知先查询该请求，不立即换 ID 重发；确认 not_found 后才允许显式按原 ID 重试，持久 pending 则按 Runtime 恢复规则处理，刷新不重发模型。取消只请求停止，已结算回复仍可能被保存；配置中的模型名不证明凭据或在线模型已验证。
+
+页面使用 SDK 的 projectPlayerView 展示玩家身份、当前场次、在场 NPC 公开画像、已知资料、可用选项与已达成公开进展，不从 narrator 的私有目标或原始变量构造面板。阶段提案单独等待玩家按钮确认，提交 opaque proposal ID 和最新 revision；只有 listed 结局预先显示标题/说明，hidden 与 on-reach 只显示触发输入。确认保留未发送草稿，不代发草稿或执行投稿/发布；成功后的正式进展与待确认提案分开显示。
+
+对白保存与剧情判定结果分别呈现，恢复请求也保留剧情判断不可用和 superseded 提示。撤回以 revision 防旧状态操作，恢复上一成功回合且保留历史；Host 更换活动 handle 使旧页签失效，响应未知时先恢复状态，不连续盲点撤回。
 
 未发送草稿和待查请求按record保存在tab-local session storage，界面语言/主题是本地偏好，不改变Story locale或日志。Synthetic导出使用独立空的摘要和绑定表单，不自动复制私聊/游玩角色私描述；审阅与下载是两个动作，服务端仍重核head。用户自选的Story状态也可能含秘密，不能把白名单导出称为全无敏感内容。
 
