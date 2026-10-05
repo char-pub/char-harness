@@ -30,7 +30,8 @@
           mode: narrator
           context_window: !!js Number(process.env.CHARPUB_CONTEXT_WINDOW)
           reserve_for_output: !!js Number(process.env.CHARPUB_OUTPUT_TOKENS)
-          capabilities: {system_role: true, multiple_system_messages: true}
+          # DeepSeek system messages replace prior snapshots; the SDK must merge adjacent regions.
+          capabilities: {system_role: true, multiple_system_messages: false}
         model:
           provider: deepseek-official
           model: !!js process.env.CHARPUB_MODEL

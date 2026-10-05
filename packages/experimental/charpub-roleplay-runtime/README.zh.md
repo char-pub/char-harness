@@ -110,6 +110,8 @@ Session 日志是唯一持久记录。投影返回的 `ReplayLog` 是临时重�
 
 页面支持带 Story 的内容与 estimate tokenizer。它使用配置的生成适配器、required/direct 上下文和 `noneSelection`；不运行 Jev/Laya、不推断 Story 动作，也不判定开局 judge。新构建需要确认新建会话。旧标签页保留本地不透明句柄，不能把回复发入后来创建的 Session。角色的私密描述与公开 outward 描述分别填写。
 
+随附的 DeepSeek profile 声明 `multiple_system_messages: false`。SDK 在记录请求前合并相邻的 system 区域，使它们的完整正文保留在适配器实际生效的 system 提示词中。此 profile 不兼容用对话历史分隔 system 消息的 Preset。已有 Session 和锁定组装 profile 的产物保留各自的能力声明；本地 profile 的修改只适用于未锁定产物 profile 的新 Session。
+
 页面是由同一个 profile HTTP 插件提供的已编译 React 客户端。主视图呈现对话、可见人物和当前场次；Registry/模型状态与技术 JSON 位于次级位置。浏览器接收玩家 DTO，不接收原始 Story 知情/变量全表、Source 正文或 OAuth 凭据。人物角色与目标采用和上下文准备相同的 SDK 视角过滤。
 
 本机记录来自既有 Session 持久化提供方。列表每次有界读取一页日志，无法读取的记录会明确显示。选择记录时，先重新核验其精确 Registry 来源和当前授权，再发出新的操作句柄；过期草稿构建和不可访问来源会失败，不改日志、不替换为最新版。记录标识是供本机界面草稿使用的稳定不透明摘要；活动句柄仍只属于当前进程，两者都不授予 Registry 访问权。刷新页面可以读取当前已提交快照，不创建另一个 Session。

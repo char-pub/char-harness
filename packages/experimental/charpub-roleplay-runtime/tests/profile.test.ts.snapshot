@@ -1,0 +1,60 @@
+exports[`shipped app capabilities preserve all SDK system regions on the DeepSeek Messages wire 1`] = `
+{
+  "prepared": [
+    {
+      "role": "system",
+      "content": "[Cast]\\nAlice: Alice is waiting at the rainy inn.\\nBob: Bob is waiting at the rainy inn.\\n\\n（知道此事：Alice；不知道：Bob）\\nALICE_ONLY_SECRET",
+      "source": [
+        "session:bindings",
+        "@fixture/inn#secret~root"
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "ようこそ、Guest。",
+      "source": [
+        "history"
+      ]
+    },
+    {
+      "role": "user",
+      "content": "Who is here, and what can Alice tell me?",
+      "source": [
+        "history"
+      ]
+    }
+  ],
+  "wire": {
+    "system": "[Cast]\\nAlice: Alice is waiting at the rainy inn.\\nBob: Bob is waiting at the rainy inn.\\n\\n（知道此事：Alice；不知道：Bob）\\nALICE_ONLY_SECRET",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "ようこそ、Guest。"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Who is here, and what can Alice tell me?"
+          }
+        ]
+      }
+    ],
+    "model": "deepseek-flash",
+    "stream": true,
+    "max_tokens": 256,
+    "thinking": {
+      "type": "enabled"
+    },
+    "output_config": {
+      "effort": "high"
+    }
+  }
+}
+`;
