@@ -3,7 +3,7 @@ import { Context, Service } from '@deepseek-ai/cordis'
 import Schema from '@deepseek-ai/schemastery'
 import { CharError, digestExactJSON } from '@char-pub/core'
 import { estimateCounter } from '@char-pub/assembler'
-import { commandId, type ReplayInput, type ReplayCommand } from '@deepseek-ai/dsh-experimental-charpub-roleplay'
+import type { ReplayInput, ReplayCommand } from '@deepseek-ai/dsh-experimental-charpub-roleplay'
 import { AssistantStreamAccumulator, BlockAssembler } from '@deepseek-ai/dsh-llm'
 import type { LlmCallConfig, StreamChunk } from '@deepseek-ai/dsh-llm'
 import { SessionSeq, type SessionId, type SessionEvent } from '@deepseek-ai/dsh-session'
@@ -250,7 +250,7 @@ export default class RoleplayRuntime extends Service {
   /**
    * Plan and narrate one fenced player turn using only configured LLM routes.
    * @param id - Existing durable roleplay Session.
-   * @param rawIntent - Stable request identity, current revision, player input and explicit recovery choice.
+   * @param rawIntent - Stable request identity, current revision, player input, and explicit ending confirmation or recovery choice.
    * @param rawConfig - Separate decision/narration routes and aggregate planning limits.
    * @param signal - Cancels preparation and generation; completed writes remain authoritative.
    * @returns The stored outcome; retries never reapply a rewound or already settled turn.
@@ -376,11 +376,11 @@ export default class RoleplayRuntime extends Service {
   /**
    * Append a rewind of the latest successful play without changing historical requests.
    * @param id - Existing durable roleplay Session.
-   * @param intent - Stable rewind identity and the observed revision.
+   * @param intent - Replay command identity for this rewind and the observed revision of the complete event log.
    * @param signal - Cancels before the append/flush commit interval.
    * @returns The restored logical head and its new durable revision.
    */
-  rewind(id: SessionId, intent: { id: ReturnType<typeof commandId>; expected_revision: string }, signal?: AbortSignal):
+  rewind(id: SessionId, intent: { id: ReplayCommand['id']; expected_revision: string }, signal?: AbortSignal):
   Promise<{ head: string; revision: string; rewound_turn_id: string }> {
     return this.execute(id, signal, async (operationSignal) => {
       const handle = await this.ctx.sessionPersistence.open(id, 'write', { signal: operationSignal })

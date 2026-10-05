@@ -279,6 +279,9 @@ export const EVENT_WALK_EXEMPTIONS: Record<string, string> = {
 export const LINK_MAP: Readonly<Record<string, string>> = {
   ReplayInput: 'charpub-roleplay.md',
   ReplayCommand: 'charpub-roleplay.md',
+  PlayIntent: 'charpub-roleplay.md',
+  PlayConfig: 'charpub-roleplay.md',
+  PlayResult: 'charpub-roleplay.md',
   RoleplayProjection: 'charpub-roleplay.md',
   RoleplaySettled: 'charpub-roleplay.md',
   EventLogOptions: 'otel.md',

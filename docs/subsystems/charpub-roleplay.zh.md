@@ -18,18 +18,21 @@
 | 类型 | 契约 |
 |---|---|
 | `ReplayInput` | 固定的 Artifact、运行时 profile、绑定、开场、显式能力支持和经过校验的 Source 正文输入。本地或草稿来源不授予 Registry 访问权限。 |
-| `ReplayCommand` | 带标识的操作，包含角色视角、固定选择或完整 Plan，以及相关 judge/selector 证据。使用同一 ID 提交不同内容会被拒绝。 |
-| `RoleplayProjection` | 重算的已提交状态、临时回放值、待处理请求及请求/结算映射。Session 事件始终是持久事实依据。 |
+| `ReplayCommand` | 带标识的操作，包含角色视角、固定选择或完整 Plan，以及相关 judge/selector 证据。使用同一 ID 提交不同内容会被拒绝；其带品牌类型的 ID 也用于标识撤回请求。 |
+| `PlayIntent` | 原始玩家文本或作者选项、稳定命令 ID 与完整事件 revision。可显式恢复未完成尝试或确认服务端待定结局；结局确认不能同时选择选项。 |
+| `PlayConfig` | 独立叙述/决策模型路由，以及最低置信度、动作数、决策调用数和整回合决策 token 限额。 |
+| `PlayResult` | 持久结算或规划中止、私有动作原因与状态差异、结果是否已被撤回，以及结果对应的事件 revision。展示前需做玩家视图投影。 |
+| `RoleplayProjection` | 重算的已提交状态、临时回放值、逻辑 head、完整事件 revision、待处理请求/回合/结局提案，以及请求/结算映射。Session 事件始终是持久事实依据。 |
 | `RoleplaySettled` | 成功时记录助手结果、流及完整后续状态。失败或取消时保留尝试证据，不提交拟议的 Story 效果。 |
 
-回放包通过外部 SDK 校验输入和命令。运行时包拥有投影与结算类型。其[包契约](../../packages/experimental/charpub-roleplay-runtime/README.zh.md)定义取消、限额、支持的消息和恢复失败行为。
+回放包通过外部 SDK 校验输入和命令。运行时包拥有玩家意图、配置、结果、投影与结算类型。其[包契约](../../packages/experimental/charpub-roleplay-runtime/README.zh.md)定义取消、限额、支持的消息和恢复失败行为。
 
 <a id="durable-requests"></a>
 ## 持久请求
 
-`roleplay/opened` 仅存储一次固定输入。`roleplay/requested` 在发送前记录拟议命令、实际模型路由及精确有序消息。`roleplay/settled` 提交成功结果或记录失败尝试。这些必需事件在[持久化目录](../persistence-catalog.zh.md)中声明；不认识它们的读取方必须拒绝。
+`roleplay/opened` 仅存储一次固定输入。显式命令使用 `roleplay/requested`，玩家回合使用独立的 `roleplay/turn-requested`；两者均在派发前保留模型路由与精确有序消息。玩家回合还记录意图、决策请求和结果。成功结算一起提交玩家输入、Core 校验的动作及叙述；结局提案保持待定，直到玩家显式确认。这些必需事件在[持久化目录](../persistence-catalog.zh.md)中声明；不认识它们的读取方必须拒绝。
 
-读取只投影事件，不发送请求。恢复会将已持久化但未得到响应的请求标记为中断，而不会重新发送。SDK 更新必须分别检查已存输入和回放兼容性；不能重写已提交的 [Session 存储代](../session-format-status.zh.md)来修改其中的结果。
+读取只投影事件，不发送请求。未完成玩家尝试需要使用新 ID 显式恢复；旧 ID 不会重新派发。撤回恢复上一条成功回合之前的逻辑状态与待确认提案，同时保留事件、结果和已消费 ID。SDK 更新必须分别检查已存输入和回放兼容性；不能重写已提交的 [Session 存储代](../session-format-status.zh.md)来修改其中的结果。
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 
@@ -71,6 +74,25 @@ async inspect(id: SessionId): Promise<RoleplayProjection>
  * @returns Durable settlement. Exact retries return the stored outcome without another model call.
  */
 submit(id: SessionId, command: ReplayCommand, config: LlmCallConfig, signal?: AbortSignal): Promise<RoleplaySettled>
+
+/**
+ * Plan and narrate one fenced player turn using only configured LLM routes.
+ * @param id - Existing durable roleplay Session.
+ * @param rawIntent - Stable request identity, current revision, player input, and explicit ending confirmation or recovery choice.
+ * @param rawConfig - Separate decision/narration routes and aggregate planning limits.
+ * @param signal - Cancels preparation and generation; completed writes remain authoritative.
+ * @returns The stored outcome; retries never reapply a rewound or already settled turn.
+ */
+play(id: SessionId, rawIntent: PlayIntent, rawConfig: PlayConfig, signal?: AbortSignal): Promise<PlayResult>
+
+/**
+ * Append a rewind of the latest successful play without changing historical requests.
+ * @param id - Existing durable roleplay Session.
+ * @param intent - Replay command identity for this rewind and the observed revision of the complete event log.
+ * @param signal - Cancels before the append/flush commit interval.
+ * @returns The restored logical head and its new durable revision.
+ */
+rewind(id: SessionId, intent: { id: ReplayCommand['id']; expected_revision: string }, signal?: AbortSignal): Promise<{ head: string; revision: string; rewound_turn_id: string }>
 ```
 
 Types: [LlmCallConfig](llm-streaming.zh.md) · [SessionId](core.zh.md)

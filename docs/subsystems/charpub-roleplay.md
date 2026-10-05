@@ -18,18 +18,21 @@ The private experimental [replay library](../../packages/experimental/charpub-ro
 | Type | Contract |
 |---|---|
 | `ReplayInput` | Fixed Artifact, runtime profile, bindings, opening, explicit capability support and verified Source text inputs. Local or draft origins do not grant Registry access. |
-| `ReplayCommand` | Identified operation with a participant view, fixed selection or complete Plan, and any judge/selector evidence. Reusing an ID with different content is rejected. |
-| `RoleplayProjection` | Recomputed committed state, temporary replay value, pending request and request/settlement maps. The Session events remain the durable authority. |
+| `ReplayCommand` | Identified operation with a participant view, fixed selection or complete Plan, and any judge/selector evidence. Reusing an ID with different content is rejected; its branded ID type also identifies rewind requests. |
+| `PlayIntent` | Original player text or authored choice, a stable command ID and the revision of all recorded events. It may explicitly recover an unfinished attempt or confirm the server’s pending ending; ending confirmation cannot also select a choice. |
+| `PlayConfig` | Independent narration/decision model routes and limits for minimum confidence, actions, decision calls and whole-turn decision tokens. |
+| `PlayResult` | Durable settlement or planning abort, private action reasons and state differences, whether rewind superseded the result, and its event revision. Apply the player projection before display. |
+| `RoleplayProjection` | Recomputed committed state, temporary replay value, logical head, revision of all recorded events, pending request/turn/ending proposal and request/settlement maps. The Session events remain the durable authority. |
 | `RoleplaySettled` | Success records the assistant result, stream and complete post-state. Failure or cancellation retains attempt evidence without committing proposed Story effects. |
 
-The replay package owns input and command validation through the external SDK. The runtime package owns projection and settlement types. Its [package contract](../../packages/experimental/charpub-roleplay-runtime/README.md) specifies cancellation, limits, supported messages and recovery failures.
+The replay package owns input and command validation through the external SDK. The runtime package owns player intent, configuration, result, projection and settlement types. Its [package contract](../../packages/experimental/charpub-roleplay-runtime/README.md) specifies cancellation, limits, supported messages and recovery failures.
 
 <a id="durable-requests"></a>
 ## Durable requests
 
-`roleplay/opened` stores the fixed input once. `roleplay/requested` records the proposed command, effective model route and exact ordered messages before dispatch. `roleplay/settled` commits success or records an unsuccessful attempt. These required events are declared in the [persistence catalog](../persistence-catalog.md); an unknown reader must reject them.
+`roleplay/opened` stores the fixed input once. Explicit commands use `roleplay/requested`, while player turns use a separate `roleplay/turn-requested`; both retain the model route and exact ordered messages before dispatch. Player turns also record intent, decision requests and outcomes. Successful settlement commits player input, Core-validated actions and narration together; ending proposals remain pending until explicit player confirmation. These required events are declared in the [persistence catalog](../persistence-catalog.md); an unknown reader must reject them.
 
-Reading projects events without sending a request. Recovery marks a persisted unanswered request as interrupted instead of resending it. SDK updates must independently check stored input and replay compatibility; committed [Session generations](../session-format-status.md) are not rewritten to change their recorded results.
+Reading projects events without sending a request. Unfinished player attempts require explicit recovery with a new ID; old IDs never dispatch again. Rewind restores the logical state and pending proposal before the last successful turn while retaining events, outcomes and consumed IDs. SDK updates must independently check stored input and replay compatibility; committed [Session generations](../session-format-status.md) are not rewritten to change their recorded results.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 
@@ -71,6 +74,25 @@ async inspect(id: SessionId): Promise<RoleplayProjection>
  * @returns Durable settlement. Exact retries return the stored outcome without another model call.
  */
 submit(id: SessionId, command: ReplayCommand, config: LlmCallConfig, signal?: AbortSignal): Promise<RoleplaySettled>
+
+/**
+ * Plan and narrate one fenced player turn using only configured LLM routes.
+ * @param id - Existing durable roleplay Session.
+ * @param rawIntent - Stable request identity, current revision, player input, and explicit ending confirmation or recovery choice.
+ * @param rawConfig - Separate decision/narration routes and aggregate planning limits.
+ * @param signal - Cancels preparation and generation; completed writes remain authoritative.
+ * @returns The stored outcome; retries never reapply a rewound or already settled turn.
+ */
+play(id: SessionId, rawIntent: PlayIntent, rawConfig: PlayConfig, signal?: AbortSignal): Promise<PlayResult>
+
+/**
+ * Append a rewind of the latest successful play without changing historical requests.
+ * @param id - Existing durable roleplay Session.
+ * @param intent - Replay command identity for this rewind and the observed revision of the complete event log.
+ * @param signal - Cancels before the append/flush commit interval.
+ * @returns The restored logical head and its new durable revision.
+ */
+rewind(id: SessionId, intent: { id: ReplayCommand['id']; expected_revision: string }, signal?: AbortSignal): Promise<{ head: string; revision: string; rewound_turn_id: string }>
 ```
 
 Types: [LlmCallConfig](llm-streaming.md) · [SessionId](core.md)
