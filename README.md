@@ -7,6 +7,7 @@ char-harness is the local Story roleplay runtime for [char.pub](https://char.pub
 The project builds on [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), developed by DeepSeek AI and powered by Cordis. Upstream source history, licenses and extension rules are retained. char.pub owns static authoring and publication; this repository owns play, model requests and local session records.
 
 <a id="run"></a>
+
 <a id="run-from-source"></a>
 
 ## Start a roleplay workspace
