@@ -291,10 +291,10 @@ export default class RoleplayRuntime extends Service {
         const fields = { intent, config, parent_head: projection.head, parent_revision: projection.revision }
         projection = await this.persist(handle, { type: 'roleplay/turn-started', data: { ...fields, digest: digestExactJSON(fields) } })
         let consumed = 0
-        let storageFailed = false
+        const storage = { failed: false }
         const save = async (fact: RoleplayFact) => {
           try { projection = await this.persist(handle, fact) }
-          catch (error) { storageFailed = true; throw error }
+          catch (error) { storage.failed = true; throw error }
         }
         const ask = async (stage: 'director' | 'selector', messages: PreparedTextMessage[], decisionSignal: AbortSignal): Promise<DecisionAnswer> => {
           decisionSignal.throwIfAborted()
@@ -332,7 +332,7 @@ export default class RoleplayRuntime extends Service {
         let command: ReplayCommand
         try { command = confirmation ?? await preparePlay(projection, intent, config, this.config.timeout_ms, ask, operationSignal) }
         catch (error) {
-          if (storageFailed) throw error
+          if (storage.failed) throw error
           projection = await this.abortTurn(handle, projection, operationFailure(operationSignal, error, 'decision_failed'))
           const saved = lookupPlay(projection, intent.id)
           if (saved.status !== 'settled') failure('missing_settlement', intent.id)
