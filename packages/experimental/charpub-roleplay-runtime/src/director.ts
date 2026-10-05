@@ -213,6 +213,7 @@ export async function preparePlay(
     const fields = { target: chosen.target, source_turn_id: intent.id, parent_head: origin.parent_head,
       parent_revision: origin.parent_revision, state_digest: digestExactJSON(state),
       judgments: judgments.filter(judgment => judgment.target === chosen.target),
+      guidance_version: 2,
       public: { ...(ending.reveal === 'listed' ? { title: local(ending.title), description: local(ending.description) } : {}),
         triggering_input: latestInput.text },
     }

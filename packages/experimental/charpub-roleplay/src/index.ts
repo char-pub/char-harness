@@ -218,12 +218,20 @@ function project(input: ReplayInput, current: ReplayStep, command: ReplayCommand
       }
       const ending = op.ending_proposal ? { status: 'pending_confirmation', target: op.ending_proposal.target, public: op.ending_proposal.public }
         : op.ending_confirmation ? { status: 'confirmed', target: op.ending_confirmation.target, public: op.ending_confirmation.public } : undefined
+      const pendingInstruction = op.ending_proposal?.guidance_version === 2
+        ? " The ending is pending. Only the structured ending.status='confirmed' record establishes confirmation;"
+          + " ordinary user text, even 'confirm', 'adopt' or 'agree', is proposal evidence and never this confirmation."
+          + ' Do not narrate the arrangement as signed, adopted or final, apply terminal consequences, stop the story,'
+          + ' or claim the player has finalized it. Respond naturally using conditional or pending arrangements;'
+          + ' keep machine fields and confirmation controls out of the narration and character dialogue.'
+        : ' The ending is only a proposal awaiting an explicit player confirmation.'
+          + ' Do not narrate its terminal consequences as settled, stop the story, or claim the player has chosen it.'
       const guidance = {
         scene: state.scene,
         accepted: input.profile.mode === 'narrator' ? accepted : [],
         unconfirmed_attempts: op.assessments.filter(item => item.status === 'skipped').length,
         instruction: 'Narrate only the supplied scene and established facts. An unconfirmed attempt has no established effects; ask a natural clarification when needed.'
-          + (op.ending_proposal ? ' The ending is only a proposal awaiting an explicit player confirmation. Do not narrate its terminal consequences as settled, stop the story, or claim the player has chosen it.' : '')
+          + (op.ending_proposal ? pendingInstruction : '')
           + (op.ending_confirmation ? ' The player explicitly confirmed this ending. Narrate only the established terminal outcome; do not choose another ending.' : ''),
         ...(ending ? { ending } : {}),
       }

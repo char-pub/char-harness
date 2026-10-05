@@ -20084,7 +20084,7 @@
       "kind": "event",
       "event": "roleplay/turn-requested",
       "surface": false,
-      "digest": "984d4f9a67c1ab8251e8c1605b4c32b2114d97059f1c49950e0d98df06f25fee",
+      "digest": "4423cf724108d910961087ac89fd1b2005e09a1511750bd2158fcf145e135b96",
       "schema": {
         "root": 0,
         "nodes": [
@@ -20098,7 +20098,7 @@
               },
               {
                 "name": "ignorable",
-                "type": 89,
+                "type": 90,
                 "optional": true
               },
               {
@@ -20113,7 +20113,7 @@
               },
               {
                 "name": "type",
-                "type": 90,
+                "type": 91,
                 "optional": false
               }
             ],
@@ -20129,7 +20129,7 @@
               },
               {
                 "name": "config",
-                "type": 82,
+                "type": 83,
                 "optional": false
               },
               {
@@ -20139,7 +20139,7 @@
               },
               {
                 "name": "messages",
-                "type": 83,
+                "type": 84,
                 "optional": false
               },
               {
@@ -20154,7 +20154,7 @@
               },
               {
                 "name": "proposed_config",
-                "type": 82,
+                "type": 83,
                 "optional": false
               },
               {
@@ -20195,22 +20195,22 @@
               },
               {
                 "name": "judgments",
-                "type": 21,
+                "type": 22,
                 "optional": true
               },
               {
                 "name": "operation",
-                "type": 42,
+                "type": 43,
                 "optional": false
               },
               {
                 "name": "plan",
-                "type": 55,
+                "type": 56,
                 "optional": true
               },
               {
                 "name": "selection",
-                "type": 81,
+                "type": 82,
                 "optional": true
               }
             ],
@@ -20224,8 +20224,8 @@
             "kind": "union",
             "types": [
               5,
-              36,
-              39
+              37,
+              40
             ]
           },
           {
@@ -20238,7 +20238,7 @@
               },
               {
                 "name": "config",
-                "type": 29,
+                "type": 30,
                 "optional": false
               },
               {
@@ -20248,27 +20248,27 @@
               },
               {
                 "name": "input",
-                "type": 34,
-                "optional": false
-              },
-              {
-                "name": "provider",
-                "type": 23,
-                "optional": false
-              },
-              {
-                "name": "purpose",
                 "type": 35,
                 "optional": false
               },
               {
+                "name": "provider",
+                "type": 24,
+                "optional": false
+              },
+              {
+                "name": "purpose",
+                "type": 36,
+                "optional": false
+              },
+              {
                 "name": "request",
-                "type": 30,
+                "type": 31,
                 "optional": false
               },
               {
                 "name": "response",
-                "type": 30,
+                "type": 31,
                 "optional": false
               }
             ],
@@ -20294,7 +20294,7 @@
               },
               {
                 "name": "judgments",
-                "type": 21,
+                "type": 22,
                 "optional": false
               }
             ],
@@ -20408,13 +20408,18 @@
             "kind": "object",
             "properties": [
               {
+                "name": "guidance_version",
+                "type": 21,
+                "optional": true
+              },
+              {
                 "name": "id",
                 "type": 11,
                 "optional": false
               },
               {
                 "name": "judgments",
-                "type": 21,
+                "type": 22,
                 "optional": false
               },
               {
@@ -20429,7 +20434,7 @@
               },
               {
                 "name": "public",
-                "type": 28,
+                "type": 29,
                 "optional": false
               },
               {
@@ -20451,8 +20456,12 @@
             "indices": []
           },
           {
+            "kind": "literal",
+            "value": 2
+          },
+          {
             "kind": "array",
-            "element": 22
+            "element": 23
           },
           {
             "kind": "object",
@@ -20464,12 +20473,12 @@
               },
               {
                 "name": "provider",
-                "type": 23,
+                "type": 24,
                 "optional": false
               },
               {
                 "name": "result",
-                "type": 24,
+                "type": 25,
                 "optional": false
               },
               {
@@ -20499,9 +20508,9 @@
           {
             "kind": "union",
             "types": [
-              25,
               26,
-              27
+              27,
+              28
             ]
           },
           {
@@ -20543,7 +20552,7 @@
             "indices": [
               {
                 "key": 11,
-                "value": 30
+                "value": 31
               }
             ]
           },
@@ -20552,15 +20561,15 @@
             "types": [
               11,
               16,
-              29,
-              31,
+              30,
               32,
-              33
+              33,
+              34
             ]
           },
           {
             "kind": "array",
-            "element": 30
+            "element": 31
           },
           {
             "kind": "primitive",
@@ -20610,12 +20619,12 @@
             "properties": [
               {
                 "name": "binding",
-                "type": 37,
+                "type": 38,
                 "optional": false
               },
               {
                 "name": "config",
-                "type": 29,
+                "type": 30,
                 "optional": false
               },
               {
@@ -20625,27 +20634,27 @@
               },
               {
                 "name": "input",
-                "type": 34,
+                "type": 35,
                 "optional": false
               },
               {
                 "name": "provider",
-                "type": 23,
+                "type": 24,
                 "optional": false
               },
               {
                 "name": "purpose",
-                "type": 38,
+                "type": 39,
                 "optional": false
               },
               {
                 "name": "request",
-                "type": 30,
+                "type": 31,
                 "optional": false
               },
               {
                 "name": "response",
-                "type": 30,
+                "type": 31,
                 "optional": false
               }
             ],
@@ -20656,7 +20665,7 @@
             "properties": [
               {
                 "name": "judgments",
-                "type": 21,
+                "type": 22,
                 "optional": false
               }
             ],
@@ -20671,12 +20680,12 @@
             "properties": [
               {
                 "name": "binding",
-                "type": 40,
+                "type": 41,
                 "optional": false
               },
               {
                 "name": "config",
-                "type": 29,
+                "type": 30,
                 "optional": false
               },
               {
@@ -20686,27 +20695,27 @@
               },
               {
                 "name": "input",
-                "type": 34,
+                "type": 35,
                 "optional": false
               },
               {
                 "name": "provider",
-                "type": 23,
+                "type": 24,
                 "optional": false
               },
               {
                 "name": "purpose",
-                "type": 41,
+                "type": 42,
                 "optional": false
               },
               {
                 "name": "request",
-                "type": 30,
+                "type": 31,
                 "optional": false
               },
               {
                 "name": "response",
-                "type": 30,
+                "type": 31,
                 "optional": false
               }
             ],
@@ -20732,11 +20741,11 @@
             "types": [
               9,
               12,
-              43,
-              46,
-              49,
-              51,
-              53
+              44,
+              47,
+              50,
+              52,
+              54
             ]
           },
           {
@@ -20764,12 +20773,12 @@
               },
               {
                 "name": "input",
-                "type": 44,
+                "type": 45,
                 "optional": false
               },
               {
                 "name": "kind",
-                "type": 45,
+                "type": 46,
                 "optional": false
               }
             ],
@@ -20805,12 +20814,12 @@
             "properties": [
               {
                 "name": "kind",
-                "type": 47,
+                "type": 48,
                 "optional": false
               },
               {
                 "name": "present",
-                "type": 48,
+                "type": 49,
                 "optional": false
               }
             ],
@@ -20829,7 +20838,7 @@
             "properties": [
               {
                 "name": "kind",
-                "type": 50,
+                "type": 51,
                 "optional": false
               },
               {
@@ -20854,7 +20863,7 @@
             "properties": [
               {
                 "name": "kind",
-                "type": 52,
+                "type": 53,
                 "optional": false
               },
               {
@@ -20874,7 +20883,7 @@
             "properties": [
               {
                 "name": "kind",
-                "type": 54,
+                "type": 55,
                 "optional": false
               }
             ],
@@ -20889,32 +20898,32 @@
             "properties": [
               {
                 "name": "decisions",
-                "type": 56,
+                "type": 57,
                 "optional": false
               },
               {
                 "name": "discovery",
-                "type": 32,
+                "type": 33,
                 "optional": false
               },
               {
                 "name": "fallback",
-                "type": 74,
+                "type": 75,
                 "optional": true
               },
               {
                 "name": "input",
-                "type": 34,
+                "type": 35,
                 "optional": false
               },
               {
                 "name": "selected",
-                "type": 75,
+                "type": 76,
                 "optional": false
               },
               {
                 "name": "selector",
-                "type": 80,
+                "type": 81,
                 "optional": false
               }
             ],
@@ -20922,14 +20931,14 @@
           },
           {
             "kind": "array",
-            "element": 57
+            "element": 58
           },
           {
             "kind": "object",
             "properties": [
               {
                 "name": "action",
-                "type": 58,
+                "type": 59,
                 "optional": false
               },
               {
@@ -20944,7 +20953,7 @@
               },
               {
                 "name": "ref",
-                "type": 62,
+                "type": 63,
                 "optional": false
               },
               {
@@ -20958,9 +20967,9 @@
           {
             "kind": "union",
             "types": [
-              59,
               60,
-              61
+              61,
+              62
             ]
           },
           {
@@ -20978,11 +20987,11 @@
           {
             "kind": "union",
             "types": [
-              63,
               64,
               65,
-              72,
-              73
+              66,
+              73,
+              74
             ]
           },
           {
@@ -21017,7 +21026,7 @@
               },
               {
                 "name": "story",
-                "type": 66,
+                "type": 67,
                 "optional": false
               }
             ],
@@ -21026,11 +21035,11 @@
           {
             "kind": "union",
             "types": [
-              67,
               68,
               69,
               70,
-              71
+              71,
+              72
             ]
           },
           {
@@ -21086,14 +21095,14 @@
           },
           {
             "kind": "array",
-            "element": 76
+            "element": 77
           },
           {
             "kind": "object",
             "properties": [
               {
                 "name": "form",
-                "type": 77,
+                "type": 78,
                 "optional": false
               },
               {
@@ -21103,7 +21112,7 @@
               },
               {
                 "name": "ref",
-                "type": 62,
+                "type": 63,
                 "optional": false
               }
             ],
@@ -21112,8 +21121,8 @@
           {
             "kind": "union",
             "types": [
-              78,
-              79
+              79,
+              80
             ]
           },
           {
@@ -21147,7 +21156,7 @@
           },
           {
             "kind": "array",
-            "element": 62
+            "element": 63
           },
           {
             "kind": "object",
@@ -21174,7 +21183,7 @@
               },
               {
                 "name": "stop",
-                "type": 48,
+                "type": 49,
                 "optional": true
               },
               {
@@ -21187,7 +21196,7 @@
           },
           {
             "kind": "array",
-            "element": 84
+            "element": 85
           },
           {
             "kind": "object",
@@ -21199,12 +21208,12 @@
               },
               {
                 "name": "role",
-                "type": 85,
+                "type": 86,
                 "optional": false
               },
               {
                 "name": "source",
-                "type": 48,
+                "type": 49,
                 "optional": false
               }
             ],
@@ -21213,9 +21222,9 @@
           {
             "kind": "union",
             "types": [
-              86,
               87,
-              88
+              88,
+              89
             ]
           },
           {
@@ -32213,15 +32222,6 @@
       "sources": []
     },
     {
-      "digest": "03e53f35324f742f046e56791ceaa7421b27f2cf84e52afa33fcf62ea31b8670",
-      "names": [
-        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayTurnRequested"
-      ],
-      "sources": [
-        "packages/experimental/charpub-roleplay-runtime/src/events.ts:78"
-      ]
-    },
-    {
       "digest": "03fc4140d00359793e50878894e97ec3150ef231197a07df7c1a2717881a37d7",
       "names": [],
       "sources": []
@@ -32620,6 +32620,11 @@
       "sources": []
     },
     {
+      "digest": "13c155323e764c60f8126de5dc62f44c8ee02f2cfd6a8777774240514a1132d4",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "13d3d180f977bf78081d487ffa0ecb75857349bcab29a5a3fb48189fca2a6176",
       "names": [],
       "sources": []
@@ -32961,11 +32966,6 @@
       "sources": []
     },
     {
-      "digest": "1e5f69a498ccda483eab70ae5f7af389f9c787ce3e47fd8858ac608a9ef3c785",
-      "names": [],
-      "sources": []
-    },
-    {
       "digest": "1e709346005826eb81809eeb76a3f713cf13ad6c5cec75146d07020ab9adc938",
       "names": [],
       "sources": []
@@ -33096,11 +33096,6 @@
     },
     {
       "digest": "23b7a2aac08527315b74649549f9b2a068df6ecbc27dc025771ece7a5c53abf2",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "241eb81ebf8686f5ea8816e7ab50358236327aed689390ad9bbdf451f8d62dc6",
       "names": [],
       "sources": []
     },
@@ -33393,11 +33388,6 @@
       ]
     },
     {
-      "digest": "31938aa23aa078b0e2fee226156fca331276e572c2a8736db49a42cdad4bcb05",
-      "names": [],
-      "sources": []
-    },
-    {
       "digest": "319fbec3813fa08a35a57cb005012f71694215ae2e4a34cff68662107e632779",
       "names": [],
       "sources": []
@@ -33431,6 +33421,11 @@
       ]
     },
     {
+      "digest": "3355e613f90f1358c15a11b28c0ea8adf0e8f844755b6323fef81b4157193ff4",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "335e242de1fcc17b6ca920fc420d71bec2d76e53e37955c00948b65ab77f05c5",
       "names": [
         "packages/core/session/src/types.ts#SurfaceOp"
@@ -33446,6 +33441,11 @@
     },
     {
       "digest": "34d1ab5c5df378186d6054b1a1beea9a41e41965d6f336f0bc0025c441a82e66",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "34d7b97fccc96f6da5447e67ca43d16f3d3b506098d35d0f854141ff0c208b76",
       "names": [],
       "sources": []
     },
@@ -33745,6 +33745,11 @@
       "sources": [
         "packages/llm/llm/src/types.ts:127"
       ]
+    },
+    {
+      "digest": "4423cf724108d910961087ac89fd1b2005e09a1511750bd2158fcf145e135b96",
+      "names": [],
+      "sources": []
     },
     {
       "digest": "445cd7d9f53ee26b769abb1b00d15dcec78437fd2640242b964b911e41c7cae3",
@@ -34294,6 +34299,11 @@
       "sources": []
     },
     {
+      "digest": "59c29275ea79aff6bcd46732dfe65dfba61f14e992174b53f7d33babbe6511c9",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "59da55011391e3d4b8128481c41d3255f686b4a4e042add814b5d4dc18612591",
       "names": [
         "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayRewound"
@@ -34423,11 +34433,6 @@
     },
     {
       "digest": "5ebce1317eacd2c148456627a09668e927ee15c204f0643f5ea76b46b54a2647",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "5ef1daef0810caf35d69d0aa6785fb216db499467e731c4ae8f2daa6632455a1",
       "names": [],
       "sources": []
     },
@@ -34655,11 +34660,6 @@
       "sources": []
     },
     {
-      "digest": "6a2d211aa0291d96975471a77ddc32efdb1e97ae4ffba970532edcfe880704da",
-      "names": [],
-      "sources": []
-    },
-    {
       "digest": "6a35db47a50f921f5429ed8bed76b9b051b86834845eb6c4804e02376468f02c",
       "names": [],
       "sources": []
@@ -34843,6 +34843,11 @@
       ]
     },
     {
+      "digest": "6f3bfcb7b43ce84e0bd8603e4cc81d3d8b1f0a193f8ddc710a08fdec8b0e560d",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "6f44f32be9bcd9a8bf075c3b575b06c8ed63446386e5b0995c7b73762e68ddae",
       "names": [],
       "sources": []
@@ -34863,6 +34868,11 @@
     },
     {
       "digest": "6f9e00383836275e46c0a9915767f9bb561be5fc30aae490174908a93e99a912",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "6fe0e8828bffc1964796b530f823be4b61ad37c9c3804a7bc39db1ffd8ed19b1",
       "names": [],
       "sources": []
     },
@@ -35173,6 +35183,11 @@
       "sources": []
     },
     {
+      "digest": "7ee86fdca8ed90c2e04989d487dc814a12f4dd254298cc90cf7b951553d18187",
+      "names": [],
+      "sources": []
+    },
+    {
       "digest": "7f13860ee89a2d35ce09f958e85a04566cd59cb1de1d73a9619a9b631961dc71",
       "names": [],
       "sources": []
@@ -35369,6 +35384,15 @@
       "digest": "8592e39bb87d7c1d2f627355b826d637bc5f03ec189fa096ff79c0230ce763ac",
       "names": [],
       "sources": []
+    },
+    {
+      "digest": "859f899ece5ec99c7f30218138c09e2dee7496b140c099679f23345a11646a21",
+      "names": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts#RoleplayTurnRequested"
+      ],
+      "sources": [
+        "packages/experimental/charpub-roleplay-runtime/src/events.ts:78"
+      ]
     },
     {
       "digest": "85b73bfd43d0971050dea35fd67989b492327d756bb96a41ea5ff9528f3b57ce",
@@ -35842,11 +35866,6 @@
       "sources": []
     },
     {
-      "digest": "984d4f9a67c1ab8251e8c1605b4c32b2114d97059f1c49950e0d98df06f25fee",
-      "names": [],
-      "sources": []
-    },
-    {
       "digest": "9853747c9c76e4589448d6f014fdf790bd4f06e422b5cbae70350053808752eb",
       "names": [],
       "sources": []
@@ -36253,11 +36272,6 @@
     },
     {
       "digest": "a96191e946b6f8e8dac6d4863070db4509df4d32223d044bada846d7aed4ab49",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "a99385d1ea4305b21f6ec7372344262449da66b8c97e73455a3ddc5c8dcbdc1e",
       "names": [],
       "sources": []
     },
@@ -37152,11 +37166,6 @@
       ]
     },
     {
-      "digest": "d0737904c407489dbed91938095aa6ab3579db19577fed1899b7f4e2aadb5efe",
-      "names": [],
-      "sources": []
-    },
-    {
       "digest": "d0fbb0ca1bbba059830826f33f801da1aced35a2504376d61e020bdfec8d50c0",
       "names": [],
       "sources": []
@@ -37178,11 +37187,6 @@
     },
     {
       "digest": "d2a2c18404ae1314bdd5159f8167bd00e55fe1662c37404d6f438448db737ac2",
-      "names": [],
-      "sources": []
-    },
-    {
-      "digest": "d343c023094ae2f7a1fd3bd7070f6afeea4db4e67222006da2fd29bb28bc1c81",
       "names": [],
       "sources": []
     },
@@ -37548,6 +37552,11 @@
     },
     {
       "digest": "e6411b09c1d982f789bf741ca74e2bea69df56029847f86a6148e722039ee732",
+      "names": [],
+      "sources": []
+    },
+    {
+      "digest": "e66296e5d62436a0f2773d13a28f4ac509671dde05278a0a739d915318d81ff3",
       "names": [],
       "sources": []
     },

@@ -23,6 +23,7 @@ export const TurnEndingProposalSchema = z.strictObject({
   id: DigestSchema, target: z.string().regex(/^ending\/[a-z0-9][a-z0-9_-]*$/),
   source_turn_id: z.string().min(1), parent_head: DigestSchema, parent_revision: DigestSchema, state_digest: DigestSchema,
   judgments: TurnViewSchema.shape.judgments.unwrap(),
+  guidance_version: z.literal(2).optional(),
   public: z.strictObject({ title: z.string().optional(), description: z.string().optional(), triggering_input: z.string() }),
 }).superRefine((proposal, ctx) => {
   const { id, ...fields } = proposal

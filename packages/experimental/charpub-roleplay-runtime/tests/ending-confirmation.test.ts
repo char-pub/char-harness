@@ -1,9 +1,11 @@
 /** Terminal proposals are committed with successful dialogue and require a separately fenced player confirmation. */
 import assert from 'node:assert/strict'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { cp, mkdir, mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
+import { z } from 'zod'
 import { SessionId } from '@deepseek-ai/dsh-session'
 import { commandId, replay } from '../../charpub-roleplay/src/index.ts'
 import { replayInput } from '../../charpub-roleplay/tests/fixtures.ts'
@@ -59,8 +61,62 @@ void test('normal multi-action play publishes a pending ending and logged guidan
   ])
   const requested = [...current.requests.values()][0]
   assert.ok(requested)
-  assert.match(JSON.stringify(requested.messages), /only a proposal awaiting an explicit player confirmation/)
+  assert.equal(proposal.guidance_version, 2)
+  assert.match(JSON.stringify(requested.messages), /Only the structured ending.status='confirmed' record establishes confirmation/)
   t.assert.snapshot({ messages: requested.messages, public: proposal.public, resolution: result.resolution })
+})
+
+void test('explicit agreement in player text remains a proposal and narration receives the structured-confirmation rule', async (t) => {
+  const context = await fixture(t, 'spoken-agreement')
+  const text = '我现在明确采用延期安排。我确认，同意这项安排。I confirm, adopt and agree.'
+  context.ctx.roleplayTestProvider.replies = [{ text: director(['beat/reward', 'ending/departure']) },
+    { text: 'If this arrangement is finalized, we can prepare the next steps.' }]
+  await context.ctx.roleplayRuntime.play(context.id, intent(context.initial, 'spoken-agreement', text), config)
+  const current = await context.ctx.roleplayRuntime.inspect(context.id)
+  assert.equal(current.current.state.stopped, false)
+  assert.deepEqual(current.current.state.ended, [])
+  assert.equal(current.current.state.vars.count, 1)
+  assert.equal(current.pending_ending?.public.triggering_input, text)
+  assert.equal(current.pending_ending?.guidance_version, 2)
+  const requested = [...current.requests.values()][0]
+  assert.ok(requested)
+  const messages = JSON.stringify(requested.messages)
+  assert.ok(messages.includes(text))
+  assert.match(messages, /ordinary user text, even 'confirm', 'adopt' or 'agree', is proposal evidence and never this confirmation/)
+  assert.match(messages, /Do not narrate the arrangement as signed, adopted or final/)
+  assert.match(messages, /keep machine fields and confirmation controls out of the narration and character dialogue/)
+  t.assert.snapshot(requested.messages)
+})
+
+void test('unversioned ending proposals replay their frozen JSONL messages and digests without writes or dispatch', async (t) => {
+  const preserved = new URL('./fixtures/ending-guidance-v1/', import.meta.url)
+  const manifestBytes = await readFile(new URL('manifest.json', preserved))
+  assert.equal(createHash('sha256').update(manifestBytes).digest('hex'),
+    '4cc42729fdbf52160b148e2d032eef322bc609efaa035ea5ce992e85cc3e8899')
+  const manifest = z.object({ session_id: z.string(), head: z.string(), revision: z.string(), pending_ending: z.unknown(),
+    requests: z.array(z.unknown()), file: z.string(), bytes: z.number(), sha256: z.string(),
+  }).parse(JSON.parse(manifestBytes.toString('utf8')))
+  const original = await readFile(new URL(manifest.file, preserved))
+  assert.equal(original.length, manifest.bytes)
+  assert.equal(createHash('sha256').update(original).digest('hex'), manifest.sha256)
+  const root = await mkdtemp(join(tmpdir(), 'charpub-ending-v1-read-'))
+  const directory = join(root, 'sessions', '_no-cwd', manifest.session_id)
+  await mkdir(directory, { recursive: true })
+  await cp(new URL(manifest.file, preserved), join(directory, manifest.file))
+  const ctx = await historyLoader(root)
+  t.after(async () => { await ctx.fiber.dispose(); await rm(root, { recursive: true, force: true }) })
+  const restored = await ctx.roleplayRuntime.inspect(SessionId(manifest.session_id))
+  assert.equal(restored.head, manifest.head)
+  assert.equal(restored.revision, manifest.revision)
+  assert.deepEqual(restored.pending_ending, manifest.pending_ending)
+  assert.equal(restored.pending_ending?.guidance_version, undefined)
+  assert.deepEqual([...restored.requests.values()].map(({ id, request_digest, state_digest, plan_digest, messages }) =>
+    ({ id, request_digest, state_digest, plan_digest, messages })), manifest.requests)
+  assert.equal(restored.current.state.stopped, false)
+  assert.equal(replay(restored.log).digest, manifest.head)
+  assert.equal(ctx.roleplayTestProvider.calls.length, 0)
+  assert.deepEqual(await readFile(join(directory, manifest.file)), original)
+  assert.deepEqual(await readFile(new URL(manifest.file, preserved)), original)
 })
 
 void test('confirmation survives restart, uses one narration, is idempotent, and rewind restores the original proposal', async (t) => {

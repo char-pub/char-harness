@@ -1,0 +1,10 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/charpub-roleplay-runtime/tests/fixtures/ending-guidance-v1/README.md
+/:
+  en: 2cfa3e41e1585877
+  zh: 719e85b4547f2b7a
+/unversioned-ending-guidance:
+  en: 7172a20904477984
+  zh: 0628371e6b74b95f

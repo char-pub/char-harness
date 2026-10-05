@@ -1,3 +1,43 @@
+exports[`explicit agreement in player text remains a proposal and narration receives the structured-confirmation rule 1`] = `
+[
+  {
+    "role": "system",
+    "content": "[Player control]\\nThe player controls \\"Alice\\". User messages are this character's contributions. Leave this character's speech, decisions, actions and inner thoughts to the player. Portray the narrator and the other characters; do not play this character for the player.",
+    "source": [
+      "session:player-control"
+    ]
+  },
+  {
+    "role": "system",
+    "content": "（知道此事：Alice；不知道：Bob）\\nALICE_ONLY_SECRET",
+    "source": [
+      "@fixture/inn#secret~root"
+    ]
+  },
+  {
+    "role": "system",
+    "content": "[Current state]\\nstory-turn: {\\"scene\\":\\"lobby\\",\\"accepted\\":[\\"beat/reward\\"],\\"unconfirmed_attempts\\":1,\\"instruction\\":\\"Narrate only the supplied scene and established facts. An unconfirmed attempt has no established effects; ask a natural clarification when needed. The ending is pending. Only the structured ending.status='confirmed' record establishes confirmation; ordinary user text, even 'confirm', 'adopt' or 'agree', is proposal evidence and never this confirmation. Do not narrate the arrangement as signed, adopted or final, apply terminal consequences, stop the story, or claim the player has finalized it. Respond naturally using conditional or pending arrangements; keep machine fields and confirmation controls out of the narration and character dialogue.\\",\\"ending\\":{\\"status\\":\\"pending_confirmation\\",\\"target\\":\\"ending/departure\\",\\"public\\":{\\"title\\":\\"PRIVATE_ENDING_TITLE\\",\\"description\\":\\"PRIVATE_ENDING_DESCRIPTION\\",\\"triggering_input\\":\\"我现在明确采用延期安排。我确认，同意这项安排。I confirm, adopt and agree.\\"}}}",
+    "source": [
+      "session:state"
+    ]
+  },
+  {
+    "role": "assistant",
+    "content": "ようこそ、Guest。",
+    "source": [
+      "history"
+    ]
+  },
+  {
+    "role": "user",
+    "content": "Alice: 我现在明确采用延期安排。我确认，同意这项安排。I confirm, adopt and agree.",
+    "source": [
+      "history"
+    ]
+  }
+]
+`;
+
 exports[`normal multi-action play publishes a pending ending and logged guidance, never terminal effects 1`] = `
 {
   "messages": [
@@ -17,7 +57,7 @@ exports[`normal multi-action play publishes a pending ending and logged guidance
     },
     {
       "role": "system",
-      "content": "[Current state]\\nstory-turn: {\\"scene\\":\\"lobby\\",\\"accepted\\":[\\"beat/reward\\"],\\"unconfirmed_attempts\\":1,\\"instruction\\":\\"Narrate only the supplied scene and established facts. An unconfirmed attempt has no established effects; ask a natural clarification when needed. The ending is only a proposal awaiting an explicit player confirmation. Do not narrate its terminal consequences as settled, stop the story, or claim the player has chosen it.\\",\\"ending\\":{\\"status\\":\\"pending_confirmation\\",\\"target\\":\\"ending/departure\\",\\"public\\":{\\"title\\":\\"PRIVATE_ENDING_TITLE\\",\\"description\\":\\"PRIVATE_ENDING_DESCRIPTION\\",\\"triggering_input\\":\\"I claim the token and would like to finish this stage.\\"}}}",
+      "content": "[Current state]\\nstory-turn: {\\"scene\\":\\"lobby\\",\\"accepted\\":[\\"beat/reward\\"],\\"unconfirmed_attempts\\":1,\\"instruction\\":\\"Narrate only the supplied scene and established facts. An unconfirmed attempt has no established effects; ask a natural clarification when needed. The ending is pending. Only the structured ending.status='confirmed' record establishes confirmation; ordinary user text, even 'confirm', 'adopt' or 'agree', is proposal evidence and never this confirmation. Do not narrate the arrangement as signed, adopted or final, apply terminal consequences, stop the story, or claim the player has finalized it. Respond naturally using conditional or pending arrangements; keep machine fields and confirmation controls out of the narration and character dialogue.\\",\\"ending\\":{\\"status\\":\\"pending_confirmation\\",\\"target\\":\\"ending/departure\\",\\"public\\":{\\"title\\":\\"PRIVATE_ENDING_TITLE\\",\\"description\\":\\"PRIVATE_ENDING_DESCRIPTION\\",\\"triggering_input\\":\\"I claim the token and would like to finish this stage.\\"}}}",
       "source": [
         "session:state"
       ]
