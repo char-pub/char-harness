@@ -144,8 +144,8 @@
   en: 4294f78d26ed985b
   zh: 4294f78d26ed985b
 /session-persistence-event-catalog/events/plan/plan-mode-log-only:
-  en: 9ae5537eeae238de
-  zh: 6be761c7fd83fdce
+  en: 862175bfe8692ef7
+  zh: a8ab123bf674cf77
 /session-persistence-event-catalog/events/request:
   en: a8df82440ebdf5f8
   zh: a8df82440ebdf5f8
@@ -195,8 +195,8 @@
   en: e5b55405bd2b69f5
   zh: e5b55405bd2b69f5
 /session-persistence-event-catalog/events/schedule/schedule-change-log-only:
-  en: 353442ce8925614f
-  zh: 71e6ab8296c74d2a
+  en: 162584304e006c72
+  zh: d8a6bacf60777aa9
 /session-persistence-event-catalog/events/session:
   en: a1ac8f2660a4f61e
   zh: a1ac8f2660a4f61e
@@ -2049,8 +2049,8 @@
   en: 7b43b1de24dc55ac
   zh: 91591330a4809b8a
 /session-persistence-event-catalog/resolved-persistence-types/active~2:
-  en: aca9aa6721f14a72
-  zh: e729acfef816956b
+  en: 18dc726f7acf8fc3
+  zh: 907a65add5c7831a
 /session-persistence-event-catalog/resolved-persistence-types/active-variants-memory-state:
   en: 9bf5336428fc4035
   zh: b89abdb3ce6b1857

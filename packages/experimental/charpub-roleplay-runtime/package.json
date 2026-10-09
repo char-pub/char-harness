@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-experimental-charpub-roleplay-runtime",
-  "version": "0.2.0-rc.2",
+  "version": "0.2.1-alpha.1",
   "private": true,
   "description": "Roleplay requests and committed Story state in durable Harness Session events",
   "icon": "./icon.svg",
