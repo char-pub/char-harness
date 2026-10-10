@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-charpub-roleplay-web",
-  "version": "0.2.0-rc.2",
+  "version": "0.2.1-alpha.1",
   "private": true,
   "description": "Static browser application for the char.pub roleplay profile",
   "license": "MIT",
