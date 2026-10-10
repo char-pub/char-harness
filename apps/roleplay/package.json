@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@deepseek-ai/dsh-experimental-charpub-roleplay-runtime": "workspace:*",
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.5.1",
     "@types/react": "~18.3.1",
     "@types/react-dom": "~18.3.0",
     "@vitejs/plugin-react": "^4.0.0",
